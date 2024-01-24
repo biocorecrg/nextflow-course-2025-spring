@@ -40,11 +40,9 @@ This slow-paced hands-on internal course is designed for absolute beginners who 
 Dates, time, location
 =========================
 
-* Dates: From 12th of September to 15th of September 2023.
-* Time: 12/09/23         9:30 - 17:00h (CET)
-* Time: 13-14-15 09/23   9:30 - 13:00h (CET)
+* Dates: From 6th of February to 9th of February 2024.
 
-* Location: Training room, CRG.
+* Location: ALBA.
 
 Program
 ------------------------
@@ -110,10 +108,6 @@ Prerequisite / technical requirements
 
 Being comfortable working with the CLI (command-line interface) in a Linux-based environment.
 Knowledge of containers is not mandatory. The course materials is online in the dedicated GitHub page for self-learning.
-
-Practitioners will need to connect during the course to a remote server via the "ssh" protocotol. You can learn about it `here <https://www.hostinger.com/tutorials/ssh-tutorial-how-does-ssh-work>`_
-
-Those who follow the course should be able to use a command-line/screen-oriented text editor (such as nano or vi/vim, which are already available in the server) or to be able to use an editor able to connect remotely. For sake of information, below the basics of `nano <https://wiki.gentoo.org/wiki/Nano/Basics_Guide>`_
 
 Having a `GitHub account <https://github.com/join>`_ is recommended.
 
