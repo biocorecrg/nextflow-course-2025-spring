@@ -1,11 +1,11 @@
 .. _home-page:
 
 *******************
-Courses @ CRG: Reproducible research and data analysis using Containers & Nextflow 2023
+Reproducible research and data analysis using Containers & Nextflow 2024 - ALBA
 *******************
 
 
-`GitHub repository <https://github.com/biocorecrg/nextflow-course-2023-fall>`_
+`GitHub repository <https://github.com/biocorecrg/nextflow-course-2024-alba>`_
 
 Contents:
 
