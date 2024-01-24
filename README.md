@@ -1,4 +1,4 @@
-# Nextflow Course 2023 Fall
+# Nextflow Course 2024 ALBA
 
 Reproducible research and data analysis using Nextflow
 
