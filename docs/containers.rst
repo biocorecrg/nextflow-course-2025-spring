@@ -79,7 +79,7 @@ As a software:
 * `Docker Community Edition <https://www.docker.com/products/container-runtime>`__.
 * Docker Enterprise Edition.
 
-There is an increasing number of alternative container technologies and providers. Many of them are actually based on software components originally from the Docker stack and they normally try to address some specific use cases or weakpoints. As a example, **Singularity**, that we introduce later in this couse, is focused in HPC environments. Another case, **Podman**, keeps a high functional compatibility with Docker but with a different focus on technology (not keeping a daemon) and permissions.
+There is an increasing number of alternative container technologies and providers. Many of them are actually based on software components originally from the Docker stack, and they normally try to address some specific use cases or weakpoints. As an example, **Singularity**, that we introduce later in this course, is focused on HPC environments. Another case, **Podman**, keeps a high functional compatibility with Docker but with a different focus on technology (not keeping a daemon) and permissions.
 
 
 Docker components
@@ -277,6 +277,20 @@ docker rm, docker rmi: clean up!
   docker rmi ubuntu:22.04
 
 
+Additional docker commands
+--------------------------
+
+* `docker commit`: Turn a container into an image
+* `docker tag`: Tag an image 
+* `docker save`: Save an image to a tar archive
+* `docker load`: Load an image from a tar archive
+* `docker export`: Export a container's filesystem as a tar archive (little used)
+* `docker import`: Import the contents from a tarball to create a filesystem image (little used)
+
+Recommend workflow: If necessary, commit a Docker container into an image and then save it into a tar archive that can be shared and loaded in another machine.
+
+* Reference: https://www.baeldung.com/ops/docker-save-export
+
 Volumes
 -------
 
@@ -317,27 +331,13 @@ Remove ALL non-running containers, images, etc. - **DO WITH MUCH MORE CARE!!!**
 * Reference: https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
 
 
-Volumes
--------
-
-Docker containers are fully isolated. It is necessary to mount volumes in order to handle input/output files.
-
-Syntax: **\--volume/-v** *host:container*
-
-.. code-block:: console
-
-  mkdir data
-  # We can copy some FASTQ in data
-  docker run --volume $(pwd)/data:/scratch --name fastqc_container biocontainers/fastqc:v0.11.9_cv7 fastqc /scratch/B7_input_s_chr19.fastq.gz
-
 Singularity
 ===========
-
 
 * Focus:
 	* Reproducibility to scientific computing and the high-performance computing (HPC) world.
 * Origin: Lawrence Berkeley National Laboratory. Later spin-off: Sylabs
-* Version 1.0 -> 2016
+* Version 1.0 (2016)
 * More information: `https://en.wikipedia.org/wiki/Singularity_(software) <https://en.wikipedia.org/wiki/Singularity_(software)>`__
 
 Singularity architecture
@@ -426,6 +426,28 @@ Galaxy project provides all Bioinformatics software from the BioContainers initi
 
 Link: https://depot.galaxyproject.org/singularity/
 
+
+**From Docker daemon**
+
+If you have a Docker daemon running in your machine, you can also build images from there without need to share them in a registry first.
+
+.. code-block:: console
+
+	singularity build myubuntu.sif docker-daemon://myubuntu:latest
+
+**From a Docker tar archive**
+
+If you saved a tar archive from a Docker image, you can also build images from there. This is useful if you might not have a Docker daemon running in the machine you intend to use Singularity.
+This is common in HPC environments.
+
+.. code-block:: console
+
+  # Where you have a Docker daemon running
+	docker save -o myubuntu.tar myubuntu:latest
+  # Where you have Singularity
+  singularity build myubuntu.sif docker-archive://myubuntu.tar
+
+
 Running and executing containers
 --------------------------------
 
@@ -446,7 +468,7 @@ Move around the directories and notice how the isolation approach is different i
 Singularity exec
 ****************
 
-That is the most common way to execute Singularity (equivalent to ``docker exec``). That would be the normal approach in a HPC environment.
+That is the most common way to execute Singularity (equivalent to ``docker exec``). That would be the normal approach in an HPC environment.
 
 .. code-block:: console
 
@@ -461,7 +483,7 @@ a processing of a FASTQ file from *data* directory:
 Environment control
 *******************
 
-By default Singularity inherits a profile environment (e.g., PATH environment variable). This may be convenient in some circumstances, but it can also lead to unexpected problems when your own environment clashes with the default one from the image.
+By default, Singularity inherits a profile environment (e.g., PATH environment variable). This may be convenient in some circumstances, but it can also lead to unexpected problems when your own environment clashes with the default one from the image.
 
 .. code-block:: console
 
