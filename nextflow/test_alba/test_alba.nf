@@ -42,7 +42,7 @@ if (params.help) {
 /*
  * Defining the output folders.
  */
-output_denoise     = "ouptut_denoise"
+output_denoise     = "output_denoise"
 output_aggregate   = "output_aggregate"
 
 
