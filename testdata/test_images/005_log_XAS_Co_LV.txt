@@ -1,0 +1,30 @@
+scan_ID = 32771 
+MACRO_NAME
+ID motor energy = 769.992188
+ID motor polar. = 1.570702
+ID motor energy (AntiPararallel mode) = 61.916462
+ID motor polar. (AntiPararallel mode) = 0.000000
+ID motor offset (AntiPararallel mode) = 300.000000
+GRX = -15.504166 ( = 3)
+Mono energy = 769.997889
+Mono cff = 2.250036
+scan_ID = 32772 
+MACRO_NAME
+ID motor energy = 772.989994
+ID motor polar. = 1.570702
+ID motor energy (AntiPararallel mode) = 63.707087
+ID motor polar. (AntiPararallel mode) = 0.000000
+ID motor offset (AntiPararallel mode) = 300.000000
+GRX = -15.504166 ( = 3)
+Mono energy = 773.018630
+Mono cff = 2.249889
+scan_ID = 32773 
+MACRO_NAME
+ID motor energy = 782.999455
+ID motor polar. = 1.570702
+ID motor energy (AntiPararallel mode) = 69.747570
+ID motor polar. (AntiPararallel mode) = -0.000000
+ID motor offset (AntiPararallel mode) = 300.000000
+GRX = -15.504166 ( = 3)
+Mono energy = 783.018618
+Mono cff = 2.249924
