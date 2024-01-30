@@ -1,8 +1,35 @@
 .. _nextflow_1-page:
 
 *******************
-1 Nextflow 
+1 Nextflow
 *******************
+
+Reproducibility in bioinformatics and computational biology 
+========================
+
+In computational biology, the problem of reproducibility refers to the challenge of ensuring that research findings, particularly those based on computational analyses and algorithms, can be reliably reproduced by other researchers. This issue stems from various factors:
+
+- **Complexity of analyses**: bioinformatics often involves complex computational workflows, including data preprocessing, analysis, and interpretation. Small variations in parameters or input data can lead to significantly different results.
+
+- **Dependency on software and tools**: bioinformatics analyses rely heavily on software tools and algorithms, which may lack standardization or documentation. Differences in software versions, configurations, or dependencies can affect reproducibility.
+
+- **Data quality and availability**: bioinformatics studies often use large and diverse datasets, which may be incomplete, noisy, or poorly annotated. Inadequate data documentation or accessibility can hinder reproducibility.
+
+- **Lack of standards and best practices**: there is a lack of standardized protocols and best practices for conducting and reporting bioinformatics analyses. This ambiguity makes it challenging for researchers to reproduce each other's work accurately.
+
+- **Publication bias and incentives**: journals may prioritize novel and statistically significant findings over replication studies, creating incentives for researchers to prioritize novelty over reproducibility. This can lead to selective reporting and publication bias. We have a growing number of methods and very few papers aiming at comparing them.
+
+To ameliorate this some tools are available:
+
+- **Workflow managers** nextflow, snakemake, luigi, airflow
+- **Linux containers:** docker, singularity, podman, apptainer
+	- biocontainers
+- **Virtual environments:** venv, conda, mamba
+	- bioconda
+- **Platforms for code sharing:** GitHub, GitLab, Bitbucket 
+- **Public repositories for scientific data:**  Zenodo, Figshare
+	- NCBI, ENA, PDB...
+
 
 Introduction to Nextflow
 ========================
@@ -33,9 +60,9 @@ It was published in `Nature Biotechnology in 2017 <https://pubmed.ncbi.nlm.nih.g
 .. image:: images/NF_pub.png
   :width: 600
 
-A search for Nextflow in Google Scholar gives you 10,700 results. Many research groups from both public research centers and companies have adopted this framework for writing their pipelines and methods. 
+A search for Nextflow in Google Scholar gives you 11,700 results. Many research groups from both public research centers and companies have adopted this framework for writing their pipelines and methods. 
 
-Here you have a curated list of `Nextflow pipelines <https://github.com/nextflow-io/awesome-nextflow>`__. A community of researchers decided to go further and to build on top of Nextflow a framework for standardizing the pipelines . This ended up in a project called `NF-core <https://nf-co.re/pipelines>`__ that currently host 86 pipelines.
+Here you have a curated list of `Nextflow pipelines <https://github.com/nextflow-io/awesome-nextflow>`__. A community of researchers decided to go further and to build on top of Nextflow a framework for standardizing the pipelines . This ended up in a project called `NF-core <https://nf-co.re/pipelines>`__ that currently host 94 pipelines.
 
 
 

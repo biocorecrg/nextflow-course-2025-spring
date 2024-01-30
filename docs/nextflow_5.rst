@@ -88,7 +88,7 @@ The label **twocpus** is specified in the **nextflow.config** file for each prof
 EXERCISE
 ===========
 
-Make a module wrapper for the bowtie tool and change the script in test3 accordingly.
+Make some module wrapper for the **test_alba** pipeline
 
 .. raw:: html
 
