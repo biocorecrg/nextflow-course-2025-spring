@@ -1,8 +1,11 @@
 .. _nextflow_1-page:
 
 *******************
-Reproducibility in bioinformatics and computational biology 
+1 Nextflow
 *******************
+
+Reproducibility in bioinformatics and computational biology 
+========================
 
 In computational biology, the problem of reproducibility refers to the challenge of ensuring that research findings, particularly those based on computational analyses and algorithms, can be reliably reproduced by other researchers. This issue stems from various factors:
 
