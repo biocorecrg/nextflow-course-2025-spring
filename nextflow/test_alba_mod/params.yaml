@@ -1,0 +1,3 @@
+images:  "${projectDir}/../../testdata/test_images/*00[0-9].dat"
+email: "myemail@google.com"
+

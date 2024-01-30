@@ -45,6 +45,10 @@ if (params.help) {
 output_denoise     = "output_denoise"
 output_aggregate   = "output_aggregate"
 
+include { denoise } from "${baseDir}/modules/denoise" addParams(OUTPUT: output_denoise, LABEL:"twocpus")
+include { normalize } from "${baseDir}/modules/normalize"
+include { aggregate } from "${baseDir}/modules/aggregate" addParams(OUTPUT: output_aggregate)
+
 
 /* Reading the file list and creating a "Channel": a queue that connects different channels.
  * The queue is consumed by channels, so you cannot re-use a channel for different processes. 
@@ -56,74 +60,15 @@ Channel
     .set {images} 			                								 
 
 
-/*
- * Process 1. De-noise input image
- */
-process denoise {
-    publishDir output_denoise  			
-
-    tag { "${image}" }  				
-    label 'big_mem' 
-
-    input:
-    tuple val(id), path (image)   						
-
-    output:								
-   	tuple val(id), path("*_den.npy")
-
-    script:								
-    """
-		step1_denoise.py ${image}
-    """
-}
-
-/*
- * Process 1. Normalise the de-noise image
- */
-process normalize {
-
-    tag { "${image}" }  				
-    label 'big_mem' 
-
-    input:
-    tuple val(id), path(image), path(denoised)    	// WE NEED THE IMAGE TO BE THERE BUT NOT IN THE COMMAND LINE					
-
-    output:								
-    path("*_den_norm.npy")
-
-    script:								
-    """
-		step2_normalize.py ${denoised}
-    """
-}
-
-/*
- * Process 2. Run aggregate on normalized files
- */
-process aggregate {
-    publishDir output_aggregate, mode: 'copy' 	// this time do not link but copy the output file
-
-    input:
-    path (inputfiles)
-
-    output:
-    path("*") 					
-
-    script:
-    """
-    step3_aggregate_and_save.py ./
-    """
-}
-
 workflow {
 
-    // HERE WE DO DENOISING 
-    denois_out = denoise(images)
-    // HERE WE JOIN DENOISE OUTPUT WITH ORIGINAL IMAGES JUST FOR PRINTING PURPOSES
+	// HERE WE DO DENOISING 
+	denois_out = denoise(images)
+	// HERE WE JOIN DENOISE OUTPUT WITH ORIGINAL IMAGES JUST FOR PRINTING PURPOSES
     images.join(denois_out).view()
     // HERE WE RUN NORMALIZE 
-    normalized_out = normalize(images.join(denois_out))
-    aggregate(normalized_out.collect())
+	normalized_out = normalize(images.join(denois_out))
+	aggregate(normalized_out.collect())
 }
 
 
