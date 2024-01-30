@@ -98,7 +98,7 @@ process normalize {
 }
 
 /*
- * Process 2. Run multiQC on fastQC results
+ * Process 2. Run aggregate on normalized files
  */
 process aggregate {
     publishDir output_aggregate, mode: 'copy' 	// this time do not link but copy the output file
@@ -107,7 +107,7 @@ process aggregate {
     path (inputfiles)
 
     output:
-    path("*") 					// do not send the results to any channel
+    path("*") 					
 
     script:
     """
@@ -121,14 +121,14 @@ workflow {
 	denois_out = denoise(images)
 	// HERE WE JOIN DENOISE OUTPUT WITH ORIGINAL IMAGES JUST FOR PRINTING PURPOSES
         images.join(denois_out).view()
-    // HERE WE RUN NORMALIZE 
+        // HERE WE RUN NORMALIZE 
 	normalized_out = normalize(images.join(denois_out))
 	aggregate(normalized_out.collect())
 }
 
 
 workflow.onComplete { 
-	println ( workflow.success ? "\nDone! Open the following report in your browser --> ${multiqcOutputFolder}/multiqc_report.html\n" : "Oops .. something went wrong" )
+	println ( workflow.success ? "\nDone! The results are in --> ${output_aggregate}\n" : "Oops .. something went wrong" )
 }
 
 
