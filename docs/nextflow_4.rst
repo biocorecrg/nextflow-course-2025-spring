@@ -92,125 +92,6 @@ If you have to submit a job to a HPC you need to use the corresponding program, 
 	qsub .command.run
 
 
-Making a Nextflow pipeline for image processing
-======================
-
-We can build a pipeline incrementally adding more and more processes.
-Nextflow will handle the dependencies between the input/output and the parallelization.
-
-Let's see the content of the folder `nextflow/ex_alba`
-
-.. code-block:: console
-
-	ls
-	etl_peem.py  importUview_v3.py  step1_denoise.py  step2_normalize.py  step3_aggregate_and_save.py
-
-We have some python scripts made by Fernán and Nicolas for making those steps:
-
-- `step1_denoise.py`: it will read an image file (".dat"), turn it into a NumPy array ("_den.npy"), and denoise it.
-
-.. code-block:: console
-
-	# command line
-	./step1_denoise.py my_image.dat
-	# output my_image_den.npy
-
-
-- `step2_normalize.py`: it will read a denoised NumPy array ("_den.npy"), that is output by the previous step and produces a nomalized / denoised NumPy array ("_den_norm.npy"). It needs the original image file in the current directory for working even if not specified in the command line. 
-
-.. code-block:: console
-
-	ls ./
-	step2_normalize.py my_image_den.npy my_image.dat
-	# command line
-	./step2_normalize.py my_image_den.npy
-	# output my_image_den_norm.npy
-
-
-- `step3_aggregate_and_save.py`: it will read all the normalized / denoised NumPy arrays together and it will produce a NeXus/HDF5 file called example.nxs
-
-
-
-In **params.config**, we have to add new parameters:
-
-
-.. literalinclude:: ../nextflow/test3/params.config
-   :language: groovy
-
-In **test3.nf**, we have to add a new input for the reference sequence:
-
-.. literalinclude:: ../nextflow/test3/test3.nf
-   :language: groovy
-   :emphasize-lines: 31,32,43-48
-   
-
-This way, the **singleton channel** called **reference** is created. Its content can be used indefinitely. We also add a path specifying where to place the output files.
-
-.. code-block:: groovy
-
-	/*
-	 * Defining the output folders.
-	 */
-	fastqcOutputFolder    = "${params.outdir}/output_fastqc"
-	alnOutputFolder       = "${params.outdir}/output_aln"
-	multiqcOutputFolder   = "${params.outdir}/output_multiQC"
-
-
-
-And we have to add two new processes. The first one is for indexing the reference genome (with `bowtie-build`):
-
-
-.. literalinclude:: ../nextflow/test3/test3.nf
-   :language: groovy
-   :lines: 82-101
-
-
-Since bowtie indexing requires an unzipped reference fasta file, we first **gunzip** it, then build the reference index, and finally remove the unzipped file.
-
-The output channel is organized as a **tuple**; i.e., a list of elements.
-
-The first element of the list is the **name of the index as a value**, and the second is a **list of files constituting the index**.
-
-The former is needed for building the command line of the alignment step, the latter are the files needed for the alignment.
-
-The second process **bowtieAln** is the alignment step:
-
-.. literalinclude:: ../nextflow/test3/test3.nf
-   :language: groovy
-   :lines: 103-124
-
-
-There are two different input channels, the **index** and **reads**.
-
-The index name specified by **refname** is used for building the command line; while the index files, indicated by **ref_files**, are linked to the current directory by using the **path** qualifier.
-
-We also produced two kinds of outputs, the **alignments** and **logs**.
-The first one is the one we want to keep as a final result; for that, we specify the **pattern** parameter in **publishDir**.
-
-.. code-block:: groovy
-
-	publishDir alnOutputFolder, pattern: '*.sam'
-
-
-The second output will be passed to the next process, which is the multiQC process. To distinguish the outputs let's assign them different names.
-
-.. code-block:: groovy
-
-	output:
-	    path "${reads}.sam", emit: samples_sam
-	    path "${reads}.log", emit: samples_log
-
-
-This section will allow us to connect these outputs directly with other processes when we call them in the workflow section:
-
-.. literalinclude:: ../nextflow/test3/test3.nf
-   :language: groovy
-   :lines: 145-152
-
-
-As you can see, we passed the **samples_log** output to the multiqc process after mixing it with the output channel from the fastqc process.
-
-
 Profiles
 =================
 
@@ -295,29 +176,66 @@ We can also tell Nextflow to directly copy the output file to the S3 bucket: to 
 	outdir = "s3://nf-class-bucket-NNNN/results"
 
 
+Making a Nextflow pipeline for image processing
+======================
+
+We can build a pipeline incrementally adding more and more processes.
+Nextflow will handle the dependencies between the input/output and the parallelization.
+
+Let's see the content of the folder **nextflow/ex_alba**
+
+.. code-block:: console
+
+	ls
+	etl_peem.py  importUview_v3.py  step1_denoise.py  step2_normalize.py  step3_aggregate_and_save.py
+
+We have some Python scripts made by Fernán and Nicolas for making those steps:
+
+- **step1_denoise.py**: it will read an image file (".dat"), turn it into a NumPy array ("_den.npy"), and denoise it.
+
+.. code-block:: console
+
+	# command line
+	./step1_denoise.py my_image.dat
+	# output my_image_den.npy
+
+
+- **step2_normalize.py**: it will read a denoised NumPy array ("_den.npy"), that is output by the previous step and produces a nomalized / denoised NumPy array ("_den_norm.npy"). It needs the original image file in the current directory for working even if not specified in the command line. 
+
+.. code-block:: console
+
+	ls ./
+	step2_normalize.py my_image_den.npy my_image.dat
+	# command line
+	./step2_normalize.py my_image_den.npy
+	# output my_image_den_norm.npy
+
+
+- **step3_aggregate_and_save.py**: it will read all the normalized/denoised NumPy arrays together and it will produce a NeXus/HDF5 file called **example.nxs**
+
 
 
 
 EXERCISE
 ============
 
-Modify the **test3.nf** file to make two sub-workflows:
+Make the pipeline considering the use of the docker/singularity image **biocorecrg/alba:0.1** hosted at dockerhub. The images are at **../../testdata/test_images/** and the executor must be specified for working with our infrastructure. 
 
-* for fastqc of fastq files and bowtie alignment;
-* for a fastqc analysis of the aligned files produced by bowtie.
-
-For convenience, you can use the multiqc config file called **config.yaml** in the multiqc process.
 
 .. raw:: html
 
    <details>
    <summary><a>Solution</a></summary>
 
-.. literalinclude:: ../nextflow/test3/test3_sol.nf
+.. literalinclude:: ../nextflow/test_alba/test_alba.nf
    :language: groovy
 
 .. raw:: html
 
    </details>
 |
-|
+
+
+
+
+
