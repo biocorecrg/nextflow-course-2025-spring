@@ -57,9 +57,9 @@ It was published in `Nature Biotechnology in 2017 <https://pubmed.ncbi.nlm.nih.g
 .. image:: images/NF_pub.png
   :width: 600
 
-A search for Nextflow in Google Scholar gives you 10,700 results. Many research groups from both public research centers and companies have adopted this framework for writing their pipelines and methods. 
+A search for Nextflow in Google Scholar gives you 11,700 results. Many research groups from both public research centers and companies have adopted this framework for writing their pipelines and methods. 
 
-Here you have a curated list of `Nextflow pipelines <https://github.com/nextflow-io/awesome-nextflow>`__. A community of researchers decided to go further and to build on top of Nextflow a framework for standardizing the pipelines . This ended up in a project called `NF-core <https://nf-co.re/pipelines>`__ that currently host 86 pipelines.
+Here you have a curated list of `Nextflow pipelines <https://github.com/nextflow-io/awesome-nextflow>`__. A community of researchers decided to go further and to build on top of Nextflow a framework for standardizing the pipelines . This ended up in a project called `NF-core <https://nf-co.re/pipelines>`__ that currently host 94 pipelines.
 
 
 
