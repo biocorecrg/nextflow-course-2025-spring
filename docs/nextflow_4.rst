@@ -92,13 +92,44 @@ If you have to submit a job to a HPC you need to use the corresponding program, 
 	qsub .command.run
 
 
-Adding more processes
+Making a Nextflow pipeline for image processing
 ======================
 
 We can build a pipeline incrementally adding more and more processes.
-Nextflow will take care of the dependencies between the input/output and the parallelization.
+Nextflow will handle the dependencies between the input/output and the parallelization.
 
-Let's add to the **test2.nf** pipeline two additional steps, indexing of the reference genome and the read alignment using `Bowtie <http://bowtie-bio.sourceforge.net/index.shtml>`__. For that, we will have to modify the test2.nf, params.config and nexflow.config files (the new script is available in the **test3 folder**).
+Let's see the content of the folder `nextflow/ex_alba`
+
+.. code-block:: console
+
+	ls
+	etl_peem.py  importUview_v3.py  step1_denoise.py  step2_normalize.py  step3_aggregate_and_save.py
+
+We have some python scripts made by Fernán and Nicolas for making those steps:
+
+- `step1_denoise.py`: it will read an image file (".dat"), turn it into a NumPy array ("_den.npy"), and denoise it.
+
+.. code-block:: console
+
+	# command line
+	./step1_denoise.py my_image.dat
+	# output my_image_den.npy
+
+
+- `step2_normalize.py`: it will read a denoised NumPy array ("_den.npy"), that is output by the previous step and produces a nomalized / denoised NumPy array ("_den_norm.npy"). It needs the original image file in the current directory for working even if not specified in the command line. 
+
+.. code-block:: console
+
+	ls ./
+	step2_normalize.py my_image_den.npy my_image.dat
+	# command line
+	./step2_normalize.py my_image_den.npy
+	# output my_image_den_norm.npy
+
+
+- `step3_aggregate_and_save.py`: it will read all the normalized / denoised NumPy arrays together and it will produce a NeXus/HDF5 file called example.nxs
+
+
 
 In **params.config**, we have to add new parameters:
 
