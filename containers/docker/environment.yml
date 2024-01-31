@@ -1,0 +1,11 @@
+name: base
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy
+  - matplotlib
+  - scikit-learn 
+  - scikit-image
