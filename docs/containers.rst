@@ -171,26 +171,6 @@ docker pull: import image
   docker pull ubuntu:22.04
 
 
-Biocontainers
-*************
-
-https://biocontainers.pro/
-
-Specific directory of Bioinformatics related entries
-
-* Entries in `Docker hub <https://hub.docker.com/u/biocontainers>`__ and/or `Quay.io <https://quay.io>`__ (RedHat registry)
-
-* Normally created from `Bioconda <https://bioconda.github.io>`__
-
-Example: **FastQC**
-
-https://biocontainers.pro/#/tools/fastqc
-
-
-.. code-block:: console
-
-    docker pull biocontainers/fastqc:v0.11.9_cv7
-
 docker images: list images
 --------------------------
 
@@ -277,20 +257,6 @@ docker rm, docker rmi: clean up!
   docker rmi ubuntu:22.04
 
 
-Additional docker commands
---------------------------
-
-* `docker commit`: Turn a container into an image
-* `docker tag`: Tag an image 
-* `docker save`: Save an image to a tar archive
-* `docker load`: Load an image from a tar archive
-* `docker export`: Export a container's filesystem as a tar archive (little used)
-* `docker import`: Import the contents from a tarball to create a filesystem image (little used)
-
-Recommend workflow: If necessary, commit a Docker container into an image and then save it into a tar archive that can be shared and loaded in another machine.
-
-* Reference: https://www.baeldung.com/ops/docker-save-export
-
 Volumes
 -------
 
@@ -304,9 +270,303 @@ Syntax: **\--volume/-v** *host:container*
   # We can also copy the FASTQ we used in data
   docker run --volume $(pwd)/data:/scratch --name fastqc_container biocontainers/fastqc:v0.11.9_cv7 fastqc /scratch/B7_input_s_chr19.fastq.gz 
 
+Build images
+=============
+
+OS commands in image building
+-----------------------------
+
+Depending on the underlying OS, there are different ways to build images.
+
+Know your base system and their packages. Popular ones:
+
+* `Debian <https://packages.debian.org>`__
+
+* `CentOS <https://centos.pkgs.org/>`__
+
+* `Alpine <https://pkgs.alpinelinux.org/packages>`__
+
+* Conda. `Anaconda <https://anaconda.org/anaconda/repo>`__, `Conda-forge <https://conda-forge.org/feedstocks/>`__, `Bioconda <https://anaconda.org/bioconda/repo>`__, etc.
+
+
+Update and upgrade packages
+***************************
+
+* In **Ubuntu**:
+
+.. code-block::
+
+  apt-get update && apt-get upgrade -y
+
+
+In **CentOS**:
+
+.. code-block::
+
+  yum check-update && yum update -y
+
+
+Search and install packages
+***************************
+
+* In **Ubuntu**:
+
+.. code-block::
+
+  apt search libxml2
+  apt install -y libxml2-dev
+
+
+* In **CentOS**:
+
+.. code-block::
+
+  yum search libxml2
+  yum install -y libxml2-devel.x86_64
+
+
+Note the **-y** option that we set for updating and for installing.<br>
+It is an important option in the context of Docker: it means that you *answer yes to all questions* regarding installation.
+
+
+Building recipes
+----------------
+
+All commands should be saved in a text file, named by default **Dockerfile**.
+
+Basic instructions
+******************
+
+Each row in the recipe corresponds to a **layer** of the final image.
+
+**FROM**: parent image. Typically, an operating system. The **base layer**.
+
+.. code-block:: dockerfile 
+
+  FROM ubuntu:22.04
+
+
+**RUN**: the command to execute inside the image filesystem.
+
+Think about it this way: every **RUN** line is essentially what you would run to install programs on a freshly installed Ubuntu OS.
+
+.. code-block:: dockerfile
+
+  RUN apt install wget
+
+
+A basic recipe:
+
+.. code-block:: dockerfile
+
+  FROM ubuntu:22.04
+
+  RUN apt update && apt -y upgrade
+  RUN apt install -y wget
+
+
+docker build
+************
+
+Implicitely looks for a **Dockerfile** file in the current directory:
+
+.. code-block:: console
+
+  docker build .
+
+Same as:
+
+.. code-block:: console
+
+  docker build --file Dockerfile .
+
+
+Syntax: **\--file / \-f**
+
+**.** stands for the context (in this case, current directory) of the build process. This makes sense if copying files from filesystem, for instance. **IMPORTANT**: Avoid contexts (directories) overpopulated with files (even if not actually used in the recipe).
+
+You can define a specific name for the image during the build process.
+
+Syntax: **-t** *imagename:tag*. If not defined ```:tag``` default is latest.
+
+.. code-block:: console
+
+  docker build -t mytestimage .
+  # Same as:
+  docker build -t mytestimage:latest .
+
+
+* IMPORTANT: Avoid contexts (directories) over-populated with files (even if not actually used in the recipe).
+In order to avoid that some directories or files are inspected or included (e.g, with COPY command in Dockerfile), you can use .dockerignore file to specify which paths should be avoided. More information at: https://codefresh.io/docker-tutorial/not-ignore-dockerignore-2/
+
+
+The last line of installation should be **Successfully built ...**: then you are good to go.
+
+Check with ``docker images`` that you see the newly built image in the list...
+
+Then let's check the ID of the image and run it!
+
+.. code-block:: console
+
+  docker images
+
+  docker run f9f41698e2f8
+  docker run mytestimage
+
+
+More instructions
+*****************
+
+**WORKDIR**: all subsequent actions will be executed in that working directory
+
+.. code-block::
+
+  WORKDIR ~
+
+**ADD, COPY**: add files to the image filesystem
+
+Difference between ADD and COPY explained `here <https://stackoverflow.com/questions/24958140/what-is-the-difference-between-the-copy-and-add-commands-in-a-dockerfile>`__ and `here <https://nickjanetakis.com/blog/docker-tip-2-the-difference-between-copy-and-add-in-a-dockerile>`__
+
+**COPY**: lets you copy a local file or directory from your host (the machine from which you are building the image)
+
+**ADD**: same, but ADD works also for URLs, and for .tar archives that will be automatically extracted upon being copied.
+
+If we have a file, let's say ```example.jpg```, we can copy it.
+
+.. code-block::
+
+  # COPY source destination
+  COPY example.jpg .
+
+A more sophisticated case:
+
+.. code-block::
+
+  FROM ubuntu:22.04
+
+  RUN apt update && apt -y upgrade
+  RUN apt install -y wget
+
+  RUN mkdir -p /data
+
+  WORKDIR /data
+
+  COPY example.jpg .
+
+
+**ENV, ARG**: run and build environment variables
+
+Difference between ARG and ENV explained `here <https://vsupalov.com/docker-arg-vs-env/>`__.
+
+* **ARG** values: available only while the image is built.
+* **ENV** values: available during the image build process but also for the future running containers.
+  * It can be checked in a resulting running container by running ``env``.
+
+In the case below **UbuntuVersion** argument is provided with a default value.
+
+.. code-block::
+
+  ARG UbuntuVersion=22.04
+
+  FROM ubuntu:${UbuntuVersion}
+
+
+Override the value for **UbuntuVersion** as you build the image with --build-arg:
+
+.. code-block::
+
+  docker build --build-arg UbuntuVersion=20.04 .
+
+
+We try a simple example with ENV
+
+.. code-block::
+
+  FROM ubuntu:22.04
+
+  ENV PLANET="Earth"
+
+  RUN echo ${PLANET}
+
+Enter in the container interactively and check variable ``${PLANET}``
+
+You can pass variable through commandline as well (with ``--env``/``-e``) during running process:
+
+.. code-block:: console
+
+  docker run -ti --env PLANET=Mars test
+
+
+Try to replace the examples above of **ENV** with **ARG** and see what happens.
+
+
+**CMD, ENTRYPOINT**: command to execute when generated container starts
+
+The ENTRYPOINT specifies a command that will always be executed when the container starts. The CMD specifies arguments that will be fed to the ENTRYPOINT
+
+In the example below, when the container is run without an argument, it will execute `echo "hello world"`.
+If it is run with the argument **hello moon** it will execute `echo "hello moon"`
+
+.. code-block::
+
+  FROM ubuntu:22.04
+  ENTRYPOINT ["/bin/echo"]
+  CMD ["hello world"]
+
+
+A more complex recipe (save it in a text file named **Dockerfile**):
+
+.. code-block::
+
+  FROM ubuntu:22.04
+
+  WORKDIR ~
+
+  RUN apt-get update && apt-get -y upgrade
+  RUN apt-get install -y wget
+
+  ENTRYPOINT ["/usr/bin/wget"]
+  CMD ["https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png"]
+
+
+
+.. code-block:: console
+
+  docker run f9f41698e2f8 https://cdn-images-1.medium.com/max/1600/1*_NQN6_YnxS29m8vFzWYlEg.png
+
+
+docker tag
+-----------
+
+To tag a local image with ID "e23aaea5dff1" into the "ubuntu_wget" image name repository with version "1.0":
+
+.. code-block:: console
+
+  docker tag e23aaea5dff1 ubuntu_wget:1.0
+
+
+More complex examples
+----------------------
+
+Check in ``containers/alba directory``
+
+
+Additional docker commands
+==========================
+
+* `docker commit`: Turn a container into an image
+* `docker tag`: Tag an image 
+* `docker save`: Save an image to a tar archive
+* `docker load`: Load an image from a tar archive
+* `docker export`: Export a container's filesystem as a tar archive (little used)
+* `docker import`: Import the contents from a tarball to create a filesystem image (little used)
+
+Recommend workflow: If necessary, commit a Docker container into an image and then save it into a tar archive that can be shared and loaded in another machine.
+
+* Reference: https://www.baeldung.com/ops/docker-save-export
 
 Major clean
-***********
+===========
 
 Check used space
 
@@ -365,12 +625,12 @@ Writable (development, via sandbox)
 
 Nowadays, there may be some confusion since there are two projects:
 
-* `Apptainer Singularity <https://github.com/apptainer/singularity>`__
+* `Apptainer <https://apptainer.org>`__
 * `Sylabs Singularity <https://sylabs.io/singularity/>`__
 
 They "forked" in 2021. So far they share most of the codebase, but eventually this could be different, and software might have different functionality.
 
-The former is already "End Of Life" and its development continues named as `Apptainer <http://apptainer.org/>`_, under the support of the Linux Foundation.
+In the command-line you can have `apptainer` installed but `singularity` is available as an alias of the former.
 
 Container registries
 --------------------
