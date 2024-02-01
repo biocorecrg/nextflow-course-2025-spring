@@ -10,8 +10,9 @@ Linux containers
 What are containers?
 ---------------------
 
-.. image:: https://www.synopsys.com/blogs/software-security/wp-content/uploads/2018/04/containers-rsa.jpg
+.. image:: https://upload.wikimedia.org/wikipedia/commons/d/d0/Container_lashing_with_rods.jpg
   :width: 700
+*Source: Danny Cornelissen, Attribution, via Wikimedia Commons*.
 
 A Container can be seen as a **minimal virtual environment** that can be used in any Linux-compatible machine (and beyond).
 
