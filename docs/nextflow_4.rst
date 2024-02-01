@@ -85,11 +85,11 @@ Thus we can launch this command outside the pipeline (locally):
 	Approx 60% complete for B7_H3K4me1_s_chr19.fastq.gz
 	...
 
-If you have to submit a job to a HPC you need to use the corresponding program, such as **qsub** if you have a Sun Grid Engine or **sbatch** if you have Slurm. Here an example using SGE:
+If you have to submit a job to a HPC you need to use the corresponding program, such as **qsub** if you have a Sun Grid Engine or **sbatch** if you have Slurm. Here an example using Slurm:
 
 .. code-block:: console
 
-	qsub .command.run
+	sbatch .command.run
 
 
 Profiles
