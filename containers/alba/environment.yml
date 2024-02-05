@@ -5,7 +5,9 @@ channels:
   - defaults
 dependencies:
   - python=3.9
+  - nexusformat
   - numpy
   - matplotlib
-  - scikit-learn 
+  - pywavelets
   - scikit-image
+  - scikit-learn 
