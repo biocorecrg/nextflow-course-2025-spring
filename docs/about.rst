@@ -61,21 +61,21 @@ Program
 
 *Day 2: Linux containers*
 
-* 10:00-11:00 - Linux containers: Docker & Singularity/Apptainer
-* 11:00-11.30 - Break
-* 11:30-13.00 - Toni... 
+* 14:00-15:00 - Linux containers: Docker & Singularity/Apptainer
+* 15:00-15.30 - Break
+* 15:30-17.00 - Toni... 
 
 *Day 3: Run a Nextflow pipeline in different environments*
 
-* 09:30-11:00 Singularity and more processes
-* 11:00-11:30 Break
-* 11:30-13:00 Profiles and cloud
+* 14:00-15:00  Singularity and more processes
+* 15:00-15.30  Break
+* 15:30-17.00 Profiles and cloud
 
 *Day 4: Nextflow modules and Tower*
 
-* 09:30-11:00 Modules
-* 11:00-11:30 Break
-* 11:30-13:00 Tower
+* 14:00-15:00 Modules
+* 15:00-15.30 Break
+* 15:30-17.00 Tower
 
 
 .. _home-page-outline:
