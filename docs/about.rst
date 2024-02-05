@@ -49,32 +49,32 @@ Program
   
 *Day 1: Understand and run a basic Nexflow pipeline*
 
-* 09:30-11:00 Introduction to Nextflow
-* 11:00-11:30 Coffee break
+* 10:00-11:00 Introduction to Nextflow
+* 11:00-11:30 Break
 * 11:30-13:00 Making simple scripts: channels operators and workflows
 
 *Day 1: Write, modify, and run a complex pipeline*
 
 * 14:30-15:30 More complex scripts
-* 15:30-16:00 Coffee break
-* 16:00-17:00 Directive and resuming 
+* 15:30-16:00 Break
+* 16:00-17:30 Directive and resuming 
 
 *Day 2: Linux containers*
 
-* 09:30-11:00 - Linux containers: Docker & Singularity/Apptainer
-* 11:00-11.30 - Coffee break
-* 11:30-13.00 - Decoupling resources, parameters and main script
+* 10:00-11:00 - Linux containers: Docker & Singularity/Apptainer
+* 11:00-11.30 - Break
+* 11:30-13.00 - Toni... 
 
 *Day 3: Run a Nextflow pipeline in different environments*
 
 * 09:30-11:00 Singularity and more processes
-* 11:00-11:30 Coffee break
+* 11:00-11:30 Break
 * 11:30-13:00 Profiles and cloud
 
 *Day 4: Nextflow modules and Tower*
 
 * 09:30-11:00 Modules
-* 11:00-11:30 Coffee break
+* 11:00-11:30 Break
 * 11:30-13:00 Tower
 
 
