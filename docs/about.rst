@@ -61,9 +61,9 @@ Program
 
 *Day 2: Linux containers*
 
-* 14:00-15:00 - Linux containers: Docker & Singularity/Apptainer
+* 14:00-15:00 - Linux containers. Docker introduction and running
 * 15:00-15.30 - Break
-* 15:30-17.00 - Toni... 
+* 15:30-17.00 - Building Docker containers. Singularity/Apptainer
 
 *Day 3: Run a Nextflow pipeline in different environments*
 
