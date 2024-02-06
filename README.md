@@ -36,7 +36,7 @@ Having a [GitHub account](https://github.com/join) is recommended.
 
 ## Dates, time, location
 
-* Dates: From 6th of September to 9th of February 2024.
+* Dates: From 6th to 9th of February 2024.
 
 * Location: ALBA
 
