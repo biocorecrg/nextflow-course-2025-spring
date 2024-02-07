@@ -1,7 +1,7 @@
 .. _containers-page:
 
 *******************
-3 Containers
+Containers
 *******************
 
 Linux containers
