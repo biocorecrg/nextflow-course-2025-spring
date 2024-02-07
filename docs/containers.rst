@@ -12,6 +12,7 @@ What are containers?
 
 .. image:: https://upload.wikimedia.org/wikipedia/commons/d/d0/Container_lashing_with_rods.jpg
   :width: 700
+
 *Source: Danny Cornelissen, Attribution, via Wikimedia Commons*.
 
 A Container can be seen as a **minimal virtual environment** that can be used in any Linux-compatible machine (and beyond).
@@ -80,7 +81,7 @@ As a software:
 * `Docker Community Edition <https://www.docker.com/products/container-runtime>`__.
 * Docker Enterprise Edition.
 
-There is an increasing number of alternative container technologies and providers. Many of them are actually based on software components originally from the Docker stack, and they normally try to address some specific use cases or weakpoints. As an example, **Singularity**, that we introduce later in this course, is focused on HPC environments. Another case, **Podman**, keeps a high functional compatibility with Docker but with a different focus on technology (not keeping a daemon) and permissions.
+There is an increasing number of alternative container technologies and providers. Many of them are actually based on software components originally from the Docker stack, and they normally try to address some specific use cases or weak points. As an example, **Singularity**, that we introduce later in this course, is focused on HPC environments. Another case, **Podman**, keeps a high functional compatibility with Docker but with a different focus on technology (not keeping a daemon) and permissions.
 
 
 Docker components
@@ -271,6 +272,19 @@ Syntax: **\--volume/-v** *host:container*
   # We can also copy the FASTQ we used in data
   docker run --volume $(pwd)/data:/scratch --name fastqc_container biocontainers/fastqc:v0.11.9_cv7 fastqc /scratch/B7_input_s_chr19.fastq.gz 
 
+
+docker run --user
+-----------------
+
+It is possible to run certain containers with a specific user, appending ```run \--user```.
+
+A convenient command would be:
+
+.. code-block:: console
+
+  docker run --user $(id -u):$(id -g) --volume $(pwd)/data:/scratch --name user_test biocontainers/fastqc:v0.11.9_cv7 touch /scratch/userfile
+
+
 Build images
 =============
 
@@ -392,14 +406,15 @@ Syntax: **-t** *imagename:tag*. If not defined ```:tag``` default is latest.
 
 .. code-block:: console
 
-  docker build -t mytestimage .
+  docker build -t mytestimage-$USER .
   # Same as:
-  docker build -t mytestimage:latest .
+  docker build -t mytestimage-$USER:latest .
 
 
 * IMPORTANT: Avoid contexts (directories) over-populated with files (even if not actually used in the recipe).
 In order to avoid that some directories or files are inspected or included (e.g, with COPY command in Dockerfile), you can use .dockerignore file to specify which paths should be avoided. More information at: https://codefresh.io/docker-tutorial/not-ignore-dockerignore-2/
 
+* NOTE: We use $USER bash env variable for avoiding conflicts between different users in the same machine. This is a common practice in HPC environments.
 
 The last line of installation should be **Successfully built ...**: then you are good to go.
 
@@ -412,7 +427,7 @@ Then let's check the ID of the image and run it!
   docker images
 
   docker run f9f41698e2f8
-  docker run mytestimage
+  docker run mytestimage-$USER
 
 
 More instructions
@@ -510,7 +525,6 @@ Additional docker commands
 ==========================
 
 * `docker commit`: Turn a container into an image
-* `docker tag`: Tag an image 
 * `docker save`: Save an image to a tar archive
 * `docker load`: Load an image from a tar archive
 * `docker export`: Export a container's filesystem as a tar archive (little used)
@@ -745,3 +759,39 @@ Using the 2 fastq available files, process them using fastqc.
 
   </details>
 
+
+
+Singularity tips
+----------------
+
+Troubleshooting
+***************
+
+.. code-block:: console
+
+     singularity --help
+
+Fakeroot
+********
+
+Singularity permissions are an evolving field. If you don't have access to ``sudo``, it might be worth considering using **--fakeroot/-f** parameter.
+
+* More details at `https://apptainer.org/docs/user/main/fakeroot.html <https://apptainer.org/docs/user/main/fakeroot.html>`__
+
+Singularity cache directory
+***************************
+
+.. code-block::
+
+    $HOME/.singularity
+
+* It stores cached images from registries, instances, etc.
+* If problems may be a good place to clean. When running ``sudo``, $HOME is /root.
+
+Global singularity configuration
+********************************
+
+Normally at ``/etc/singularity/singularity.conf`` or similar (e.g., preceded by ``/usr/local/``)
+
+* It can only be modified by users with administration permissions
+* Worth noting ``bind path`` lines, which point default mounted directories in containers
