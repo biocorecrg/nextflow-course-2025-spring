@@ -18,5 +18,3 @@ Contents:
    containers
    nextflow_3
    nextflow_4
-   nextflow_5
-
