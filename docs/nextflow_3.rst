@@ -402,14 +402,27 @@ The first profile indicates the resources needed for running the pipeline locall
 
 As you can see, we explicitly indicated the **local** executor. By definition, the local executor is a default executor if the pipeline is run without specifying a profile.
 
-The second profile is for running the pipeline on the **cluster**; here in particular for the cluster supporting the Sun Grid Engine queuing system:
+The second profile is for running the pipeline on the **cluster**; here in particular for the cluster supporting the SLURM Workload Manager queuing system:
 
 .. literalinclude:: ../nextflow/test3/nextflow.config
    :language: groovy
    :lines: 22-38
 
 
-This profile indicates that the system uses **Sun Grid Engine** as a job scheduler and that we have different queues for small jobs and more intensive ones.
+This profile indicates that the system uses **SLURM** as a job scheduler and that we have different queues for small jobs and more intensive ones.
+
+.. note::
+	IMPORTANT: You need to have either Docker or Singularity installed and running in your computing nodes to run the pipeline. In some HPC you might need to "load" the programs using the modules. For this we advice to add this command inside your **.bash_profile** file.
+
+.. code-block:: console
+
+	vi $HOME/.bash_profile
+
+	#ADD THIS
+
+	module load apptainer
+	
+
 
 Deployment in the AWS cloud
 =============================
