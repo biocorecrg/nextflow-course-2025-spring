@@ -94,7 +94,7 @@ Make some module wrapper for the **test_alba** pipeline
    <details>
    <summary><a>Solution</a></summary>
 
-**Solution in the folder test5**
+**Solution in the folder test_alba_mod**
 
 .. raw:: html
 
