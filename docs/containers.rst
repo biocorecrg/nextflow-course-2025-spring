@@ -490,7 +490,8 @@ A more complex recipe (save it in a text file named **Dockerfile**):
 
   FROM ubuntu:22.04
 
-  WORKDIR ~
+  RUN mkdir -p /downloads
+  WORKDIR /downloads
 
   RUN apt-get update && apt-get -y upgrade
   RUN apt-get install -y wget
