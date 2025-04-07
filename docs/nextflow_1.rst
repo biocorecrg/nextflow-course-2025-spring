@@ -301,7 +301,7 @@ See here the list of `Operators <https://www.nextflow.io/docs/latest/operator.ht
 |
 
 A special very powerful operator is **map**, that allows you reshaping the data in several ways. 
-It uses the `Grovvy's closure <https://www.nextflow.io/docs/latest/script.html#closures>`__ for modifying the input channel. In brief, a closure is a piece of code between curly brackets **{}** that can be passed as an argument of a function. It uses as input the implicit variable **it**:
+It uses the `Grovvy's closure <https://www.nextflow.io/docs/latest/script.html#closures>`_ for modifying the input channel. In brief, a closure is a piece of code between curly brackets **{}** that can be passed as an argument of a function. It uses as input the implicit variable **it**:
 
 Here you can see an example:
 
@@ -316,6 +316,14 @@ This will produce:
 	N E X T F L O W  ~  version 23.03.0-edge
 	Launching `map.nf` [irreverent_nightingale] DSL2 - revision: 48519e083e
 	[my id, /Users/lcozzuto/aaa/ropes-linux-mop2-2023/nextflow/examples/aa.txt, /Users/lcozzuto/aaa/ropes-linux-mop2-2023/nextflow/examples/bb.txt]
+
+
+.. Note::
+	Each channel emission is asynchronous, or random, so you should not rely on the order if you don't assign an order to the channel using a sort operator. For instance, you can use the operator `**toSortedList** <https://www.nextflow.io/docs/latest/reference/operator.html#tosortedlist>`_ for ordering a channel.
+
+	.. literalinclude:: ../nextflow/examples/ex5.nf
+   		:language: groovy
+
 
 Processes
 -------------
