@@ -130,7 +130,7 @@ Installation
 
     java -version
 
-Then we can install Nextflow with::
+Then we can install Nextflow with:
 
   curl -s https://get.nextflow.io | bash
 
@@ -182,7 +182,7 @@ We can write a very simple Nextflow script: save the following piece of code in 
 .. literalinclude:: ../nextflow/examples/ex1.nf
    :language: groovy
 
-Once the file is saved, execute it with:
+Once the file is saved, you can execute it with:
 
 .. code-block:: console
 
@@ -195,9 +195,9 @@ Once the file is saved, execute it with:
 	bonjour
 
 
-As you can see, the **Channel** is just a collection of values, but it can also be a collection of **file paths**.
+As you can see, the **Channel** is just a list of values, but it can also be a list of other elements such as **file paths**.
 
-Let's create three empty files with the `touch` command:
+Let's create some empty files with the `touch` command:
 
 .. code-block:: console
 
@@ -250,7 +250,28 @@ Executing it will show the emission of a tuple whose key is the common part of t
 	[aaa, [/nfs/users/bi/lcozzuto/aaa/CRG_Nextflow_Jun_2022/nextflow/examples/aaa_1.txt, /nfs/users/bi/lcozzuto/aaa/CRG_Nextflow_Jun_2022/nextflow/examples/aaa_2.txt]]
 
 
-We can reshape the channels in several ways and/or cross them using operators so that they can be used for a particular purpose. In brief, each "emission" of a channel can be used by a process for a specific purpose.  
+We can reshape the channels in several ways and/or cross them using `operators <https://www.nextflow.io/docs/latest/reference/operator.html>`_   so that they can be used for a particular purpose. In brief, each "emission" of a channel can be used by a process for a specific purpose.  
+In the following example, we use the operator `mix <https://www.nextflow.io/docs/latest/reference/operator.html#mix>`_ for mixing together the elements of two channels:
+
+.. literalinclude:: ../nextflow/examples/ex4.nf
+   :language: groovy
+
+
+.. code-block:: console
+
+	nextflow run ex4.nf 
+ 	N E X T F L O W   ~  version 24.10.0
+
+	Launching `ex4.nf` [pedantic_shockley] DSL2 - revision: dd437a0bb3
+
+	hello
+	hola
+	bonjour
+	/Users/lcozzuto/ooo/aaa_1.txt
+	/Users/lcozzuto/ooo/aaa_2.txt
+	/Users/lcozzuto/ooo/aa.txt
+	/Users/lcozzuto/ooo/bb.txt
+	/Users/lcozzuto/ooo/cc.txt
 
 
 Exercise
