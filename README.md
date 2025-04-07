@@ -1,4 +1,4 @@
-# Nextflow Course 2024 ALBA
+# Nextflow Course 2025 
 
 Reproducible research and data analysis using Nextflow
 
@@ -12,7 +12,6 @@ The course will train participants to build Nextflow pipelines and run them with
 
 It is designed to provide trainees with short and frequent hands-on sessions while keeping theoretical sessions to a minimum.
 
-<!--Trainees will work in a dedicated [AWS environment](https://en.wikipedia.org/wiki/AWS).-->
 
 
 ### Learning objectives
@@ -21,7 +20,6 @@ It is designed to provide trainees with short and frequent hands-on sessions whi
 * Describe and explain Nextflow basic concepts.
 * Test and modify a Nextflow pipeline.
 * Implement short blocks of code into a Nextflow pipeline.
-* Understand, run and build Linux containers
 * Use containers in Nextflow processes
 * Develop a Nextflow pipeline from scratch.
 * Run a pipeline in diverse computational environments (local, HPC, cloud).
@@ -36,9 +34,9 @@ Having a [GitHub account](https://github.com/join) is recommended.
 
 ## Dates, time, location
 
-* Dates: From 6th to 9th of February 2024.
+* Dates: From 22nd to 25th of April 2025.
 
-* Location: ALBA
+* Location: CRG training room
 
 
 
