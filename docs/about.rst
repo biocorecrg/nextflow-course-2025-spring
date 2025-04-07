@@ -12,14 +12,19 @@ This slow-paced hands-on internal course is designed for absolute beginners who 
 
 
 .. |luca| image:: images/lcozzuto.jpg
-  :alt: Alternative text
+  :alt: Luca Cozzuto
 
 .. |toni| image:: images/thermoso.jpg
-  :alt: Alternative text
-  
+  :alt: Toni Hermoso Pulido
+
+.. |emilio| image:: images/emilio.jpg
+  :alt: Emilio Palumbo
+
+.. |jose| image:: images/jose.jpg
+  :alt: Jose Espinosa
 
 .. |julia| image:: images/jponomarenko.jpg
-  :alt: Alternative text
+  :alt: Julia Ponomarenko
 
 
 
