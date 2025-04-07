@@ -61,9 +61,9 @@ It was published in `Nature Biotechnology in 2017 <https://pubmed.ncbi.nlm.nih.g
 .. image:: images/NF_pub.png
   :width: 600
 
-A search for Nextflow in Google Scholar gives you 11,700 results. Many research groups from both public research centers and companies have adopted this framework for writing their pipelines and methods. 
+A search for Nextflow in Google Scholar gives you about 15,000 results. Many research groups from public centers and companies have adopted this framework for writing their pipelines and methods. 
 
-Here you have a curated list of `Nextflow pipelines <https://github.com/nextflow-io/awesome-nextflow>`__. A community of researchers decided to go further and to build on top of Nextflow a framework for standardizing the pipelines . This ended up in a project called `NF-core <https://nf-co.re/pipelines>`__ that currently host 94 pipelines.
+Here you have a curated list of `Nextflow pipelines <https://github.com/nextflow-io/awesome-nextflow>`__. A community of researchers decided to go further and to build on top of Nextflow a framework for standardizing the pipelines. This ended up in a project called `NF-core <https://nf-co.re/pipelines>`__ that currently host 128 pipelines.
 
 
 
@@ -90,13 +90,13 @@ Nextflow can be executed on **multiple platforms** without modifying the code. I
 
 - **Scalability**
 
-Nextflow is based on the **dataflow programming model** which simplifies writing complex pipelines.
+Nextflow is based on the **dataflow programming model**, which simplifies writing complex pipelines.
 The tool takes care of **parallelizing the processes** without additional written code.
 The resulting applications are inherently parallel and can scale up or scale out transparently; there is no need to adapt them to a specific platform architecture.
 
 - **Facilitate sharing and collaborative coding**
 
-Nextflow integrates the main code repositories such as BitBucket, GitHub, and GitLab. Since each module / sub-workflow is independent it makes it easier to code in parallel reducing the bottlenecks.
+Nextflow integrates the main code repositories such as BitBucket, GitHub, and GitLab. Since each module / sub-workflow is independent, it is easier to code in parallel, reducing the bottlenecks.
 
 
 - **Resumable, thanks to continuous checkpoints**
@@ -108,7 +108,7 @@ Workflow structure
 -------------------
 
 The workflows can be represented as graphs where the nodes are the **processes** and the edges are the **channels**.
-The **processes** are blocks of code that can be executed - such as scripts or programs - while the **channels** are asynchronous queues able to **connect processes among them via input/output**.
+The **processes** are blocks of code that can be executed - such as scripts or programs - while the **channels** are asynchronous queues able to **connect processes among them via input / output**.
 
 
 .. image:: images/wf_example.png
@@ -123,7 +123,7 @@ Installation
 
 .. note::
   Nextflow is already installed on the machines provided for this course.
-  You need at least Java version 8 for the Nextflow installation.
+  You need at least Java version 11 for the Nextflow installation.
 
 .. tip::
   You can check the version for Java by typing::
@@ -142,16 +142,22 @@ We can test that the installation was successful with:
 
   nextflow run hello
 
-  N E X T F L O W  ~  version 20.07.1
-  Pulling nextflow-io/hello ...
-  downloaded from https://github.com/nextflow-io/hello.git
-  Launching `nextflow-io/hello` [peaceful_brahmagupta] - revision: 96eb04d6a4 [master]
-  executor >  local (4)
-  [d7/d053b5] process > sayHello (4) [100%] 4 of 4 ✔
-  Ciao world!
-  Bonjour world!
-  Hello world!
-  Hola world!
+	Nextflow 25.02.2-edge is available - Please consider updating your version to it
+
+	N E X T F L O W   ~  version 25.02.1-edge
+
+	NOTE: Your local project version looks outdated - a different revision is available in the remote repository [afff16a9b4]
+	Launching `https://github.com/nextflow-io/hello` [soggy_snyder] DSL2 - revision: 7588c46ffe [master]
+
+	executor >  local (4)
+	[92/1f14a0] sayHello (4) [100%] 4 of 4 ✔
+	Bonjour world!
+
+	Hello world!
+
+	Ciao world!
+
+	Hola world!
 
 
 This command downloads and runs the pipeline ``hello`` from the Nextflow official GitHub repository.
