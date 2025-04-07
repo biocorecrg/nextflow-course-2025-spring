@@ -29,7 +29,7 @@ This slow-paced hands-on internal course is designed for absolute beginners who 
 
 
 .. list-table:: Main instructors:
-   :widths: 50 50 50
+   :widths: 50 50 50 50 50
    :header-rows: 1
 
    * - Luca Cozzuto
