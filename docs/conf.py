@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u'Nextflow Course 2024 ALBA'
+project = u'Nextflow Course 2025'
 
 # -- General configuration ---------------------------------------------------
 
@@ -62,6 +62,6 @@ html_theme = 'sphinx_rtd_theme'
 
 # The URL which points to the root of the HTML documentation.
 # It is used to indicate the location of document like canonical_url
-html_baseurl = 'https://biocorecrg.github.io/nextflow-course-2024-alba/'
+html_baseurl = 'https://biocorecrg.github.io/nextflow-course-2025-spring/'
 
 # html_logo = html_favicon = '_images/sphinx-notes.png'
