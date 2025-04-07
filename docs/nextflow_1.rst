@@ -27,7 +27,8 @@ To ameliorate this some tools are available:
 - **Virtual environments:** venv, conda, mamba
 	- bioconda
 - **Platforms for code sharing:** GitHub, GitLab, Bitbucket 
-- **Public repositories for scientific data:**  Zenodo, Figshare
+- **Public repositories for scientific data:**  
+        - Zenodo, Figshare
 	- NCBI, ENA, PDB...
 
 
