@@ -1,7 +1,7 @@
 .. _home-page:
 
 *******************
-Reproducible research and data analysis using Containers & Nextflow 2024 - ALBA
+Reproducible research and data analysis using Containers & Nextflow 2025
 *******************
 
 
