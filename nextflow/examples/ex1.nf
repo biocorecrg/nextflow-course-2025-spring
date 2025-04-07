@@ -1,12 +1,8 @@
-#!/usr/bin/env nextflow
 // This is a comment
 
 /*
  * This is a block of comments
  */
-
-// This is needed for activating the new DLS2
-nextflow.enable.dsl=2
 
 /* 
 * This is a channel creating 

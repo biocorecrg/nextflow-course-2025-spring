@@ -1,11 +1,3 @@
-#!/usr/bin/env nextflow
-
-/* 
- * This code enables the new dsl of Nextflow. 
- */
- 
-nextflow.enable.dsl=2
-
 /* 
  * Creates a channel emitting some string values
  */
