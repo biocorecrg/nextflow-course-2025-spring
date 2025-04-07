@@ -17,10 +17,10 @@ This slow-paced hands-on internal course is designed for absolute beginners who 
 .. |toni| image:: images/thermoso.jpg
   :alt: Toni Hermoso Pulido
 
-.. |emilio| image:: images/emilio.jpg
+.. |emilio| image:: images/emilio.jpeg
   :alt: Emilio Palumbo
 
-.. |jose| image:: images/jose.jpg
+.. |jose| image:: images/jose.jpeg
   :alt: Jose Espinosa
 
 .. |julia| image:: images/jponomarenko.jpg
@@ -34,9 +34,13 @@ This slow-paced hands-on internal course is designed for absolute beginners who 
 
    * - Luca Cozzuto
      - Toni Hermoso
+     - Emilio Palumbo
+     - Jose Espinosa
      - Julia Ponomarenko
    * - |luca|
      - |toni|
+     - |emilio|
+     - |jose|
      - |julia|
 
 
