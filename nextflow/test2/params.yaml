@@ -1,0 +1,3 @@
+# Here my parameters
+reads: "../../testdata/*.fastq.gz"
+email: "myemail@google.com"
