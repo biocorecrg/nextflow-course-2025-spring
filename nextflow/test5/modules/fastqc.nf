@@ -2,16 +2,10 @@
 *  fastqc module
 */
 
-params.CONTAINER = "quay.io/biocontainers/fastqc:0.11.9--0"
-params.OUTPUT = "fastqc_output"
-params.LABEL = ""
-
-
 process fastqc {
-    publishDir(params.OUTPUT, mode: 'copy')
+    publishDir('fastqc_output', mode: 'copy')
     tag { "${reads}" }
-    container params.CONTAINER
-    label (params.LABEL)
+    container 'quay.io/biocontainers/fastqc:0.11.9--0'
 
     input:
     path(reads)

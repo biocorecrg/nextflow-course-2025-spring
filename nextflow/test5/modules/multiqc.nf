@@ -2,12 +2,9 @@
 *  multiqc module
 */
 
-params.CONTAINER = "quay.io/biocontainers/multiqc:1.9--pyh9f0ad1d_0"
-params.OUTPUT = "multiqc_output"
-
 process multiqc {
-    publishDir(params.OUTPUT, mode: 'copy')
-    container params.CONTAINER
+    publishDir("multiqc_output", mode: 'copy')
+    container "quay.io/biocontainers/multiqc:1.9--pyh9f0ad1d_0"
 
     input:
     path (inputfiles)
@@ -17,6 +14,6 @@ process multiqc {
 
     script:
     """
-    multiqc .
+	    multiqc .
     """
 }

@@ -2,15 +2,11 @@
 *  bowtie modules and workflows
 */
 
-params.CONTAINER = "quay.io/biocontainers/bowtie:1.2.3--py37hc9558a2_0"
-params.OUTPUT = "bowtie_output"
-params.LABEL = ""
-
 /*
  * Bowtie index
  */
 process bowtieIdx {
-    container params.CONTAINER
+    container "quay.io/biocontainers/bowtie:1.2.3--py37hc9558a2_0"
     tag { "${ref}" }
     							
     input:
@@ -31,10 +27,10 @@ process bowtieIdx {
  * Bowtie alignment
  */
 process bowtieAln {
-    publishDir(params.OUTPUT, pattern: '*.sam')
-    container params.CONTAINER
+    publishDir("bowtie_output", pattern: '*.sam')
+    container "quay.io/biocontainers/bowtie:1.2.3--py37hc9558a2_0"
     tag { "${reads}" }  	    
-    label (params.LABEL)
+    label 'twocpus'
 						
 
     input:
