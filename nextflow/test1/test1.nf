@@ -54,6 +54,8 @@ process reverseSequence {
     """
 }
 
+// MAIN WORKFLOW
+
 workflow {
     splitted_seq	= splitSequences(sequences_file)
     
