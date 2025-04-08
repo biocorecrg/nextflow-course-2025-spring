@@ -54,7 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#resuming-a-pipeline">Resuming a pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#directives">Directives</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">EXERCISE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">EXERCISE</a></li>
 </ul>
 </li>
 </ul>
@@ -154,7 +154,7 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The file “test.fa” is available in the <a class="reference external" href="https://github.com/biocorecrg/nextflow-course-2023-fall/tree/main/testdata">github repository of the course</a></p>
+<p>The file “test.fa” is available in the <a href="#id1"><span class="problematic" id="id2">`</span></a>github repository itself.</p>
 </div>
 <p>This value can be overridden when calling the script:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test1.nf --inputfile another_input.fa</span>
@@ -493,8 +493,8 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 </pre></div>
 </div>
 </section>
-<section id="id1">
-<h3>EXERCISE<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<section id="id3">
+<h3>EXERCISE<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <p>Make the previous pipeline resilient to the process failing and save the results so the process execution would be skipped when the pipeline is launched again.</p>
 <p>First, make the process <cite>reverseSequence</cite> fail by introducing a typo in the command line, then add the directive to the process.</p>
 <details>

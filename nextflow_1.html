@@ -426,11 +426,7 @@ In the following example, we use the operator <a class="reference external" href
 <p>A special very powerful operator is <strong>map</strong>, that allows you reshaping the data in several ways.
 It uses the <a class="reference external" href="https://www.nextflow.io/docs/latest/script.html#closures">Grovvy’s closure</a> for modifying the input channel. In brief, a closure is a piece of code between curly brackets <strong>{}</strong> that can be passed as an argument of a function. It uses as input the implicit variable <strong>it</strong>:</p>
 <p>Here you can see an example:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-<span class="n">Channel</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">Channel</span>
 <span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="s2">&quot;{aa,bb,cc}.txt&quot;</span><span class="o">)</span>
 <span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">my_files</span><span class="o">}</span>
 
