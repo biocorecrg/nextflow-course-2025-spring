@@ -102,7 +102,7 @@ You can see an example of this code by looking at the script `test1_a.nf` where 
 
 .. literalinclude:: ../nextflow/test1/test1_a.nf
    :language: groovy
-   :lines: 25-43
+   :lines: 10-28
 
 Here instead the shell script in `bin/splitseq.sh`
 
@@ -116,7 +116,7 @@ At this point we can make two different workflows to demonstrate how the new DSL
 
 .. literalinclude:: ../nextflow/test1/test1_b.nf
    :language: groovy
-   :emphasize-lines: 49-71
+   :emphasize-lines: 45-67
 
 The first workflow will just run like the previous script, while the second will "flatten" the output of the first process and will launch the second process on every single sequence.
 
@@ -291,43 +291,17 @@ The solution is at **sol3.nf**. In particular, the change is here:
 
 .. literalinclude:: ../nextflow/test1/sol3.nf
    :language: groovy
-   :emphasize-lines: 31-52
+   :emphasize-lines: 27-47
 
 
 
 .. raw:: html
 
    </details>
-|
-|
-
-Write the first workflow using pipes. Nextflow DLS2 allows you to use pipes for connecting channels via input/output.
-
-See the `documentation on pipes <https://www.nextflow.io/docs/latest/dsl2.html#pipes>`__.
-
-
-.. raw:: html
-
-   <details>
-   <summary><a>Solution</a></summary>
-
-The solution is at **sol4.nf**. Here is the change:
-
-
-.. literalinclude:: ../nextflow/test1/sol4.nf
-   :language: groovy
-   :emphasize-lines: 49-54
-
-
-
-.. raw:: html
-
-   </details>
-|
 |
 
 .. note::
-	When a shell script fails you might still have a 0 exit code and if an output file is generated Nextflow won't recognize an error. This is because in a bash pipeline exit code is the one from the last command. To change this behavior you should add at the beginning of your bash script the code:
+	When a shell script fails, you might still have a 0 exit code, and if an output file is generated, Nextflow won't recognize an error. This is because in a bash pipeline exit code is the one from the last command. To change this behavior you should add at the beginning of your bash script the code:
 .. code-block:: bash
 
 	set -euxo pipefail
