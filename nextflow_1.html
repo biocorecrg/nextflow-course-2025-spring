@@ -760,31 +760,31 @@ For example, using this code you can execute two different workflows that contai
 <span class="w">    </span><span class="nl">input:</span>
 <span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
 
-<span class="w">    </span><span class="nl">output:</span>
-<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;${str_in}.txt&quot;</span><span class="o">)</span>
-
+<span class="hll"><span class="w">    </span><span class="nl">output:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;${str_in}.txt&quot;</span><span class="o">)</span>
+</span>
 <span class="w">    </span><span class="nl">script:</span>
-<span class="hll"><span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
-</span><span class="hll"><span class="s2">    	echo ${str_in} in Italian is ciao &gt; ${str_in}.txt</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="hll"><span class="s2">    	echo ${str_in} in Italian is ciao &gt; ${str_in}.txt</span>
 </span><span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
 <span class="n">process</span><span class="w"> </span><span class="n">printHello2</span><span class="w"> </span><span class="o">{</span>
-<span class="hll"><span class="w">    </span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
-</span>
+<span class="w">    </span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
+
 <span class="w">    </span><span class="nl">input:</span>
 <span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
 
-<span class="w">    </span><span class="nl">output:</span>
-<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;cheers.txt&quot;</span><span class="o">)</span>
-
+<span class="hll"><span class="w">    </span><span class="nl">output:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;cheers.txt&quot;</span><span class="o">)</span>
+</span>
 <span class="w">    </span><span class="nl">script:</span>
-<span class="hll"><span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
-</span><span class="hll"><span class="s2">    	echo ${str_in.join(&#39;, &#39;)} in Italian are ciao &gt; cheers.txt</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="hll"><span class="s2">    	echo ${str_in.join(&#39;, &#39;)} in Italian are ciao &gt; cheers.txt</span>
 </span><span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
 
-<span class="hll"><span class="cm">/*</span>
-</span><span class="cm"> * A workflow can be named as a function and receive an input using the take keyword</span>
+<span class="cm">/*</span>
+<span class="cm"> * A workflow can be named as a function and receive an input using the take keyword</span>
 <span class="cm"> */</span>
 
 <span class="n">workflow</span><span class="w"> </span><span class="n">first_pipeline</span><span class="w"> </span><span class="o">{</span>
