@@ -1,17 +1,7 @@
-#!/usr/bin/env nextflow
-
-
-/* 
- * This code enables the new dsl of Nextflow. 
- */
-
-nextflow.enable.dsl=2
-
-
 /* 
  * NextFlow test pipe
  * @authors
- * Luca Cozzuto <lucacozzuto@gmail.com>
+ * Luca Cozzuto <luca.cozzuto@crg.eu>
  * 
  */
 
@@ -62,7 +52,7 @@ Channel
  */
 process fastQC {
     publishDir fastqcOutputFolder  			// where (and whether) to publish the results
-    tag { "${reads}" }  							// during the execution prints the indicated variable for follow-up
+    tag { "${reads}" }  					// during the execution prints the indicated variable for follow-up
     label 'big_mem' 
 
     input:

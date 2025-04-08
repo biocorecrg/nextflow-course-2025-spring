@@ -1,16 +1,7 @@
-#!/usr/bin/env nextflow
-
-/* 
- * This code enables the new dsl of Nextflow. 
- */
-
-nextflow.enable.dsl=2
-
-
 /* 
  * NextFlow test pipe
  * @authors
- * Luca Cozzuto <lucacozzuto@gmail.com>
+ * Luca Cozzuto <luca.cozzuto@crg.eu>
  * 
  */
 
@@ -141,34 +132,66 @@ process multiQC {
     """
 }
 
+/*
+ * First workflow. They are like mini-pipelines:
+ * take: receive inputs from channels
+ * main: execute processes and / or operators
+ * emit: emit outputs
+ */
+
 workflow flow1 {
+	// expecting two inputs
     take: 
     reads
     ref
     
+    // executing the processes fastQC, bowtieIdx and bowtieAln
     main:
-	fastqc_out = fastQC(reads)
-	bowtie_index = bowtieIdx(ref)
+	fastqc_out    = fastQC(reads)
+	bowtie_index  = bowtieIdx(ref)
 	bowtieAln(bowtie_index, reads)
+	
+	// emitting three outputs defined as aln_sams, aln_logs and fastqc_out
 	emit:
-	sam = bowtieAln.out.samples_sam
-	logs = bowtieAln.out.samples_log
-	fastqc_out
+	aln_sams      = bowtieAln.out.samples_sam
+	aln_logs      = bowtieAln.out.samples_log
+	fastqc_out    = fastqc_out
 }
 
 
+/*
+ * Second workflow. It just run fastQC 
+ * not really useful, just for example
+ * it allows reusing fastQC in a different context
+ */
+
 workflow flow2 {
+    // expecting one input
     take: alns
+    
+    // performing just fastqc
     main:
 	fastqc_out2 = fastQC(alns)
+	
 	emit:
 	fastqc_out2
 }
 
+/*
+ * Main workflow. It runs both named workflows.
+ * The output of each named workflows can be accessed using the "out" variable + the names defined in 
+ * the emit sections
+ */
+ 
 workflow {
     flow1(reads, reference)
+    
     flow2(flow1.out.sam)
- 	multiQC(multiconf, flow1.out.fastqc_out.mix(flow1.out.logs).mix(flow2.out.fastqc_out2).collect())
+    
+    // collecting data for multiqc
+    data_for_multiqc = flow1.out.fastqc_out.mix(flow1.out.aln_logs).mix(flow2.out.fastqc_out2).collect()
+    
+ 	multiQC(multiconf, data_for_multiqc)
 }
 
 

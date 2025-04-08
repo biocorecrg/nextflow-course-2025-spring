@@ -1,15 +1,11 @@
-#!/usr/bin/env nextflow
+// projectDir is a nextflow variable that contains the info about where the script is located
+// inputfile is a pipeline parameter that can be overridden by using --inputfile OTHERFILENAME
+// in the command line
+params.inputfile = "${projectDir}/../../testdata/test.fa"	
 
-nextflow.enable.dsl=2
+// create a channel with one path and check the existence of that file
+sequences_file = channel.fromPath(params.inputfile, checkIfExists:true)				
 
-// this can be overridden by using --inputfile OTHERFILENAME
-params.inputfile = "$baseDir/../../testdata/test.fa"
-
-// the "file method" returns a file system object given a file path string
-sequences_file = file(params.inputfile)
-
-// check if the file exists
-if( !sequences_file.exists() ) exit 1, "Missing genome file: ${sequences_file}"
 
 /*
  * Process 1 for splitting a fasta file in multiple files

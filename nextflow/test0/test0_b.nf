@@ -1,7 +1,3 @@
-#!/usr/bin/env nextflow
-
-nextflow.enable.dsl=2
-
 str = Channel.from('hello', 'hola', 'bonjour')
 
 process printHello {
