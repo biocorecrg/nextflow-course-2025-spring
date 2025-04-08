@@ -1,0 +1,5 @@
+reads		: "../../testdata/*.fastq.gz"
+reference   : "../../testdata/chr19.fasta.gz"
+outdir      : "./output"
+#outdir          = "s3://class-bucket-1/results"
+email		: "myemail@google.com"
