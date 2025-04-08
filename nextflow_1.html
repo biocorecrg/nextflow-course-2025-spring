@@ -543,11 +543,11 @@ It uses the <a class="reference external" href="https://www.nextflow.io/docs/lat
 <span class="cm"> * as they were cutom functions. You can only invoke once a process per workflow.</span>
 <span class="cm"> */</span>
 
-<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">printHello</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
-<span class="w">    </span><span class="n">result</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
-<span class="o">}</span>
-<span class="w"> </span>
+<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">printHello</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
+</span><span class="hll"><span class="w">    </span><span class="n">result</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+</span><span class="hll"><span class="o">}</span>
+</span><span class="w"> </span>
 </pre></div>
 </div>
 <p>We can run the script sending the execution in the background (with the <cite>-bg</cite> option) and saving the log in the file <cite>log.txt</cite>.</p>
@@ -586,16 +586,16 @@ It uses the <a class="reference external" href="https://www.nextflow.io/docs/lat
 <span class="cm"> */</span>
 
 <span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${str_in}&quot;</span><span class="w"> </span><span class="o">}</span>
-<span class="w">    </span>
+<span class="hll"><span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${str_in}&quot;</span><span class="w"> </span><span class="o">}</span>
+</span><span class="w">    </span>
 <span class="w">    </span><span class="nl">input:</span>
 <span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
 
 <span class="w">    </span><span class="nl">output:</span><span class="w"> </span>
 <span class="w">    </span><span class="n">stdout</span>
 <span class="w">    </span>
-<span class="hll"><span class="w">    </span><span class="nl">script:</span>
-</span><span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">    echo ${str_in} in Italian is ciao </span>
 <span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
@@ -701,29 +701,29 @@ For example, using this code you can execute two different workflows that contai
 <span class="cm"> */</span>
 
 
-<span class="n">workflow</span><span class="w"> </span><span class="n">first_pipeline</span><span class="w"> </span><span class="o">{</span>
-<span class="w">   </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
-
-<span class="w">   </span><span class="nl">main:</span>
-<span class="hll"><span class="w">   </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">).</span><span class="na">view</span><span class="o">()</span>
-</span><span class="hll"><span class="o">}</span>
+<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">first_pipeline</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">   </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
 </span><span class="hll">
-</span><span class="hll"><span class="cm">/*</span>
-</span><span class="hll"><span class="cm"> * You can re-use the previous processes and combine as you prefer</span>
-</span><span class="hll"><span class="cm"> */</span>
+</span><span class="hll"><span class="w">   </span><span class="nl">main:</span>
+</span><span class="hll"><span class="w">   </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">).</span><span class="na">view</span><span class="o">()</span>
+</span><span class="hll"><span class="o">}</span>
 </span>
+<span class="cm">/*</span>
+<span class="cm"> * You can re-use the previous processes and combine as you prefer</span>
+<span class="cm"> */</span>
 
-<span class="n">workflow</span><span class="w"> </span><span class="n">second_pipeline</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
 
-<span class="w">    </span><span class="nl">main:</span>
-<span class="hll"><span class="w">    </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">.</span><span class="na">collect</span><span class="o">()).</span><span class="na">view</span><span class="o">()</span>
-</span><span class="hll"><span class="o">}</span>
+<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">second_pipeline</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
 </span><span class="hll">
-</span><span class="hll"><span class="cm">/*</span>
-</span><span class="hll"><span class="cm"> * You can then invoke the different named workflows in this way</span>
-</span><span class="hll"><span class="cm">* passing the same input channel `str` to both</span>
-</span><span class="cm">*/</span>
+</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">.</span><span class="na">collect</span><span class="o">()).</span><span class="na">view</span><span class="o">()</span>
+</span><span class="hll"><span class="o">}</span>
+</span>
+<span class="cm">/*</span>
+<span class="cm"> * You can then invoke the different named workflows in this way</span>
+<span class="cm">* passing the same input channel `str` to both</span>
+<span class="cm">*/</span>
 
 <span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="n">first_pipeline</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>

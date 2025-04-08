@@ -376,7 +376,7 @@ Let's add a workflow to our code `ex1_a.nf`. Now we will have our first prototyp
 
 .. literalinclude:: ../nextflow/test0/test0.nf
    :language: groovy
-   :emphasize-lines: 63-66
+   :emphasize-lines: 34-37
 
 
 We can run the script sending the execution in the background (with the `-bg` option) and saving the log in the file `log.txt`.
@@ -409,7 +409,7 @@ We can add a **tag** to our processes: this will allow us to see, for instance, 
 
 .. literalinclude:: ../nextflow/test0/test0_a.nf
    :language: groovy
-   :emphasize-lines: 23
+   :emphasize-lines: 15
 
 
 and obtain:
@@ -496,7 +496,7 @@ For example, using this code you can execute two different workflows that contai
 
 .. literalinclude:: ../nextflow/test0/test0_b.nf
    :language: groovy
-   :emphasize-lines: 27-32,39-44
+   :emphasize-lines: 23-28,35-40
 
 
 
