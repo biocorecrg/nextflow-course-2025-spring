@@ -20,6 +20,7 @@ This is achieved by labeling processes in the nextflow.config file:
    :language: groovy
    :lines: 3-17
 
+
 The first part defines the "default" resources for a process:
 
 .. literalinclude:: ../nextflow/test2/nextflow.config
