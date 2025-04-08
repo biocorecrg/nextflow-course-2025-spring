@@ -416,6 +416,7 @@ This profile indicates that the system uses **SLURM** as a job scheduler and tha
 Deployment in the AWS cloud
 =============================
 
+
 The final profile is for running the pipeline in the **Amazon Cloud**, known as Amazon Web Services or AWS. In particular, we will use **AWS Batch** that allows the execution of containerized workloads in the Amazon cloud infrastructure (where NNNN is the number of your bucket, which you can see in the mounted folder `/mnt` by typing the command **df**).
 
 .. literalinclude:: ../nextflow/test3/nextflow.config

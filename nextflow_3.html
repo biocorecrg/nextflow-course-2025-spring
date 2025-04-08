@@ -799,9 +799,7 @@ We can indicate which process and output can be considered the final output of t
 </pre></div>
 </div>
 <p>while the nextflow.config file would be:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">includeConfig</span><span class="w"> </span><span class="s2">&quot;$baseDir/params.config&quot;</span>
-
-<span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
 <span class="w">    </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
 <span class="w">    </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
@@ -902,9 +900,7 @@ This can be done using the Nextflow parameter <cite>-with-singularity</cite> wit
 <li><p>cloud</p></li>
 </ul>
 <p>The first profile indicates the resources needed for running the pipeline locally. They are quite small since we have little power and CPU on the test node.</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">includeConfig</span><span class="w"> </span><span class="s2">&quot;$baseDir/params.config&quot;</span>
-
-<span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
 <span class="n">singularity</span><span class="o">.</span><span class="na">cacheDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/singularity&quot;</span>
 
 
@@ -921,13 +917,13 @@ This can be done using the Nextflow parameter <cite>-with-singularity</cite> wit
 <span class="w">            </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
 <span class="w">            </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
 <span class="w">        </span><span class="o">}</span>
+<span class="w">   	  </span><span class="o">}</span>
+<span class="w">   </span><span class="o">}</span>
 </pre></div>
 </div>
 <p>As you can see, we explicitly indicated the <strong>local</strong> executor. By definition, the local executor is a default executor if the pipeline is run without specifying a profile.</p>
 <p>The second profile is for running the pipeline on the <strong>cluster</strong>; here in particular for the cluster supporting the SLURM Workload Manager queuing system:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w">   	  </span><span class="o">}</span>
-<span class="w">   </span><span class="o">}</span>
-<span class="w">   </span><span class="n">cluster</span><span class="w"> </span><span class="o">{</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w">   </span><span class="n">cluster</span><span class="w"> </span><span class="o">{</span>
 <span class="w">     </span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="n">containerOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">containerEngine</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;docker&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;-u $(id -u):$(id -g)&#39;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="o">}</span>
 <span class="w">        </span><span class="n">executor</span><span class="o">=</span><span class="s2">&quot;slurm&quot;</span>
@@ -942,6 +938,8 @@ This can be done using the Nextflow parameter <cite>-with-singularity</cite> wit
 <span class="w">            </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;4G&#39;</span>
 <span class="w">            </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;2&#39;</span>
 <span class="w">        </span><span class="o">}</span>
+<span class="w">      </span><span class="o">}</span>
+<span class="w">   </span><span class="o">}</span>
 </pre></div>
 </div>
 <p>This profile indicates that the system uses <strong>SLURM</strong> as a job scheduler and that we have different queues for small jobs and more intensive ones.</p>
@@ -960,9 +958,7 @@ This can be done using the Nextflow parameter <cite>-with-singularity</cite> wit
 <section id="deployment-in-the-aws-cloud">
 <h2>Deployment in the AWS cloud<a class="headerlink" href="#deployment-in-the-aws-cloud" title="Link to this heading"></a></h2>
 <p>The final profile is for running the pipeline in the <strong>Amazon Cloud</strong>, known as Amazon Web Services or AWS. In particular, we will use <strong>AWS Batch</strong> that allows the execution of containerized workloads in the Amazon cloud infrastructure (where NNNN is the number of your bucket, which you can see in the mounted folder <cite>/mnt</cite> by typing the command <strong>df</strong>).</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">includeConfig</span><span class="w"> </span><span class="s2">&quot;$baseDir/params.config&quot;</span>
-
-<span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
 <span class="n">singularity</span><span class="o">.</span><span class="na">cacheDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/singularity&quot;</span>
 
 
@@ -997,9 +993,9 @@ This can be done using the Nextflow parameter <cite>-with-singularity</cite> wit
 <span class="w">            </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;2&#39;</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">      </span><span class="o">}</span>
-<span class="hll"><span class="w">   </span><span class="o">}</span>
-</span><span class="hll">
-</span><span class="hll"><span class="w">   </span><span class="n">cloud</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span><span class="o">}</span>
+
+<span class="hll"><span class="w">   </span><span class="n">cloud</span><span class="w"> </span><span class="o">{</span>
 </span><span class="hll"><span class="w">    </span><span class="n">workDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;s3://nf-class-bucket-XXX/work&#39;</span>
 </span><span class="hll"><span class="w">    </span><span class="n">aws</span><span class="o">.</span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;eu-central-1&#39;</span>
 </span><span class="hll"><span class="w">    </span><span class="n">aws</span><span class="o">.</span><span class="na">batch</span><span class="o">.</span><span class="na">cliPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;/home/ec2-user/miniconda/bin/aws&#39;</span>
@@ -1015,9 +1011,9 @@ This can be done using the Nextflow parameter <cite>-with-singularity</cite> wit
 </span><span class="hll"><span class="w">           </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;2G&#39;</span>
 </span><span class="hll"><span class="w">           </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;2&#39;</span>
 </span><span class="hll"><span class="w">       </span><span class="o">}</span>
-</span><span class="w">    </span><span class="o">}</span>
-<span class="w">  </span><span class="o">}</span>
-<span class="o">}</span>
+</span><span class="hll"><span class="w">    </span><span class="o">}</span>
+</span><span class="hll"><span class="w">  </span><span class="o">}</span>
+</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>We indicate the <strong>AWS specific parameters</strong> (<strong>region</strong> and <strong>cliPath</strong>) and the executor <strong>awsbatch</strong>.
