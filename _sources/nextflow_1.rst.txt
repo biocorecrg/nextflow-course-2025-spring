@@ -45,9 +45,9 @@ What is Nextflow?
 .. image:: images/nextf_groovy.png
   :width: 600
 
-`Nextflow <https://www.nextflow.io>`__ is a domain-specific language (DSL) for workflow orchestration that stems from `Groovy <https://groovy-lang.org/>`_. It enables scalable and reproducible workflows using software containers.
-It was developed at the `CRG <www.crg.eu>`_ in the Lab of Cedric Notredame by `Paolo Di Tommaso <https://github.com/pditommaso>`_.
-The Nextflow documentation is `available here <https://www.nextflow.io/docs/latest/>`_ and you can ask help to the community joining their `slack channel <https://join.slack.com/t/nextflow/shared_invite/zt-11iwlxtw5-R6SNBpVksOJAx5sPOXNrZg>`_. 
+`Nextflow <https://www.nextflow.io>`__ is a domain-specific language (DSL) for workflow orchestration that stems from `Groovy <https://groovy-lang.org/>`__. It enables scalable and reproducible workflows using software containers.
+It was developed at the `CRG <www.crg.eu>`__ in the Lab of Cedric Notredame by `Paolo Di Tommaso <https://github.com/pditommaso>`__.
+The Nextflow documentation is `available here <https://www.nextflow.io/docs/latest/>`__ and you can ask help to the community joining their `slack channel <https://join.slack.com/t/nextflow/shared_invite/zt-11iwlxtw5-R6SNBpVksOJAx5sPOXNrZg>`__. 
 
 In 2020, Nextflow has been upgraded from DSL1 version to DSL2. In this course, we will use exclusively DSL2. It is currently developed and maintained by the company `Seqera Labs <https://seqera.io/>`__ a spin-off from the CRG. Each year there is a special event about Nextflow called `Nextflow summit <https://summit.nextflow.io/>`__.
 
@@ -412,7 +412,6 @@ We can add a **tag** to our processes: this will allow us to see, for instance, 
    :emphasize-lines: 23
 
 
-
 and obtain:
 
 .. code-block:: console
@@ -532,7 +531,6 @@ We can change the pipeline to produce files instead of `standard output <https:/
 .. literalinclude:: ../nextflow/test0/test0_c.nf
    :language: groovy
    :emphasize-lines: 13,14,18,27,28,32
-
 
 
 
