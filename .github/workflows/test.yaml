@@ -1,0 +1,11 @@
+name: Runner Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say Hello
+        run: echo "✅ Hello, the runner works!"
