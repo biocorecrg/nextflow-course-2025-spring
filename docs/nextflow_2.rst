@@ -30,7 +30,7 @@ The input path is fed as a parameter using the script parameters **${inputfile}*
 
 
 .. note::
-	The file "test.fa" is available in the `github repository of the course <https://github.com/biocorecrg/nextflow-course-2023-fall/tree/main/testdata>`__
+	The file "test.fa" is available in the `github repository itself. 
 
 
 This value can be overridden when calling the script:
