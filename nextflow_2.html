@@ -97,17 +97,7 @@
 <li><p>the former splits the input fasta file into <strong>single sequences</strong>.</p></li>
 <li><p>the latter can <strong>reverse the position of the sequences</strong>.</p></li>
 </ul>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm"> * split a fasta file in multiple files</span>
-<span class="cm"> */</span>
-<span class="w"> </span>
-<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
-
-<span class="w">    </span><span class="nl">input:</span>
-<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span><span class="w"> </span><span class="c1">// nextflow creates links to the original files in a temporary folder</span>
-<span class="w"> </span>
-<span class="w">    </span><span class="nl">output:</span>
-<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span><span class="w">    </span><span class="c1">// send output files to a new output channel (in this case is a collection)</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span><span class="w">    </span><span class="c1">// send output files to a new output channel (in this case is a collection)</span>
 <span class="w"> </span>
 <span class="w">    </span><span class="c1">// awk command for splitting a fasta files in multiple files</span>
 <span class="w">    </span>
@@ -138,6 +128,16 @@
 <span class="s2">    cat ${seq} | awk &#39;{if (\$1~&quot;&gt;&quot;) {print \$0} else system(&quot;echo &quot; \$0 &quot; |rev&quot;)}&#39; &gt; all.rev</span>
 <span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="w">	</span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Here you have the output channel as a collection</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Here you have the same channel reshaped to send separately each value </span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="o">.</span><span class="na">flatten</span><span class="o">().</span><span class="na">view</span><span class="o">()</span>
+<span class="w">    </span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -145,11 +145,11 @@
 <p>The variables used by AWK need to be escaped, otherwise, they will be considered as proper Nextflow variables and thus produce an error. Every special character, e.g., <strong>$</strong>, needs to be escaped (<strong>$</strong>). This script can be seen at <strong>/test1/test1.nf</strong></p>
 </div>
 <p>The input path is fed as a parameter using the script parameters <strong>${inputfile}</strong></p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
-<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span><span class="w">	</span>
-
-<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string  </span>
-<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span><span class="w">				</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * split a fasta file in multiple files</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -161,17 +161,7 @@
 </pre></div>
 </div>
 <p>The workflow part connects the two processes so that the output of the first process becomes an input of the second process.</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">splitted_seq</span><span class="w">	</span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
-<span class="w">    </span>
-<span class="w">    </span><span class="c1">// Here you have the output channel as a collection</span>
-<span class="w">    </span><span class="n">splitted_seq</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
-<span class="w">    </span>
-<span class="w">    </span><span class="c1">// Here you have the same channel reshaped to send separately each value </span>
-<span class="w">    </span><span class="n">splitted_seq</span><span class="o">.</span><span class="na">flatten</span><span class="o">().</span><span class="na">view</span><span class="o">()</span>
-<span class="w">    </span>
-<span class="w">    </span><span class="c1">// DLS2 allows you to reuse the channels! In past you had to create many identical</span>
-<span class="w">    </span><span class="c1">// channels for sending the same kind of data to different processes</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">// channels for sending the same kind of data to different processes</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="n">rev_single_seq</span><span class="w">	</span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
 <span class="o">}</span>
@@ -216,25 +206,25 @@ This avoids clashes, and each process is isolated from the other.</p>
 <h3>The “bin” folder<a class="headerlink" href="#the-bin-folder" title="Link to this heading"></a></h3>
 <p>As we see before we need to escape some characters. So it can be very tedious when writing long one-liners; therefore, it is recommended to make a small shell script and call it as if it were an executable. This script has to be placed in a folder named <strong>bin</strong> inside the pipeline folder to be automatically considered from Nextflow as a tool in the path.</p>
 <p>You can see an example of this code by looking at the script <cite>test1_a.nf</cite> where the one-liner is replaced by a shell script:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm"> * split a fasta file in multiple files</span>
-<span class="cm"> */</span>
-<span class="w"> </span>
-<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
-
-<span class="w">    </span><span class="nl">input:</span>
-<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span><span class="w"> </span><span class="c1">// nextflow creates links to the original files in a temporary folder</span>
-<span class="w"> </span>
-<span class="w">    </span><span class="nl">output:</span>
-<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span><span class="w">    </span><span class="c1">// send output files to a new output channel (in this case is a collection)</span>
-<span class="w"> </span>
-<span class="w">    </span><span class="c1">// awk command for splitting a fasta files in multiple files</span>
-<span class="w">    </span>
-<span class="w">    </span><span class="nl">script:</span>
-<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">    splitseq.sh ${sequencesFile}</span>
 <span class="s2">    &quot;&quot;&quot;</span><span class="w"> </span>
 <span class="o">}</span>
+
+
+<span class="cm">/*</span>
+<span class="cm"> * Simple reverse the sequences</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span><span class="c1">// during the execution prints the indicated variable for follow-up</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${seq}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w">  					</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">seq</span><span class="w"> </span>
+
+<span class="w">    </span><span class="nl">output:</span>
 </pre></div>
 </div>
 <p>Here instead the shell script in <cite>bin/splitseq.sh</cite></p>
@@ -250,18 +240,14 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 <section id="named-workflows">
 <h3>Named workflows<a class="headerlink" href="#named-workflows" title="Link to this heading"></a></h3>
 <p>At this point we can make two different workflows to demonstrate how the new DSL allows reusing the code (script name <strong>test1_b.nf</strong>).</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">// projectDir is a nextflow variable that contains the info about where the script is located</span>
+<span class="c1">// inputfile is a pipeline parameter that can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="c1">// in the command line</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${projectDir}/../../testdata/test.fa&quot;</span><span class="w">	</span>
 
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+<span class="c1">// create a channel with one path and check the existence of that file</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">channel</span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">,</span><span class="w"> </span><span class="nl">checkIfExists:</span><span class="kc">true</span><span class="o">)</span><span class="w">				</span>
 
-<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
-<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span>
-
-<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
-<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
-
-<span class="c1">// check if the file exists</span>
-<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
 
 <span class="cm">/*</span>
 <span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
@@ -298,11 +284,11 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 <span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
 
-<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
-</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
-</span><span class="hll">
-</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
-</span><span class="hll"><span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span>
+<span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="hll"><span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span>
 </span><span class="hll"><span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
 </span><span class="hll">
 </span><span class="hll"><span class="w">    </span><span class="nl">emit:</span>
@@ -321,11 +307,11 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 </span><span class="hll"><span class="w">    </span><span class="n">rev_single_seq</span>
 </span><span class="hll">
 </span><span class="hll"><span class="o">}</span>
-</span>
-<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
-<span class="w">   </span><span class="n">out1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flow1</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
-<span class="w">   </span><span class="n">out2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flow2</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
-<span class="w">   </span><span class="n">out2</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+</span><span class="hll">
+</span><span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">   </span><span class="n">out1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flow1</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+</span><span class="hll"><span class="w">   </span><span class="n">out2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flow2</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+</span><span class="w">   </span><span class="n">out2</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
 
 <span class="o">}</span>
 </pre></div>
@@ -351,18 +337,14 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 <h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h3>
 <p>Optimize the previous pipeline to avoid running the process <strong>splitSequences</strong> twice.</p>
 <details>
-<summary><a>Solution</a></summary><div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+<summary><a>Solution</a></summary><div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">// projectDir is a nextflow variable that contains the info about where the script is located</span>
+<span class="c1">// inputfile is a pipeline parameter that can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="c1">// in the command line</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${projectDir}/../../testdata/test.fa&quot;</span><span class="w">	</span>
 
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+<span class="c1">// create a channel with one path and check the existence of that file</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">channel</span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">,</span><span class="w"> </span><span class="nl">checkIfExists:</span><span class="kc">true</span><span class="o">)</span><span class="w">				</span>
 
-<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
-<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span>
-
-<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
-<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
-
-<span class="c1">// check if the file exists</span>
-<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
 
 <span class="cm">/*</span>
 <span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
@@ -517,18 +499,14 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 <p>First, make the process <cite>reverseSequence</cite> fail by introducing a typo in the command line, then add the directive to the process.</p>
 <details>
 <summary><a>Solution</a></summary><p>The solution is at <strong>sol3.nf</strong>. In particular, the change is here:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">// projectDir is a nextflow variable that contains the info about where the script is located</span>
+<span class="c1">// inputfile is a pipeline parameter that can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="c1">// in the command line</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${projectDir}/../../testdata/test.fa&quot;</span><span class="w">	</span>
 
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+<span class="c1">// create a channel with one path and check the existence of that file</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">channel</span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">,</span><span class="w"> </span><span class="nl">checkIfExists:</span><span class="kc">true</span><span class="o">)</span><span class="w">				</span>
 
-<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
-<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span>
-
-<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
-<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
-
-<span class="c1">// check if the file exists</span>
-<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
 
 <span class="cm">/*</span>
 <span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
@@ -547,11 +525,11 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 <span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
 
-<span class="hll"><span class="cm">/*</span>
-</span><span class="hll"><span class="cm">* Broken process</span>
-</span><span class="hll"><span class="cm">*/</span>
-</span><span class="hll">
-</span><span class="hll"><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
+<span class="cm">/*</span>
+<span class="cm">* Broken process</span>
+<span class="cm">*/</span>
+
+<span class="hll"><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
 </span><span class="hll">
 </span><span class="hll"><span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${seq}&quot;</span><span class="w"> </span><span class="o">}</span>
 </span><span class="hll">
@@ -569,11 +547,11 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 </span><span class="hll"><span class="s2">    &quot;&quot;&quot;</span>
 </span><span class="hll"><span class="o">}</span>
 </span><span class="hll">
-</span><span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
-
-<span class="w">    </span><span class="nl">main:</span>
-<span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span>
+</span><span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
+</span><span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span>
 <span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
 <span class="o">}</span>
 
@@ -599,18 +577,14 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 <p>See the <a class="reference external" href="https://www.nextflow.io/docs/latest/dsl2.html#pipes">documentation on pipes</a>.</p>
 <details>
 <summary><a>Solution</a></summary><p>The solution is at <strong>sol4.nf</strong>. Here is the change:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">// projectDir is a nextflow variable that contains the info about where the script is located</span>
+<span class="c1">// inputfile is a pipeline parameter that can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="c1">// in the command line</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${projectDir}/../../testdata/test.fa&quot;</span><span class="w">	</span>
 
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+<span class="c1">// create a channel with one path and check the existence of that file</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">channel</span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">,</span><span class="w"> </span><span class="nl">checkIfExists:</span><span class="kc">true</span><span class="o">)</span><span class="w">				</span>
 
-<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
-<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span>
-
-<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
-<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
-
-<span class="c1">// check if the file exists</span>
-<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
 
 <span class="cm">/*</span>
 <span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
@@ -647,17 +621,17 @@ awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d}
 <span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
 
-<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
-</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
-</span><span class="hll">
-</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
-</span><span class="hll"><span class="w">    </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">view</span><span class="o">()</span>
-</span><span class="hll"><span class="o">}</span>
-</span>
-<span class="n">workflow</span><span class="w"> </span><span class="n">flow2</span><span class="w"> </span><span class="o">{</span>
+<span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
 
 <span class="w">    </span><span class="nl">main:</span>
+<span class="hll"><span class="w">    </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">view</span><span class="o">()</span>
+</span><span class="hll"><span class="o">}</span>
+</span><span class="hll">
+</span><span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">flow2</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+</span><span class="hll">
+</span><span class="w">    </span><span class="nl">main:</span>
 <span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">).</span><span class="na">flatten</span><span class="o">()</span>
 <span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
 <span class="o">}</span>

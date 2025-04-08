@@ -268,6 +268,13 @@ You need at least Java version 11 for the Nextflow installation.</p>
 
 <span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
 
+<span class="cm">/* </span>
+<span class="cm">* You can also assign a channel using the set operator</span>
+<span class="cm">* https://www.nextflow.io/docs/latest/operator.html#set</span>
+<span class="cm">*/</span>
+
+<span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">).</span><span class="na">set</span><span class="o">{</span><span class="n">str2</span><span class="o">}</span>
+
 <span class="cm">/*</span>
 <span class="cm">* The operator view() can be used to view the channel `str`</span>
 <span class="cm">* https://www.nextflow.io/docs/latest/operator.html#view</span>
@@ -344,6 +351,32 @@ You need at least Java version 11 for the Nextflow installation.</p>
 </div>
 <p>We can reshape the channels in several ways and/or cross them using <a class="reference external" href="https://www.nextflow.io/docs/latest/reference/operator.html">operators</a>   so that they can be used for a particular purpose. In brief, each “emission” of a channel can be used by a process for a specific purpose.
 In the following example, we use the operator <a class="reference external" href="https://www.nextflow.io/docs/latest/reference/operator.html#mix">mix</a> for mixing together the elements of two channels:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">* Let&#39;s create the channel `my_files`</span>
+<span class="cm">* using the method fromPath</span>
+<span class="cm">*/</span>
+
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="s2">&quot;*.txt&quot;</span><span class="w"> </span><span class="o">)</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">my_files</span><span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm">* Let&#39;s create the channel `my_words`</span>
+<span class="cm">* using the method from</span>
+<span class="cm">*/</span>
+
+<span class="n">Channel</span>
+<span class="w">	</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+<span class="w">	</span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">my_words</span><span class="o">}</span>
+
+
+<span class="cm">/*</span>
+<span class="cm">* Let&#39;s mix them using the operator mix</span>
+<span class="cm">*/</span>
+
+<span class="n">my_files</span><span class="o">.</span><span class="na">mix</span><span class="o">(</span><span class="n">my_words</span><span class="o">).</span><span class="na">view</span><span class="o">()</span>
+</pre></div>
+</div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run ex4.nf</span>
 <span class="go">N E X T F L O W   ~  version 24.10.0</span>
 
@@ -371,11 +404,7 @@ In the following example, we use the operator <a class="reference external" href
 </div></blockquote>
 <p>See here the list of <a class="reference external" href="https://www.nextflow.io/docs/latest/operator.html#">Operators</a> available at the official documentation.</p>
 <details>
-<summary><a>Solution</a></summary><div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-<span class="n">Channel</span>
+<summary><a>Solution</a></summary><div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">Channel</span>
 <span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="s2">&quot;{aa,bb,cc}.txt&quot;</span><span class="o">)</span>
 <span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">my_files</span><span class="o">}</span>
 
@@ -428,11 +457,7 @@ It uses the <a class="reference external" href="https://www.nextflow.io/docs/lat
 <section id="processes">
 <h3>Processes<a class="headerlink" href="#processes" title="Link to this heading"></a></h3>
 <p>Let’s add a process to the previous script <cite>ex1.nf</cite> and let’s call it <cite>ex1_a.nf</cite></p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
 
 <span class="cm">/*</span>
 <span class="cm"> * Creates a process which receives an input channel containing values</span>
@@ -551,46 +576,38 @@ It uses the <a class="reference external" href="https://www.nextflow.io/docs/lat
 </pre></div>
 </div>
 <p>We can add a <strong>tag</strong> to our processes: this will allow us to see, for instance, which is the input used by each process execution. You can run test0_a.nf where we introduce this code:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="cm">/* </span>
-<span class="cm"> * This code enables the new dsl of Nextflow. </span>
-<span class="cm"> */</span>
-<span class="w"> </span>
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-<span class="cm">/* </span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/* </span>
 <span class="cm"> * Creates a channel emitting some string values</span>
 <span class="cm"> */</span>
 <span class="w"> </span>
 <span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
 
 <span class="cm">/*</span>
-<span class="cm"> * Creates a process which receive an input channel containing values</span>
+<span class="cm"> * Creates a process which receives an input channel containing values</span>
 <span class="cm"> * Each value emitted by the channel triggers the execution </span>
-<span class="cm"> * of the process. The process stdout is caputured and send over </span>
-<span class="cm"> * the another channel. </span>
+<span class="cm"> * of the process. The process stdout is captured and send over </span>
+<span class="cm"> * the other channel. </span>
 <span class="cm"> */</span>
 
 <span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
-<span class="hll"><span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${str_in}&quot;</span><span class="w"> </span><span class="o">}</span>
-</span><span class="w">    </span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${str_in}&quot;</span><span class="w"> </span><span class="o">}</span>
+<span class="w">    </span>
 <span class="w">    </span><span class="nl">input:</span>
 <span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
 
 <span class="w">    </span><span class="nl">output:</span><span class="w"> </span>
 <span class="w">    </span><span class="n">stdout</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="nl">script:</span>
-<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="hll"><span class="w">    </span><span class="nl">script:</span>
+</span><span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">    echo ${str_in} in Italian is ciao </span>
 <span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
 
 <span class="cm">/*</span>
-<span class="cm"> * A workflow consist of a number of invocations of processes</span>
+<span class="cm"> * A workflow consists of a number of invocations of processes</span>
 <span class="cm"> * where they are fed with the expected input channels </span>
-<span class="cm"> * as they were cutom functions. You can only invoke once a process per workflow.</span>
+<span class="cm"> * as they were custom functions. You can only invoke once a process per workflow.</span>
 <span class="cm"> */</span>
 
 <span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
@@ -666,11 +683,7 @@ It uses the <a class="reference external" href="https://www.nextflow.io/docs/lat
 </div>
 <p>You can also name the sub-workflows to combine them in the main workflow.
 For example, using this code you can execute two different workflows that contain the same process. As you can see the named workflows work similarly to the process: the input is defined by the <strong>take</strong> keyword, while the <strong>script</strong> part is represented by the <strong>main</strong>. We also have an equivalent of <strong>output</strong> that is <strong>emit</strong> that will be described later on. The following script can be found in <cite>test0_b.nf</cite> file</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
 
 <span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
 <span class="w">	</span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
@@ -692,29 +705,29 @@ For example, using this code you can execute two different workflows that contai
 <span class="cm"> */</span>
 
 
-<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">first_pipeline</span><span class="w"> </span><span class="o">{</span>
-</span><span class="hll"><span class="w">   </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
-</span><span class="hll">
-</span><span class="hll"><span class="w">   </span><span class="nl">main:</span>
-</span><span class="hll"><span class="w">   </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">).</span><span class="na">view</span><span class="o">()</span>
-</span><span class="hll"><span class="o">}</span>
-</span>
-<span class="cm">/*</span>
-<span class="cm"> * You can re-use the previous processes and combine as you prefer</span>
-<span class="cm"> */</span>
+<span class="n">workflow</span><span class="w"> </span><span class="n">first_pipeline</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
 
-
-<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">second_pipeline</span><span class="w"> </span><span class="o">{</span>
-</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
-</span><span class="hll">
-</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
-</span><span class="hll"><span class="w">    </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">.</span><span class="na">collect</span><span class="o">()).</span><span class="na">view</span><span class="o">()</span>
+<span class="w">   </span><span class="nl">main:</span>
+<span class="hll"><span class="w">   </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">).</span><span class="na">view</span><span class="o">()</span>
 </span><span class="hll"><span class="o">}</span>
+</span><span class="hll">
+</span><span class="hll"><span class="cm">/*</span>
+</span><span class="hll"><span class="cm"> * You can re-use the previous processes and combine as you prefer</span>
+</span><span class="hll"><span class="cm"> */</span>
 </span>
-<span class="cm">/*</span>
-<span class="cm"> * You can then invoke the different named workflows in this way</span>
-<span class="cm">* passing the same input channel `str` to both</span>
-<span class="cm">*/</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="n">second_pipeline</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="hll"><span class="w">    </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">.</span><span class="na">collect</span><span class="o">()).</span><span class="na">view</span><span class="o">()</span>
+</span><span class="hll"><span class="o">}</span>
+</span><span class="hll">
+</span><span class="hll"><span class="cm">/*</span>
+</span><span class="hll"><span class="cm"> * You can then invoke the different named workflows in this way</span>
+</span><span class="hll"><span class="cm">* passing the same input channel `str` to both</span>
+</span><span class="cm">*/</span>
 
 <span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="n">first_pipeline</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
@@ -743,11 +756,7 @@ For example, using this code you can execute two different workflows that contai
 </pre></div>
 </div>
 <p>We can change the pipeline to produce files instead of <a class="reference external" href="https://www.nextflow.io/docs/latest/dsl2.html#process-outputs">standard output</a>. The script is named <strong>test0_c.nf</strong>.</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
 
 <span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
@@ -755,31 +764,31 @@ For example, using this code you can execute two different workflows that contai
 <span class="w">    </span><span class="nl">input:</span>
 <span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
 
-<span class="hll"><span class="w">    </span><span class="nl">output:</span>
-</span><span class="hll"><span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;${str_in}.txt&quot;</span><span class="o">)</span>
-</span>
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;${str_in}.txt&quot;</span><span class="o">)</span>
+
 <span class="w">    </span><span class="nl">script:</span>
-<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
-<span class="hll"><span class="s2">    	echo ${str_in} in Italian is ciao &gt; ${str_in}.txt</span>
+<span class="hll"><span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+</span><span class="hll"><span class="s2">    	echo ${str_in} in Italian is ciao &gt; ${str_in}.txt</span>
 </span><span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
 <span class="n">process</span><span class="w"> </span><span class="n">printHello2</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
-
+<span class="hll"><span class="w">    </span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
+</span>
 <span class="w">    </span><span class="nl">input:</span>
 <span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
 
-<span class="hll"><span class="w">    </span><span class="nl">output:</span>
-</span><span class="hll"><span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;cheers.txt&quot;</span><span class="o">)</span>
-</span>
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;cheers.txt&quot;</span><span class="o">)</span>
+
 <span class="w">    </span><span class="nl">script:</span>
-<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
-<span class="hll"><span class="s2">    	echo ${str_in.join(&#39;, &#39;)} in Italian are ciao &gt; cheers.txt</span>
+<span class="hll"><span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+</span><span class="hll"><span class="s2">    	echo ${str_in.join(&#39;, &#39;)} in Italian are ciao &gt; cheers.txt</span>
 </span><span class="s2">    &quot;&quot;&quot;</span>
 <span class="o">}</span>
 
-<span class="cm">/*</span>
-<span class="cm"> * A workflow can be named as a function and receive an input using the take keyword</span>
+<span class="hll"><span class="cm">/*</span>
+</span><span class="cm"> * A workflow can be named as a function and receive an input using the take keyword</span>
 <span class="cm"> */</span>
 
 <span class="n">workflow</span><span class="w"> </span><span class="n">first_pipeline</span><span class="w"> </span><span class="o">{</span>
