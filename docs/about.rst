@@ -49,9 +49,9 @@ This slow-paced hands-on internal course is designed for absolute beginners who 
 Dates, time, location
 =========================
 
-* Dates: From 6th of February to 9th of February 2024.
+* Dates: From 22nd to 25th of April 2025.
 
-* Location: ALBA.
+* Location: CRG training room
 
 Program
 ------------------------
@@ -68,19 +68,13 @@ Program
 * 15:30-16:00 Break
 * 16:00-17:30 Directive and resuming 
 
-*Day 2: Linux containers*
-
-* 14:00-15:00 - Linux containers. Docker introduction and running
-* 15:00-15.30 - Break
-* 15:30-17.00 - Building Docker containers. Singularity/Apptainer
-
-*Day 3: Run a Nextflow pipeline in different environments*
+*Day 2: Run a Nextflow pipeline in different environments*
 
 * 14:00-15:00  Singularity and more processes
 * 15:00-15.30  Break
 * 15:30-17.00 Profiles and cloud
 
-*Day 4: Nextflow modules and Tower*
+*Day 3: Nextflow modules and Tower*
 
 * 14:00-15:00 Modules
 * 15:00-15.30 Break
@@ -103,7 +97,6 @@ Learning objectives
 * Describe and explain Nextflow basic concepts.
 * Test and modify a Nextflow pipeline.
 * Implement short blocks of code into a Nextflow pipeline.
-* Understand, run and build Linux containers
 * Use containers in Nextflow processes
 * Develop a Nextflow pipeline from scratch.
 * Run a pipeline in diverse computational environments (local, HPC, cloud).
