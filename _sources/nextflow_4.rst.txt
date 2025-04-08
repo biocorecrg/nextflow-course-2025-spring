@@ -7,19 +7,17 @@
 Modules and how to re-use the code
 ==================================
 
-A great advantage of the new DSL2 is to allow the **modularization of the code**.
+A great advantage of the Nextflow is to allow the **modularization of the code**.
 In particular, you can move a named workflow within a module and keep it aside for being accessed by different pipelines.
 
 The **test4** folder provides an example of using modules.
-
 
 .. literalinclude:: ../nextflow/test4/test4.nf
    :language: groovy
    
 
-We now include two modules, named **fastqc** and **multiqc**, from ```${baseDir}/modules/fastqc.nf``` and ```${baseDir}/modules/multiqc.nf```.
+We now include two modules, named **fastqc** and **multiqc**, from ```${projectDir}/modules/fastqc.nf``` and ```${projectDir}/modules/multiqc.nf```.
 Let's inspect the **multiQC** module:
-
 
 .. literalinclude:: ../nextflow/test4/modules/multiqc.nf
    :language: groovy
@@ -29,78 +27,27 @@ The module **multiqc** takes as **input** a channel with files containing reads 
 
 The module contains the directive **publishDir**, the tag, and the container to be used and has a similar input, output, and script session as the fastqc process in **test3.nf**.
 
-A module can contain its own parameters that can be used for connecting the main script to some variables inside the module.
+A module can have hardcoded information such as the label and the container, but you can also specify some of them via `nextflow.config`.
 
-In this example, we have the declaration of two **parameters** that are defined at the beginning:
+
+In this example, we have the hardcoded labels, output director, and label:
 
 .. literalinclude:: ../nextflow/test4/modules/fastqc.nf
    :language: groovy
-   :emphasize-lines: 5-6
+   :emphasize-lines: 8-10
 
+In the multiqc module, we don't specify the container. We indicate it via `nextflow.config` file using the **withName** selector.
 
-They can be overridden from the main script that is calling the module:
-
-- The parameter **params.OUTPUT** can be used for connecting the output of this module with the one in the main script.
-- The parameter **params.CONTAINER** can be used for declaring the image to use for this particular module.
-
-In this example, in our main script, we pass only the OUTPUT parameters by writing them as follows:
-
-.. literalinclude:: ../nextflow/test4/test4.nf
+.. literalinclude:: ../nextflow/nextflow.config
    :language: groovy
-   :emphasize-lines: 54
-
-
-While we keep the information of the container inside the module for better reproducibility:
-
-.. literalinclude:: ../nextflow/test4/modules/multiqc.nf
-   :language: groovy
-   :emphasize-lines: 5
+   :emphasize-lines: 19-21,40-43,63-66
 
 
 Here you see that we are not using our own image, but rather we use the image provided by **biocontainers** in `quay <https://quay.io/>`__.
 
-
-Let's have a look at the **fastqc.nf** module:
-
-.. literalinclude:: ../nextflow/test4/modules/fastqc.nf
-   :language: groovy
-
-
-It is very similar to the multiqc one: we just add an extra parameter for connecting the resources defined in the **nextflow.config** file and the label indicated in the process. Also in the script part, there is a connection between the fastqc command line and the number of threads defined in the nextflow config file.
-
-To use this module, we have to change the main code as follows:
-
-.. literalinclude:: ../nextflow/test4/test4.nf
-   :language: groovy
-   :emphasize-lines: 55
-
-The label **twocpus** is specified in the **nextflow.config** file for each profile:
-
-.. literalinclude:: ../nextflow/test4/modules/nextflow.config
-   :language: groovy
-   :emphasize-lines: 16,32,53
-
 .. note::
 
 	IMPORTANT: You have to specify a default image to run nextflow -with-docker or -with-singularity and you have to have a container(s) defined inside modules.
-
-EXERCISE
-===========
-
-Make some module wrapper for the **test_alba** pipeline
-
-.. raw:: html
-
-   <details>
-   <summary><a>Solution</a></summary>
-
-**Solution in the folder test_alba_mod**
-
-.. raw:: html
-
-   </details>
-|
-|
 
 
 Reporting and graphical interface
@@ -117,20 +64,20 @@ Nextflow has an embedded function for reporting information about the resources 
   :width: 800
 
 
-**Nextflow Tower** is an open-source monitoring and managing platform for Nextflow workflows. There are two versions:
+**Nextflow Seqera Platform (formerly known as Tower)** is an open-source monitoring and management platform for Nextflow workflows. There are two versions:
 
 - Open source for monitoring of single pipelines.
 - Commercial one for workflow management, monitoring, and resource optimization.
 
 We will show the open-source one.
 
-First, you need to access the `tower.nf <https://tower.nf/>`__ website and login.
+First, you need to access the `Seqera platform <https://https://cloud.seqera.io/>`__ website and login.
 
 
 .. image:: images/tower.png
   :width: 800
 
-We recommend using either Google or GitHub for login. The email has to be accepted manually by the tower team.
+We recommend using either Google or GitHub for login. 
 
 .. image:: images/tower0.png
   :width: 800
@@ -141,7 +88,7 @@ Once you are signed in you will see a page like this:
   :width: 800
 
 
-You can generate your token at `https://tower.nf/tokens <https://tower.nf/tokens>`__ and copy-paste it into your pipeline using this snippet in the configuration file:
+You can generate your token at `https://cloud.seqera.io/tokens <https://cloud.seqera.io/tokens>`__ and copy-paste it into your pipeline using this snippet in the configuration file:
 
 .. code-block:: groovy
 
@@ -162,7 +109,7 @@ Now we can launch the pipeline:
 
 .. code-block:: console
 
-	nextflow run test5.nf -with-singularity -with-tower -bg > log
+	nextflow run test5.nf -with-singularity -with-tower -params-file params.yaml -bg > log
 
 
 	CAPSULE: Downloading dependency io.nextflow:nf-tower:jar:20.09.1-edge
@@ -183,7 +130,7 @@ and go to the tower website again:
   :width: 800
 
 
-When the pipeline is finished we can also receive a mail.
+Once the pipeline is finished, you can also receive a mail.
 
 
 .. image:: images/tower4.png

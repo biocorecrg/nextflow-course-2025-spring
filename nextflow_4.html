@@ -50,7 +50,6 @@
 <li class="toctree-l1"><a class="reference internal" href="nextflow_3.html">3 Nextflow</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4 Nextflow</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#modules-and-how-to-re-use-the-code">Modules and how to re-use the code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exercise">EXERCISE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reporting-and-graphical-interface">Reporting and graphical interface</a></li>
 </ul>
 </li>
@@ -84,19 +83,10 @@
 <span id="nextflow-4-page"></span><h1>4 Nextflow<a class="headerlink" href="#nextflow" title="Link to this heading"></a></h1>
 <section id="modules-and-how-to-re-use-the-code">
 <h2>Modules and how to re-use the code<a class="headerlink" href="#modules-and-how-to-re-use-the-code" title="Link to this heading"></a></h2>
-<p>A great advantage of the new DSL2 is to allow the <strong>modularization of the code</strong>.
+<p>A great advantage of the Nextflow is to allow the <strong>modularization of the code</strong>.
 In particular, you can move a named workflow within a module and keep it aside for being accessed by different pipelines.</p>
 <p>The <strong>test4</strong> folder provides an example of using modules.</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="cm">/* </span>
-<span class="cm"> * This code enables the new dsl of Nextflow. </span>
-<span class="cm"> */</span>
-
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-
-<span class="cm">/* </span>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/* </span>
 <span class="cm"> * NextFlow test pipe</span>
 <span class="cm"> * @authors</span>
 <span class="cm"> * Luca Cozzuto &lt;lucacozzuto@gmail.com&gt;</span>
@@ -126,13 +116,6 @@ In particular, you can move a named workflow within a module and keep it aside f
 <span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span>
 <span class="w">    </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span>
 <span class="o">}</span>
-
-<span class="cm">/*</span>
-<span class="cm"> * Defining the output folders.</span>
-<span class="cm"> */</span>
-<span class="n">fastqcOutputFolder</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_fastqc&quot;</span>
-<span class="n">multiqcOutputFolder</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_multiQC&quot;</span>
-
 <span class="w"> </span>
 <span class="n">Channel</span>
 <span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">reads</span><span class="w"> </span><span class="o">)</span><span class="w">  											 </span><span class="c1">// read the files indicated by the wildcard                            </span>
@@ -140,8 +123,8 @@ In particular, you can move a named workflow within a module and keep it aside f
 <span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">reads_for_fastqc</span><span class="o">}</span><span class="w"> 											 </span><span class="c1">// make the channel &quot;reads_for_fastqc&quot;</span>
 
 
-<span class="n">include</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">multiqc</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s2">&quot;${baseDir}/modules/multiqc&quot;</span><span class="w"> </span><span class="n">addParams</span><span class="o">(</span><span class="nl">OUTPUT:</span><span class="w"> </span><span class="n">multiqcOutputFolder</span><span class="o">)</span>
-<span class="n">include</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">fastqc</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s2">&quot;${baseDir}/modules/fastqc&quot;</span><span class="w"> </span><span class="n">addParams</span><span class="o">(</span><span class="nl">OUTPUT:</span><span class="w"> </span><span class="n">fastqcOutputFolder</span><span class="o">,</span><span class="w"> </span><span class="nl">LABEL:</span><span class="s2">&quot;twocpus&quot;</span><span class="o">)</span>
+<span class="n">include</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">multiqc</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s2">&quot;${projectDir}/modules/multiqc&quot;</span><span class="w"> </span>
+<span class="n">include</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">fastqc</span><span class="w"> </span><span class="o">}</span><span class="w">  </span><span class="n">from</span><span class="w"> </span><span class="s2">&quot;${projectDir}/modules/fastqc&quot;</span>
 <span class="w"> </span>
 <span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
 <span class="w">	</span><span class="n">fastqc_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastqc</span><span class="o">(</span><span class="n">reads_for_fastqc</span><span class="o">)</span>
@@ -154,18 +137,15 @@ In particular, you can move a named workflow within a module and keep it aside f
 <span class="o">}</span>
 </pre></div>
 </div>
-<p>We now include two modules, named <strong>fastqc</strong> and <strong>multiqc</strong>, from <code class="docutils literal notranslate"><span class="pre">`${baseDir}/modules/fastqc.nf`</span></code> and <code class="docutils literal notranslate"><span class="pre">`${baseDir}/modules/multiqc.nf`</span></code>.
+<p>We now include two modules, named <strong>fastqc</strong> and <strong>multiqc</strong>, from <code class="docutils literal notranslate"><span class="pre">`${projectDir}/modules/fastqc.nf`</span></code> and <code class="docutils literal notranslate"><span class="pre">`${projectDir}/modules/multiqc.nf`</span></code>.
 Let’s inspect the <strong>multiQC</strong> module:</p>
 <div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
 <span class="cm">*  multiqc module</span>
 <span class="cm">*/</span>
 
-<span class="n">params</span><span class="o">.</span><span class="na">CONTAINER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;quay.io/biocontainers/multiqc:1.9--pyh9f0ad1d_0&quot;</span>
-<span class="n">params</span><span class="o">.</span><span class="na">OUTPUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;multiqc_output&quot;</span>
 
 <span class="n">process</span><span class="w"> </span><span class="n">multiqc</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">publishDir</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">OUTPUT</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="o">)</span>
-<span class="w">    </span><span class="n">container</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">CONTAINER</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="o">(</span><span class="s2">&quot;multiqc_output&quot;</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="o">)</span>
 
 <span class="w">    </span><span class="nl">input:</span>
 <span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="n">inputfiles</span><span class="o">)</span>
@@ -182,23 +162,19 @@ Let’s inspect the <strong>multiQC</strong> module:</p>
 </div>
 <p>The module <strong>multiqc</strong> takes as <strong>input</strong> a channel with files containing reads and produces as <strong>output</strong> the files generated by the multiqc program.</p>
 <p>The module contains the directive <strong>publishDir</strong>, the tag, and the container to be used and has a similar input, output, and script session as the fastqc process in <strong>test3.nf</strong>.</p>
-<p>A module can contain its own parameters that can be used for connecting the main script to some variables inside the module.</p>
-<p>In this example, we have the declaration of two <strong>parameters</strong> that are defined at the beginning:</p>
+<p>A module can have hardcoded information such as the label and the container, but you can also specify some of them via <cite>nextflow.config</cite>.</p>
+<p>In this example, we have the hardcoded labels, output director, and label:</p>
 <div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
 <span class="cm">*  fastqc module</span>
 <span class="cm">*/</span>
 
-<span class="hll"><span class="n">params</span><span class="o">.</span><span class="na">CONTAINER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;quay.io/biocontainers/fastqc:0.11.9--0&quot;</span>
-</span><span class="hll"><span class="n">params</span><span class="o">.</span><span class="na">OUTPUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;fastqc_output&quot;</span>
-</span><span class="n">params</span><span class="o">.</span><span class="na">LABEL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
-
-
 <span class="n">process</span><span class="w"> </span><span class="n">fastqc</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">publishDir</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">OUTPUT</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="o">)</span>
 <span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${reads}&quot;</span><span class="w"> </span><span class="o">}</span>
-<span class="w">    </span><span class="n">container</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">CONTAINER</span>
-<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">LABEL</span><span class="o">)</span>
 
+<span class="hll"><span class="w">    </span><span class="n">publishDir</span><span class="o">(</span><span class="s2">&quot;fastqc_out&quot;</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="o">)</span>
+</span><span class="hll"><span class="w">    </span><span class="n">container</span><span class="w"> </span><span class="s2">&quot;quay.io/biocontainers/fastqc:0.11.9--0&quot;</span>
+</span><span class="hll"><span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="s1">&#39;onecpu&#39;</span>
+</span>
 <span class="w">    </span><span class="nl">input:</span>
 <span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="n">reads</span><span class="o">)</span>
 
@@ -212,217 +188,11 @@ Let’s inspect the <strong>multiQC</strong> module:</p>
 <span class="o">}</span>
 </pre></div>
 </div>
-<p>They can be overridden from the main script that is calling the module:</p>
-<ul class="simple">
-<li><p>The parameter <strong>params.OUTPUT</strong> can be used for connecting the output of this module with the one in the main script.</p></li>
-<li><p>The parameter <strong>params.CONTAINER</strong> can be used for declaring the image to use for this particular module.</p></li>
-</ul>
-<p>In this example, in our main script, we pass only the OUTPUT parameters by writing them as follows:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="cm">/* </span>
-<span class="cm"> * This code enables the new dsl of Nextflow. </span>
-<span class="cm"> */</span>
-
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-
-<span class="cm">/* </span>
-<span class="cm"> * NextFlow test pipe</span>
-<span class="cm"> * @authors</span>
-<span class="cm"> * Luca Cozzuto &lt;lucacozzuto@gmail.com&gt;</span>
-<span class="cm"> * </span>
-<span class="cm"> */</span>
-
-<span class="cm">/*</span>
-<span class="cm"> * Input parameters: read pairs</span>
-<span class="cm"> * Params are stored in the params.config file</span>
-<span class="cm"> */</span>
-
-<span class="n">version</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
-<span class="c1">// this prevents a warning of undefined parameter</span>
-<span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
-
-<span class="c1">// this prints the input parameters</span>
-<span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">BIOCORE@CRG - N F TESTPIPE  ~  version ${version}</span>
-<span class="s2">=============================================</span>
-<span class="s2">reads                           : ${params.reads}</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<span class="c1">// this prints the help in case you use --help parameter in the command line and it stops the pipeline</span>
-<span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;This is the Biocore\&#39;s NF test pipeline&#39;</span>
-<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;Enjoy!&#39;</span>
-<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span>
-<span class="w">    </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span>
-<span class="o">}</span>
-
-<span class="cm">/*</span>
-<span class="cm"> * Defining the output folders.</span>
-<span class="cm"> */</span>
-<span class="n">fastqcOutputFolder</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_fastqc&quot;</span>
-<span class="n">multiqcOutputFolder</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_multiQC&quot;</span>
-
-<span class="w"> </span>
-<span class="n">Channel</span>
-<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">reads</span><span class="w"> </span><span class="o">)</span><span class="w">  											 </span><span class="c1">// read the files indicated by the wildcard                            </span>
-<span class="w">    </span><span class="o">.</span><span class="na">ifEmpty</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="s2">&quot;Cannot find any reads matching: ${params.reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="c1">// if empty, complains</span>
-<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">reads_for_fastqc</span><span class="o">}</span><span class="w"> 											 </span><span class="c1">// make the channel &quot;reads_for_fastqc&quot;</span>
-
-
-<span class="hll"><span class="n">include</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">multiqc</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s2">&quot;${baseDir}/modules/multiqc&quot;</span><span class="w"> </span><span class="n">addParams</span><span class="o">(</span><span class="nl">OUTPUT:</span><span class="w"> </span><span class="n">multiqcOutputFolder</span><span class="o">)</span>
-</span><span class="n">include</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">fastqc</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s2">&quot;${baseDir}/modules/fastqc&quot;</span><span class="w"> </span><span class="n">addParams</span><span class="o">(</span><span class="nl">OUTPUT:</span><span class="w"> </span><span class="n">fastqcOutputFolder</span><span class="o">,</span><span class="w"> </span><span class="nl">LABEL:</span><span class="s2">&quot;twocpus&quot;</span><span class="o">)</span>
-<span class="w"> </span>
-<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
-<span class="w">	</span><span class="n">fastqc_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastqc</span><span class="o">(</span><span class="n">reads_for_fastqc</span><span class="o">)</span>
-<span class="w">	</span><span class="n">multiqc</span><span class="o">(</span><span class="n">fastqc_out</span><span class="o">.</span><span class="na">collect</span><span class="o">())</span>
-<span class="o">}</span>
-
-
-<span class="n">workflow</span><span class="o">.</span><span class="na">onComplete</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>
-<span class="w">	</span><span class="n">println</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">success</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;\nDone! Open the following report in your browser --&gt; ${multiqcOutputFolder}/multiqc_report.html\n&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Oops .. something went wrong&quot;</span><span class="w"> </span><span class="o">)</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-<p>While we keep the information of the container inside the module for better reproducibility:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">*  multiqc module</span>
-<span class="cm">*/</span>
-
-<span class="hll"><span class="n">params</span><span class="o">.</span><span class="na">CONTAINER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;quay.io/biocontainers/multiqc:1.9--pyh9f0ad1d_0&quot;</span>
-</span><span class="n">params</span><span class="o">.</span><span class="na">OUTPUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;multiqc_output&quot;</span>
-
-<span class="n">process</span><span class="w"> </span><span class="n">multiqc</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">publishDir</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">OUTPUT</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="o">)</span>
-<span class="w">    </span><span class="n">container</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">CONTAINER</span>
-
-<span class="w">    </span><span class="nl">input:</span>
-<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="n">inputfiles</span><span class="o">)</span>
-
-<span class="w">    </span><span class="nl">output:</span>
-<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;multiqc_report.html&quot;</span>
-
-<span class="w">    </span><span class="nl">script:</span>
-<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    multiqc .</span>
-<span class="s2">    &quot;&quot;&quot;</span>
-<span class="o">}</span>
-</pre></div>
-</div>
+<p>In the multiqc module, we don’t specify the container. We indicate it via <cite>nextflow.config</cite> file using the <strong>withName</strong> selector.</p>
 <p>Here you see that we are not using our own image, but rather we use the image provided by <strong>biocontainers</strong> in <a class="reference external" href="https://quay.io/">quay</a>.</p>
-<p>Let’s have a look at the <strong>fastqc.nf</strong> module:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">*  fastqc module</span>
-<span class="cm">*/</span>
-
-<span class="n">params</span><span class="o">.</span><span class="na">CONTAINER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;quay.io/biocontainers/fastqc:0.11.9--0&quot;</span>
-<span class="n">params</span><span class="o">.</span><span class="na">OUTPUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;fastqc_output&quot;</span>
-<span class="n">params</span><span class="o">.</span><span class="na">LABEL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
-
-
-<span class="n">process</span><span class="w"> </span><span class="n">fastqc</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">publishDir</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">OUTPUT</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="o">)</span>
-<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${reads}&quot;</span><span class="w"> </span><span class="o">}</span>
-<span class="w">    </span><span class="n">container</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">CONTAINER</span>
-<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">LABEL</span><span class="o">)</span>
-
-<span class="w">    </span><span class="nl">input:</span>
-<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="n">reads</span><span class="o">)</span>
-
-<span class="w">    </span><span class="nl">output:</span>
-<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;*_fastqc*&quot;</span><span class="o">)</span>
-
-<span class="w">    </span><span class="nl">script:</span>
-<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        fastqc -t ${task.cpus} ${reads}</span>
-<span class="s2">    &quot;&quot;&quot;</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-<p>It is very similar to the multiqc one: we just add an extra parameter for connecting the resources defined in the <strong>nextflow.config</strong> file and the label indicated in the process. Also in the script part, there is a connection between the fastqc command line and the number of threads defined in the nextflow config file.</p>
-<p>To use this module, we have to change the main code as follows:</p>
-<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
-
-<span class="cm">/* </span>
-<span class="cm"> * This code enables the new dsl of Nextflow. </span>
-<span class="cm"> */</span>
-
-<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
-
-
-<span class="cm">/* </span>
-<span class="cm"> * NextFlow test pipe</span>
-<span class="cm"> * @authors</span>
-<span class="cm"> * Luca Cozzuto &lt;lucacozzuto@gmail.com&gt;</span>
-<span class="cm"> * </span>
-<span class="cm"> */</span>
-
-<span class="cm">/*</span>
-<span class="cm"> * Input parameters: read pairs</span>
-<span class="cm"> * Params are stored in the params.config file</span>
-<span class="cm"> */</span>
-
-<span class="n">version</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
-<span class="c1">// this prevents a warning of undefined parameter</span>
-<span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
-
-<span class="c1">// this prints the input parameters</span>
-<span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">BIOCORE@CRG - N F TESTPIPE  ~  version ${version}</span>
-<span class="s2">=============================================</span>
-<span class="s2">reads                           : ${params.reads}</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<span class="c1">// this prints the help in case you use --help parameter in the command line and it stops the pipeline</span>
-<span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;This is the Biocore\&#39;s NF test pipeline&#39;</span>
-<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;Enjoy!&#39;</span>
-<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span>
-<span class="w">    </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span>
-<span class="o">}</span>
-
-<span class="cm">/*</span>
-<span class="cm"> * Defining the output folders.</span>
-<span class="cm"> */</span>
-<span class="n">fastqcOutputFolder</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_fastqc&quot;</span>
-<span class="n">multiqcOutputFolder</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_multiQC&quot;</span>
-
-<span class="w"> </span>
-<span class="n">Channel</span>
-<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">reads</span><span class="w"> </span><span class="o">)</span><span class="w">  											 </span><span class="c1">// read the files indicated by the wildcard                            </span>
-<span class="w">    </span><span class="o">.</span><span class="na">ifEmpty</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="s2">&quot;Cannot find any reads matching: ${params.reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="c1">// if empty, complains</span>
-<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">reads_for_fastqc</span><span class="o">}</span><span class="w"> 											 </span><span class="c1">// make the channel &quot;reads_for_fastqc&quot;</span>
-
-
-<span class="n">include</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">multiqc</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s2">&quot;${baseDir}/modules/multiqc&quot;</span><span class="w"> </span><span class="n">addParams</span><span class="o">(</span><span class="nl">OUTPUT:</span><span class="w"> </span><span class="n">multiqcOutputFolder</span><span class="o">)</span>
-<span class="hll"><span class="n">include</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">fastqc</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s2">&quot;${baseDir}/modules/fastqc&quot;</span><span class="w"> </span><span class="n">addParams</span><span class="o">(</span><span class="nl">OUTPUT:</span><span class="w"> </span><span class="n">fastqcOutputFolder</span><span class="o">,</span><span class="w"> </span><span class="nl">LABEL:</span><span class="s2">&quot;twocpus&quot;</span><span class="o">)</span>
-</span><span class="w"> </span>
-<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
-<span class="w">	</span><span class="n">fastqc_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastqc</span><span class="o">(</span><span class="n">reads_for_fastqc</span><span class="o">)</span>
-<span class="w">	</span><span class="n">multiqc</span><span class="o">(</span><span class="n">fastqc_out</span><span class="o">.</span><span class="na">collect</span><span class="o">())</span>
-<span class="o">}</span>
-
-
-<span class="n">workflow</span><span class="o">.</span><span class="na">onComplete</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>
-<span class="w">	</span><span class="n">println</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">success</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;\nDone! Open the following report in your browser --&gt; ${multiqcOutputFolder}/multiqc_report.html\n&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Oops .. something went wrong&quot;</span><span class="w"> </span><span class="o">)</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-<p>The label <strong>twocpus</strong> is specified in the <strong>nextflow.config</strong> file for each profile:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>IMPORTANT: You have to specify a default image to run nextflow -with-docker or -with-singularity and you have to have a container(s) defined inside modules.</p>
-</div>
-</section>
-<section id="exercise">
-<h2>EXERCISE<a class="headerlink" href="#exercise" title="Link to this heading"></a></h2>
-<p>Make some module wrapper for the <strong>test_alba</strong> pipeline</p>
-<details>
-<summary><a>Solution</a></summary><p><strong>Solution in the folder test_alba_mod</strong></p>
-</details><div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
 </div>
 </section>
 <section id="reporting-and-graphical-interface">
@@ -433,22 +203,22 @@ Let’s inspect the <strong>multiQC</strong> module:</p>
 </div>
 <a class="reference internal image-reference" href="_images/report.png"><img alt="_images/report.png" src="_images/report.png" style="width: 800px;" />
 </a>
-<p><strong>Nextflow Tower</strong> is an open-source monitoring and managing platform for Nextflow workflows. There are two versions:</p>
+<p><strong>Nextflow Seqera Platform (formerly known as Tower)</strong> is an open-source monitoring and management platform for Nextflow workflows. There are two versions:</p>
 <ul class="simple">
 <li><p>Open source for monitoring of single pipelines.</p></li>
 <li><p>Commercial one for workflow management, monitoring, and resource optimization.</p></li>
 </ul>
 <p>We will show the open-source one.</p>
-<p>First, you need to access the <a class="reference external" href="https://tower.nf/">tower.nf</a> website and login.</p>
+<p>First, you need to access the <a class="reference external" href="https://https://cloud.seqera.io/">Seqera platform</a> website and login.</p>
 <a class="reference internal image-reference" href="_images/tower.png"><img alt="_images/tower.png" src="_images/tower.png" style="width: 800px;" />
 </a>
-<p>We recommend using either Google or GitHub for login. The email has to be accepted manually by the tower team.</p>
+<p>We recommend using either Google or GitHub for login.</p>
 <a class="reference internal image-reference" href="_images/tower0.png"><img alt="_images/tower0.png" src="_images/tower0.png" style="width: 800px;" />
 </a>
 <p>Once you are signed in you will see a page like this:</p>
 <a class="reference internal image-reference" href="_images/tower2.png"><img alt="_images/tower2.png" src="_images/tower2.png" style="width: 800px;" />
 </a>
-<p>You can generate your token at <a class="reference external" href="https://tower.nf/tokens">https://tower.nf/tokens</a> and copy-paste it into your pipeline using this snippet in the configuration file:</p>
+<p>You can generate your token at <a class="reference external" href="https://cloud.seqera.io/tokens">https://cloud.seqera.io/tokens</a> and copy-paste it into your pipeline using this snippet in the configuration file:</p>
 <div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">tower</span><span class="w"> </span><span class="o">{</span>
 <span class="w">  </span><span class="n">accessToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&lt;YOUR TOKEN&gt;&#39;</span>
 <span class="w">  </span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
@@ -460,7 +230,7 @@ Let’s inspect the <strong>multiQC</strong> module:</p>
 </pre></div>
 </div>
 <p>Now we can launch the pipeline:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test5.nf -with-singularity -with-tower -bg &gt; log</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test5.nf -with-singularity -with-tower -params-file params.yaml -bg &gt; log</span>
 
 
 <span class="go">CAPSULE: Downloading dependency io.nextflow:nf-tower:jar:20.09.1-edge</span>
@@ -477,7 +247,7 @@ Let’s inspect the <strong>multiQC</strong> module:</p>
 <p>and go to the tower website again:</p>
 <a class="reference internal image-reference" href="_images/tower3.png"><img alt="_images/tower3.png" src="_images/tower3.png" style="width: 800px;" />
 </a>
-<p>When the pipeline is finished we can also receive a mail.</p>
+<p>Once the pipeline is finished, you can also receive a mail.</p>
 <a class="reference internal image-reference" href="_images/tower4.png"><img alt="_images/tower4.png" src="_images/tower4.png" style="width: 800px;" />
 </a>
 </section>
