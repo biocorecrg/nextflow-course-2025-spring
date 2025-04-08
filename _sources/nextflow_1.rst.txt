@@ -355,7 +355,7 @@ The code above will produce nothing (actually a warning) because it requires the
 
 .. code-block:: console
 
-	nextflow run ex1_a.nf -dsl2
+	nextflow run ex1_a.nf
 	N E X T F L O W  ~  version 22.04.3
 	Launching `ex1_a.nf` [irreverent_leakey] DSL2 - revision: 224d75e0c7
 	=============================================================================
