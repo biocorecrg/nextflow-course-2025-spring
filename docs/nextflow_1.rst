@@ -530,7 +530,7 @@ We can change the pipeline to produce files instead of `standard output <https:/
 
 .. literalinclude:: ../nextflow/test0/test0_c.nf
    :language: groovy
-   :emphasize-lines: 13,14,18,27,28,32
+   :emphasize-lines: 9,10,14,23,24,28
 
 
 
