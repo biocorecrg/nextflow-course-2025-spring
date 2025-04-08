@@ -16,7 +16,7 @@ Here we have two simple processes:
 
 .. literalinclude:: ../nextflow/test1/test1.nf
    :language: groovy
-   :lines: 25-65
+   :lines: 15-70
 
 .. note::
 	The variables used by AWK need to be escaped, otherwise, they will be considered as proper Nextflow variables and thus produce an error. Every special character, e.g., **$**, needs to be escaped (**\$**). This script can be seen at **/test1/test1.nf**
@@ -26,7 +26,7 @@ The input path is fed as a parameter using the script parameters **${inputfile}*
 
 .. literalinclude:: ../nextflow/test1/test1.nf
    :language: groovy
-   :lines: 15-19
+   :lines: 6-12
 
 
 .. note::
@@ -44,7 +44,7 @@ The workflow part connects the two processes so that the output of the first pro
 
 .. literalinclude:: ../nextflow/test1/test1.nf
    :language: groovy
-   :lines: 67-80
+   :lines: 57-72
 
 
 
