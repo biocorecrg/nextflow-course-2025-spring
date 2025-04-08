@@ -1,0 +1,1308 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3 Nextflow &mdash; Nextflow Course 2025  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://biocorecrg.github.io/nextflow-course-2025-spring/nextflow_3.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4 Nextflow" href="nextflow_4.html" />
+    <link rel="prev" title="2 Nextflow" href="nextflow_2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Nextflow Course 2025
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the course</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_1.html">1 Nextflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_2.html">2 Nextflow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3 Nextflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#decoupling-resources-parameters-and-nextflow-script">Decoupling resources, parameters and Nextflow script</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#publishing-final-results">Publishing final results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-help-section-to-a-pipeline">Adding help section to a pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exercise">EXERCISE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-singularity">Using Singularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#profiles">Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deployment-in-the-aws-cloud">Deployment in the AWS cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#making-a-nextflow-pipeline-for-image-processing">Making a Nextflow pipeline for image processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">EXERCISE</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_4.html">4 Nextflow</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Nextflow Course 2025</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">3 Nextflow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/nextflow_3.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nextflow">
+<span id="nextflow-3-page"></span><h1>3 Nextflow<a class="headerlink" href="#nextflow" title="Link to this heading"></a></h1>
+<section id="decoupling-resources-parameters-and-nextflow-script">
+<h2>Decoupling resources, parameters and Nextflow script<a class="headerlink" href="#decoupling-resources-parameters-and-nextflow-script" title="Link to this heading"></a></h2>
+<p>When making complex pipelines it is convenient to keep the definition of resources needed, the default parameters, and the main script separately from each other.
+This can be achieved using two additional files:</p>
+<ul class="simple">
+<li><p>nextflow.config</p></li>
+<li><p>params.config</p></li>
+</ul>
+<p>The <strong>nextflow.config</strong> file allows to indicate resources needed for each class of processes.
+This is achieved by labeling processes in the nextflow.config file:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">    </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+
+<span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;onecpu&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;bigmem&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.7G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The first part defines the “default” resources for a process:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+</span>
+<span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;onecpu&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;bigmem&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.7G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Then are specified the resources needed for a class of processes labeled <strong>bigmem</strong>. In brief, the default options will be overridden for the processes labeled <strong>bigmem</strong> and <strong>onecpu</strong>:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">    </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+
+<span class="hll"><span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;onecpu&#39;</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+</span><span class="hll"><span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="o">}</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;bigmem&#39;</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.7G&#39;</span>
+</span><span class="hll"><span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="o">}</span>
+</span><span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can add the default configuration for shell executions within to the nextflow.config file:</p>
+</div>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">shell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;/bin/bash&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;-euo&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;pipefail&#39;</span><span class="o">]</span>
+<span class="w">        </span><span class="o">...</span>
+</pre></div>
+</div>
+<p>In the script <strong>/test2/test2.nf file</strong>, there are two processes to run two programs:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">fastQC</a> - a tool that calculates a number of quality control metrics on single fastq files;</p></li>
+<li><p><a class="reference external" href="https://multiqc.info/">multiQC</a> - an aggregator of results from bioinformatics tools and samples for generating a single html report.</p></li>
+</ul>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * This code enables the new dsl of Nextflow. </span>
+<span class="cm"> */</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * NextFlow test pipe</span>
+<span class="cm"> * @authors</span>
+<span class="cm"> * Luca Cozzuto &lt;lucacozzuto@gmail.com&gt;</span>
+<span class="cm"> * </span>
+<span class="cm"> */</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Input parameters: read pairs</span>
+<span class="cm"> * Params are stored in the params.config file</span>
+<span class="cm"> */</span>
+
+<span class="n">version</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+<span class="c1">// this prevents a warning of undefined parameter</span>
+<span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+
+<span class="c1">// this prints the input parameters</span>
+<span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">BIOCORE@CRG - N F TESTPIPE  ~  version ${version}</span>
+<span class="s2">=============================================</span>
+<span class="s2">reads                           : ${params.reads}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">// this prints the help in case you use --help parameter in the command line and it stops the pipeline</span>
+<span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;This is the Biocore\&#39;s NF test pipeline&#39;</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;Enjoy!&#39;</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span>
+<span class="w">    </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Defining the output folders.</span>
+<span class="cm"> */</span>
+<span class="n">fastqcOutputFolder</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_fastqc&quot;</span>
+<span class="n">multiqcOutputFolder</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_multiQC&quot;</span>
+
+
+<span class="cm">/* Reading the file list and creating a &quot;Channel&quot;: a queue that connects different channels.</span>
+<span class="cm"> * The queue is consumed by channels, so you cannot re-use a channel for different processes. </span>
+<span class="cm"> * If you need the same data for different processes you need to make more channels.</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">reads</span><span class="w"> </span><span class="o">)</span><span class="w">  											 </span><span class="c1">// read the files indicated by the wildcard                            </span>
+<span class="w">    </span><span class="o">.</span><span class="na">ifEmpty</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="s2">&quot;Cannot find any reads matching: ${params.reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="c1">// if empty, complains</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">reads_for_fastqc</span><span class="o">}</span><span class="w"> 											 </span><span class="c1">// make the channel &quot;reads_for_fastqc&quot;</span>
+
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1. Run FastQC on raw data. A process is the element for executing scripts / programs etc.</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">fastQC</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">fastqcOutputFolder</span><span class="w">  			</span><span class="c1">// where (and whether) to publish the results</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w">  							</span><span class="c1">// during the execution prints the indicated variable for follow-up</span>
+<span class="hll"><span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="s1">&#39;big_mem&#39;</span><span class="w"> </span>
+</span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">reads</span><span class="w">   							</span><span class="c1">// it defines the input of the process. It sets values from a channel</span>
+
+<span class="w">    </span><span class="nl">output:</span><span class="w">									</span><span class="c1">// It defines the output of the process (i.e. files) and send to a new channel</span>
+<span class="w">   	</span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;*_fastqc.*&quot;</span>
+
+<span class="w">    </span><span class="nl">script:</span><span class="w">									</span><span class="c1">// here you have the execution of the script / program. Basically is the command line</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        fastqc ${reads} </span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2. Run multiQC on fastQC results</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">multiQC</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">multiqcOutputFolder</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="w"> 	</span><span class="c1">// this time do not link but copy the output file</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="n">inputfiles</span><span class="o">)</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;multiqc_report.html&quot;</span><span class="o">)</span><span class="w"> 					</span><span class="c1">// do not send the results to any channel</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    multiqc .</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">	</span><span class="n">fastqc_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastQC</span><span class="o">(</span><span class="n">reads_for_fastqc</span><span class="o">)</span>
+<span class="w">	</span><span class="n">multiQC</span><span class="o">(</span><span class="n">fastqc_out</span><span class="o">.</span><span class="na">collect</span><span class="o">())</span>
+<span class="o">}</span>
+
+
+<span class="n">workflow</span><span class="o">.</span><span class="na">onComplete</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>
+<span class="w">	</span><span class="n">println</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">success</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;\nDone! Open the following report in your browser --&gt; ${multiqcOutputFolder}/multiqc_report.html\n&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Oops .. something went wrong&quot;</span><span class="w"> </span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>You can see that the process <strong>fastQC</strong> is labeled ‘bigmem’.</p>
+<p>The last two rows of the config file indicate which containers to use.
+In this example, – and by default, if the repository is not specified, – a container is pulled from the DockerHub.
+In the case of using a singularity container, you can indicate where to store the local image using the <strong>singularity.cacheDir</strong> option:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
+<span class="n">singularity</span><span class="o">.</span><span class="na">cacheDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/singularity&quot;</span>
+</pre></div>
+</div>
+<p>Let’s now launch the script <strong>test2.nf</strong>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">     cd test2;</span>
+<span class="go">     nextflow run test2.nf</span>
+
+<span class="go">     N E X T F L O W  ~  version 20.07.1</span>
+<span class="go">     Launching `test2.nf` [distracted_edison] - revision: e3a80b15a2</span>
+<span class="go">     BIOCORE@CRG - N F TESTPIPE  ~  version 1.0</span>
+<span class="go">     =============================================</span>
+<span class="go">     reads                           : /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/test2/../testdata/*.fastq.gz</span>
+<span class="go">     executor &gt;  local (2)</span>
+<span class="go">     [df/2c45f2] process &gt; fastQC (B7_input_s_chr19.fastq.gz) [  0%] 0 of 2</span>
+<span class="go">     [-        ] process &gt; multiQC                            -</span>
+<span class="go">     Error executing process &gt; &#39;fastQC (B7_H3K4me1_s_chr19.fastq.gz)&#39;</span>
+
+<span class="go">     Caused by:</span>
+<span class="go">       Process `fastQC (B7_H3K4me1_s_chr19.fastq.gz)` terminated with an error exit status (127)</span>
+
+<span class="go">     Command executed:</span>
+
+<span class="go">       fastqc B7_H3K4me1_s_chr19.fastq.gz</span>
+
+<span class="go">     Command exit status:</span>
+<span class="go">       127</span>
+
+<span class="go">     executor &gt;  local (2)</span>
+<span class="go">     [df/2c45f2] process &gt; fastQC (B7_input_s_chr19.fastq.gz) [100%] 2 of 2, failed: 2 ✘</span>
+<span class="go">     [-        ] process &gt; multiQC                            -</span>
+<span class="go">     Error executing process &gt; &#39;fastQC (B7_H3K4me1_s_chr19.fastq.gz)&#39;</span>
+
+<span class="go">     Caused by:</span>
+<span class="go">       Process `fastQC (B7_H3K4me1_s_chr19.fastq.gz)` terminated with an error exit status (127)</span>
+
+<span class="go">     Command executed:</span>
+
+<span class="go">       fastqc B7_H3K4me1_s_chr19.fastq.gz</span>
+
+<span class="go">     Command exit status:</span>
+<span class="go">       127</span>
+
+<span class="go">     Command output:</span>
+<span class="go">       (empty)</span>
+
+<span class="hll"><span class="go">     Command error:</span>
+</span><span class="hll"><span class="go">       .command.sh: line 2: fastqc: command not found</span>
+</span>
+<span class="go">     Work dir:</span>
+<span class="go">       /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/test2/work/c5/18e76b2e6ffd64aac2b52e69bedef3</span>
+
+<span class="go">     Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line</span>
+</pre></div>
+</div>
+<p>We will get a number of errors since no executable is found in our environment/path. This is because the executables are stored in our docker image and we have to tell Nextflow to use the docker image, using the <cite>-with-docker</cite> parameter.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="go">     nextflow run test2.nf -with-docker</span>
+</span>
+<span class="go">     N E X T F L O W  ~  version 20.07.1</span>
+<span class="go">     Launching `test2.nf` [boring_hamilton] - revision: e3a80b15a2</span>
+<span class="go">     BIOCORE@CRG - N F TESTPIPE  ~  version 1.0</span>
+<span class="go">     =============================================</span>
+<span class="go">     reads                           : /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/test2/../testdata/*.fastq.gz</span>
+<span class="go">     executor &gt;  local (3)</span>
+<span class="go">     [22/b437be] process &gt; fastQC (B7_H3K4me1_s_chr19.fastq.gz) [100%] 2 of 2 ✔</span>
+<span class="go">     [1a/cfe63b] process &gt; multiQC                              [  0%] 0 of 1</span>
+<span class="go">     executor &gt;  local (3)</span>
+<span class="go">     [22/b437be] process &gt; fastQC (B7_H3K4me1_s_chr19.fastq.gz) [100%] 2 of 2 ✔</span>
+<span class="go">     [1a/cfe63b] process &gt; multiQC                              [100%] 1 of 1 ✔</span>
+</pre></div>
+</div>
+<p>This time it worked because Nextflow used the image specified in the <strong>nextflow.config</strong> file and containing the executables.</p>
+<p>Now let’s take a look at the <strong>params.config</strong> file:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">params</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">	</span><span class="n">reads</span><span class="w">		</span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/*.fastq.gz&quot;</span>
+<span class="w">	</span><span class="n">email</span><span class="w">		</span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;myemail@google.com&quot;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>As you can see, we indicated two pipeline parameters, <cite>reads</cite> and <cite>email</cite>; when running the pipeline, they can be overridden using <cite>--reads</cite> and <cite>--email</cite>.</p>
+<p>This file is included thanks again to the <strong>nextflow.config</strong> file, here shown entirely</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">includeConfig</span><span class="w"> </span><span class="s2">&quot;$baseDir/params.config&quot;</span>
+</span>
+<span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">    </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+
+<span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;onecpu&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="o">}</span>
+
+<span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;bigmem&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.7G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
+<span class="n">singularity</span><span class="o">.</span><span class="na">cacheDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/singularity&quot;</span>
+</pre></div>
+</div>
+<p>Now, let’s examine the folders generated by the pipeline.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ls  work/2a/22e3df887b1b5ac8af4f9cd0d88ac5/</span>
+
+<span class="go">total 0</span>
+<span class="go">drwxrwxr-x 3 ec2-user ec2-user  26 Apr 23 13:52 .</span>
+<span class="go">drwxr-xr-x 2 root     root     136 Apr 23 13:51 multiqc_data</span>
+<span class="go">drwxrwxr-x 3 ec2-user ec2-user  44 Apr 23 13:51 ..</span>
+</pre></div>
+</div>
+<p>We observe that Docker runs as “root”. This can be problematic and generates security issues. To avoid this we can add this line of code within the process section of the config file:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">containerOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">containerEngine</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;docker&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;-u $(id -u):$(id -g)&#39;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>This will tell Nextflow that if it is run with Docker, it has to produce files that belong to a user rather than the root.</p>
+<section id="publishing-final-results">
+<h3>Publishing final results<a class="headerlink" href="#publishing-final-results" title="Link to this heading"></a></h3>
+<p>The script <strong>test2.nf</strong> generates two new folders, <strong>output_fastqc</strong> and <strong>output_multiQC</strong>, that contain the result of the pipeline output.
+We can indicate which process and output can be considered the final output of the pipeline using the <strong>publishDir</strong> directive that has to be specified at the beginning of a process.</p>
+<p>In our pipeline, we define these folders here:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * This code enables the new dsl of Nextflow. </span>
+<span class="cm"> */</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * NextFlow test pipe</span>
+<span class="cm"> * @authors</span>
+<span class="cm"> * Luca Cozzuto &lt;lucacozzuto@gmail.com&gt;</span>
+<span class="cm"> * </span>
+<span class="cm"> */</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Input parameters: read pairs</span>
+<span class="cm"> * Params are stored in the params.config file</span>
+<span class="cm"> */</span>
+
+<span class="n">version</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+<span class="c1">// this prevents a warning of undefined parameter</span>
+<span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+
+<span class="c1">// this prints the input parameters</span>
+<span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">BIOCORE@CRG - N F TESTPIPE  ~  version ${version}</span>
+<span class="s2">=============================================</span>
+<span class="s2">reads                           : ${params.reads}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">// this prints the help in case you use --help parameter in the command line and it stops the pipeline</span>
+<span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;This is the Biocore\&#39;s NF test pipeline&#39;</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;Enjoy!&#39;</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span>
+<span class="w">    </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">}</span>
+
+<span class="hll"><span class="cm">/*</span>
+</span><span class="hll"><span class="cm"> * Defining the output folders.</span>
+</span><span class="hll"><span class="cm"> */</span>
+</span><span class="hll"><span class="n">fastqcOutputFolder</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_fastqc&quot;</span>
+</span><span class="hll"><span class="n">multiqcOutputFolder</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_multiQC&quot;</span>
+</span>
+
+<span class="cm">/* Reading the file list and creating a &quot;Channel&quot;: a queue that connects different channels.</span>
+<span class="cm"> * The queue is consumed by channels, so you cannot re-use a channel for different processes. </span>
+<span class="cm"> * If you need the same data for different processes you need to make more channels.</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">reads</span><span class="w"> </span><span class="o">)</span><span class="w">  											 </span><span class="c1">// read the files indicated by the wildcard                            </span>
+<span class="w">    </span><span class="o">.</span><span class="na">ifEmpty</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="s2">&quot;Cannot find any reads matching: ${params.reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="c1">// if empty, complains</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">reads_for_fastqc</span><span class="o">}</span><span class="w"> 											 </span><span class="c1">// make the channel &quot;reads_for_fastqc&quot;</span>
+
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1. Run FastQC on raw data. A process is the element for executing scripts / programs etc.</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">fastQC</span><span class="w"> </span><span class="o">{</span>
+<span class="hll"><span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">fastqcOutputFolder</span><span class="w">  			</span><span class="c1">// where (and whether) to publish the results</span>
+</span><span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w">  							</span><span class="c1">// during the execution prints the indicated variable for follow-up</span>
+<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="s1">&#39;big_mem&#39;</span><span class="w"> </span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">reads</span><span class="w">   							</span><span class="c1">// it defines the input of the process. It sets values from a channel</span>
+
+<span class="w">    </span><span class="nl">output:</span><span class="w">									</span><span class="c1">// It defines the output of the process (i.e. files) and send to a new channel</span>
+<span class="w">   	</span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;*_fastqc.*&quot;</span>
+
+<span class="w">    </span><span class="nl">script:</span><span class="w">									</span><span class="c1">// here you have the execution of the script / program. Basically is the command line</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        fastqc ${reads} </span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2. Run multiQC on fastQC results</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">multiQC</span><span class="w"> </span><span class="o">{</span>
+<span class="hll"><span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">multiqcOutputFolder</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="w"> 	</span><span class="c1">// this time do not link but copy the output file</span>
+</span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="n">inputfiles</span><span class="o">)</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;multiqc_report.html&quot;</span><span class="o">)</span><span class="w"> 					</span><span class="c1">// do not send the results to any channel</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    multiqc .</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">	</span><span class="n">fastqc_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastQC</span><span class="o">(</span><span class="n">reads_for_fastqc</span><span class="o">)</span>
+<span class="w">	</span><span class="n">multiQC</span><span class="o">(</span><span class="n">fastqc_out</span><span class="o">.</span><span class="na">collect</span><span class="o">())</span>
+<span class="o">}</span>
+
+
+<span class="n">workflow</span><span class="o">.</span><span class="na">onComplete</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>
+<span class="w">	</span><span class="n">println</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">success</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;\nDone! Open the following report in your browser --&gt; ${multiqcOutputFolder}/multiqc_report.html\n&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Oops .. something went wrong&quot;</span><span class="w"> </span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>You can see that the default mode to publish the results in Nextflow is <cite>soft linking</cite>. You can change this behavior by specifying the mode as indicated in the <strong>multiQC</strong> process.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>IMPORTANT: You can also “move” the results but this is not suggested for files that will be needed for other processes. This will likely disrupt your pipeline</p>
+</div>
+</section>
+</section>
+<section id="adding-help-section-to-a-pipeline">
+<h2>Adding help section to a pipeline<a class="headerlink" href="#adding-help-section-to-a-pipeline" title="Link to this heading"></a></h2>
+<p>Here we describe another good practice: the use of the <cite>--help</cite> parameter. At the beginning of the pipeline, we can write:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * This code enables the new dsl of Nextflow. </span>
+<span class="cm"> */</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * NextFlow test pipe</span>
+<span class="cm"> * @authors</span>
+<span class="cm"> * Luca Cozzuto &lt;lucacozzuto@gmail.com&gt;</span>
+<span class="cm"> * </span>
+<span class="cm"> */</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Input parameters: read pairs</span>
+<span class="cm"> * Params are stored in the params.config file</span>
+<span class="cm"> */</span>
+
+<span class="n">version</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+<span class="c1">// this prevents a warning of undefined parameter</span>
+<span class="hll"><span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+</span><span class="hll">
+</span><span class="hll"><span class="c1">// this prints the input parameters</span>
+</span><span class="hll"><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
+</span><span class="hll"><span class="s2">BIOCORE@CRG - N F TESTPIPE  ~  version ${version}</span>
+</span><span class="hll"><span class="s2">=============================================</span>
+</span><span class="hll"><span class="s2">reads                           : ${params.reads}</span>
+</span><span class="hll"><span class="s2">&quot;&quot;&quot;</span>
+</span><span class="hll">
+</span><span class="hll"><span class="c1">// this prints the help in case you use --help parameter in the command line and it stops the pipeline</span>
+</span><span class="hll"><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;This is the Biocore\&#39;s NF test pipeline&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;Enjoy!&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span>
+</span><span class="hll"><span class="o">}</span>
+</span>
+<span class="cm">/*</span>
+<span class="cm"> * Defining the output folders.</span>
+<span class="cm"> */</span>
+<span class="n">fastqcOutputFolder</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_fastqc&quot;</span>
+<span class="n">multiqcOutputFolder</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_multiQC&quot;</span>
+
+
+<span class="cm">/* Reading the file list and creating a &quot;Channel&quot;: a queue that connects different channels.</span>
+<span class="cm"> * The queue is consumed by channels, so you cannot re-use a channel for different processes. </span>
+<span class="cm"> * If you need the same data for different processes you need to make more channels.</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">reads</span><span class="w"> </span><span class="o">)</span><span class="w">  											 </span><span class="c1">// read the files indicated by the wildcard                            </span>
+<span class="w">    </span><span class="o">.</span><span class="na">ifEmpty</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="s2">&quot;Cannot find any reads matching: ${params.reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="c1">// if empty, complains</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">reads_for_fastqc</span><span class="o">}</span><span class="w"> 											 </span><span class="c1">// make the channel &quot;reads_for_fastqc&quot;</span>
+
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1. Run FastQC on raw data. A process is the element for executing scripts / programs etc.</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">fastQC</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">fastqcOutputFolder</span><span class="w">  			</span><span class="c1">// where (and whether) to publish the results</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w">  							</span><span class="c1">// during the execution prints the indicated variable for follow-up</span>
+<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="s1">&#39;big_mem&#39;</span><span class="w"> </span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">reads</span><span class="w">   							</span><span class="c1">// it defines the input of the process. It sets values from a channel</span>
+
+<span class="w">    </span><span class="nl">output:</span><span class="w">									</span><span class="c1">// It defines the output of the process (i.e. files) and send to a new channel</span>
+<span class="w">   	</span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;*_fastqc.*&quot;</span>
+
+<span class="w">    </span><span class="nl">script:</span><span class="w">									</span><span class="c1">// here you have the execution of the script / program. Basically is the command line</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        fastqc ${reads} </span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2. Run multiQC on fastQC results</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">multiQC</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">multiqcOutputFolder</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="w"> 	</span><span class="c1">// this time do not link but copy the output file</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="n">inputfiles</span><span class="o">)</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;multiqc_report.html&quot;</span><span class="o">)</span><span class="w"> 					</span><span class="c1">// do not send the results to any channel</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    multiqc .</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">	</span><span class="n">fastqc_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastQC</span><span class="o">(</span><span class="n">reads_for_fastqc</span><span class="o">)</span>
+<span class="w">	</span><span class="n">multiQC</span><span class="o">(</span><span class="n">fastqc_out</span><span class="o">.</span><span class="na">collect</span><span class="o">())</span>
+<span class="o">}</span>
+
+
+<span class="n">workflow</span><span class="o">.</span><span class="na">onComplete</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>
+<span class="w">	</span><span class="n">println</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">success</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;\nDone! Open the following report in your browser --&gt; ${multiqcOutputFolder}/multiqc_report.html\n&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Oops .. something went wrong&quot;</span><span class="w"> </span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>so that launching the pipeline with <cite>--help</cite> will show you just the parameters and the help.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test2.nf --help</span>
+
+<span class="go">N E X T F L O W  ~  version 20.07.1</span>
+<span class="go">Launching `test2.nf` [mad_elion] - revision: e3a80b15a2</span>
+<span class="go">BIOCORE@CRG - N F TESTPIPE  ~  version 1.0</span>
+<span class="go">=============================================</span>
+<span class="go">reads                           : /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/test2/../testdata/*.fastq.gz</span>
+<span class="go">This is the Biocore&#39;s NF test pipeline</span>
+<span class="go">Enjoy!</span>
+</pre></div>
+</div>
+</section>
+<section id="exercise">
+<h2>EXERCISE<a class="headerlink" href="#exercise" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Look at the very last EXERCISE of the day before. Change the script and the config file using the label for handling failing processes.</p></li>
+</ul>
+<details>
+<summary><a>Solution</a></summary><p>The process should become:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../../testdata/test.fa&quot;</span>
+
+<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
+
+<span class="c1">// check if the file exists</span>
+<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span>
+
+<span class="w">    </span><span class="c1">// simple awk command</span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    awk &#39;/^&gt;/{f=&quot;seq_&quot;++d} {print &gt; f}&#39; &lt; ${sequencesFile}</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2 for reversing the sequences</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${seq}&quot;</span><span class="w"> </span><span class="o">}</span>
+
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="s2">&quot;output&quot;</span>
+<span class="hll"><span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="s1">&#39;ignorefail&#39;</span>
+</span><span class="w">    </span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">seq</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;all.rev&quot;</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    	cat ${seq} | awk &#39;{if (\$1~&quot;&gt;&quot;) {print \$0} else system(&quot;echo &quot; \$0 &quot; |rev&quot;)}&#39; &gt; all.rev</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span>
+<span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="n">flow2</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">).</span><span class="na">flatten</span><span class="o">()</span>
+<span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span><span class="n">flow1</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="w">   </span><span class="n">flow2</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>and the nextflow.config file would become:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;ignorefail&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">errorStrategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;ignore&#39;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</details><div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<ul class="simple">
+<li><p>Now look at <strong>test2.nf</strong>.</p></li>
+</ul>
+<p>Change this script and the config file using the label for handling failing processes by retrying 3 times and incrementing time.</p>
+<p>You can specify a very low time (5, 10 or 15 seconds) for the fastqc process so it would fail at the beginning.</p>
+<details>
+<summary><a>Solution</a></summary><p>The code should become:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * This code enables the new dsl of Nextflow. </span>
+<span class="cm"> */</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * NextFlow test pipe</span>
+<span class="cm"> * @authors</span>
+<span class="cm"> * Luca Cozzuto &lt;lucacozzuto@gmail.com&gt;</span>
+<span class="cm"> * </span>
+<span class="cm"> */</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Input parameters: read pairs</span>
+<span class="cm"> * Params are stored in the params.config file</span>
+<span class="cm"> */</span>
+
+<span class="n">version</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+<span class="c1">// this prevents a warning of undefined parameter</span>
+<span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+
+<span class="c1">// this prints the input parameters</span>
+<span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">BIOCORE@CRG - N F TESTPIPE  ~  version ${version}</span>
+<span class="s2">=============================================</span>
+<span class="s2">reads                           : ${params.reads}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">// this prints the help in case you use --help parameter in the command line and it stops the pipeline</span>
+<span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;This is the Biocore\&#39;s NF test pipeline&#39;</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;Enjoy!&#39;</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span>
+<span class="w">    </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Defining the output folders.</span>
+<span class="cm"> */</span>
+<span class="n">fastqcOutputFolder</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_fastqc&quot;</span>
+<span class="n">multiqcOutputFolder</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ouptut_multiQC&quot;</span>
+
+
+<span class="cm">/* Reading the file list and creating a &quot;Channel&quot;: a queue that connects different channels.</span>
+<span class="cm"> * The queue is consumed by channels, so you cannot re-use a channel for different processes. </span>
+<span class="cm"> * If you need the same data for different processes you need to make more channels.</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">reads</span><span class="w"> </span><span class="o">)</span><span class="w">  											 </span><span class="c1">// read the files indicated by the wildcard                            </span>
+<span class="w">    </span><span class="o">.</span><span class="na">ifEmpty</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="s2">&quot;Cannot find any reads matching: ${params.reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="c1">// if empty, complains</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">reads_for_fastqc</span><span class="o">}</span><span class="w"> 											 </span><span class="c1">// make the channel &quot;reads_for_fastqc&quot;</span>
+
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1. Run FastQC on raw data. A process is the element for executing scripts / programs etc.</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">fastQC</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">fastqcOutputFolder</span><span class="w">  			</span><span class="c1">// where (and whether) to publish the results</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${reads}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w">  							</span><span class="c1">// during the execution prints the indicated variable for follow-up</span>
+<span class="hll"><span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="s1">&#39;keep_trying&#39;</span>
+</span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">reads</span><span class="w">   							</span><span class="c1">// it defines the input of the process. It sets values from a channel</span>
+
+<span class="w">    </span><span class="nl">output:</span><span class="w">									</span><span class="c1">// It defines the output of the process (i.e. files) and send to a new channel</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;*_fastqc.*&quot;</span>
+
+<span class="w">    </span><span class="nl">script:</span><span class="w">									</span><span class="c1">// here you have the execution of the script / program. Basically is the command line</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        fastqc ${reads} </span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2. Run multiQC on fastQC results</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">multiQC</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">multiqcOutputFolder</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="w"> 	</span><span class="c1">// this time do not link but copy the output file</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="n">inputfiles</span><span class="o">)</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;multiqc_report.html&quot;</span><span class="o">)</span><span class="w"> 					</span><span class="c1">// do not send the results to any channel</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">       multiqc .</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">	</span><span class="n">fastqc_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastQC</span><span class="o">(</span><span class="n">reads_for_fastqc</span><span class="o">)</span>
+<span class="w">	</span><span class="n">multiQC</span><span class="o">(</span><span class="n">fastqc_out</span><span class="o">.</span><span class="na">collect</span><span class="o">())</span>
+<span class="o">}</span>
+
+
+<span class="n">workflow</span><span class="o">.</span><span class="na">onComplete</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>
+<span class="w">	</span><span class="n">println</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">success</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;\nDone! Open the following report in your browser --&gt; ${multiqcOutputFolder}/multiqc_report.html\n&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Oops .. something went wrong&quot;</span><span class="w"> </span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>while the nextflow.config file would be:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">includeConfig</span><span class="w"> </span><span class="s2">&quot;$baseDir/params.config&quot;</span>
+
+<span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">    </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">    </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+
+<span class="w">    </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;keep_trying&#39;</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>
+<span class="w">        </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="mi">10</span><span class="o">.</span><span class="na">second</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">task</span><span class="o">.</span><span class="na">attempt</span><span class="w"> </span><span class="o">}</span>
+<span class="w">        </span><span class="n">errorStrategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;retry&#39;</span><span class="w"> </span>
+<span class="w">        </span><span class="n">maxRetries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w">	</span>
+<span class="w">    </span><span class="o">}</span><span class="w"> 	</span>
+
+<span class="o">}</span>
+
+<span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
+<span class="n">singularity</span><span class="o">.</span><span class="na">cacheDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/singularity&quot;</span>
+</pre></div>
+</div>
+</details><div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="using-singularity">
+<h2>Using Singularity<a class="headerlink" href="#using-singularity" title="Link to this heading"></a></h2>
+<p>We recommend using Singularity instead of Docker in HPC environments.
+This can be done using the Nextflow parameter <cite>-with-singularity</cite> without changing the code.</p>
+<p>Nextflow will take care of <strong>pulling, converting, and storing the image</strong> for you. This will be done only once and then Nextflow will use the stored image for further executions.</p>
+<p>Within an AWS main node, both Docker and Singularity are available. While within the AWS batch system, only Docker is available.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test2.nf -with-singularity -bg &gt; log</span>
+
+<span class="go">tail -f log</span>
+<span class="go">N E X T F L O W  ~  version 20.10.0</span>
+<span class="go">Launching `test2.nf` [soggy_miescher] - revision: 5a0a513d38</span>
+
+<span class="go">BIOCORE@CRG - N F TESTPIPE  ~  version 1.0</span>
+<span class="go">=============================================</span>
+<span class="go">reads                           : /home/ec2-user/git/CoursesCRG_Containers_Nextflow_May_2021/nextflow/test2/../../testdata/*.fastq.gz</span>
+
+<span class="go">Pulling Singularity image docker://biocorecrg/c4lwg-2018:latest [cache /home/ec2-user/git/CoursesCRG_Containers_Nextflow_May_2021/nextflow/test2/singularity/biocorecrg-c4lwg-2018-latest.img]</span>
+<span class="go">[da/eb7564] Submitted process &gt; fastQC (B7_H3K4me1_s_chr19.fastq.gz)</span>
+<span class="go">[f6/32dc41] Submitted process &gt; fastQC (B7_input_s_chr19.fastq.gz)</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>Let’s inspect the folder <cite>singularity</cite>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ls singularity/</span>
+<span class="go">biocorecrg-c4lwg-2018-latest.img</span>
+</pre></div>
+</div>
+<p>This singularity image can be used to execute the code outside the pipeline <strong>exactly the same way</strong> as inside the pipeline.</p>
+<p>Sometimes we can be interested in launching only a specific job, because it might fail or for making a test. For that, we can go to the corresponding temporary folder; for example, one of the fastQC temporary folders:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd work/da/eb7564*/</span>
+</pre></div>
+</div>
+<p>Inspecting the <cite>.command.run</cite> file shows us this piece of code:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="n">nxf_launch</span><span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">set</span><span class="w"> </span><span class="o">+</span><span class="n">u</span><span class="o">;</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">PATH</span><span class="o">=</span><span class="s2">&quot;$PATH&quot;</span><span class="w"> </span><span class="n">SINGULARITYENV_TMP</span><span class="o">=</span><span class="s2">&quot;$TMP&quot;</span><span class="w"> </span><span class="n">SINGULARITYENV_TMPDIR</span><span class="o">=</span><span class="s2">&quot;$TMPDIR&quot;</span><span class="w"> </span><span class="n">singularity</span><span class="w"> </span><span class="n">exec</span><span class="w"> </span><span class="s">/home/</span><span class="n">ec2</span><span class="o">-</span><span class="n">user</span><span class="s">/git/</span><span class="n">CoursesCRG_Containers_Nextflow_May_2021</span><span class="s">/nextflow/</span><span class="n">test2</span><span class="s">/singularity/</span><span class="n">biocorecrg</span><span class="o">-</span><span class="n">c4lwg</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="n">latest</span><span class="o">.</span><span class="na">img</span><span class="w"> </span><span class="s">/bin/</span><span class="n">bash</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="s2">&quot;cd $PWD; /bin/bash -ue /home/ec2-user/git/CoursesCRG_Containers_Nextflow_May_2021/nextflow/test2/work/da/eb756433aa0881d25b20afb5b1366e/.command.sh&quot;</span>
+<span class="o">}</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>This means that Nextflow is running the code by using the <strong>singularity exec</strong> command.</p>
+<p>Thus we can launch this command outside the pipeline (locally):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash .command.run</span>
+
+<span class="go">Started analysis of B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 5% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 10% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 15% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 20% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 25% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 30% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 35% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 40% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 45% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 50% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 55% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">Approx 60% complete for B7_H3K4me1_s_chr19.fastq.gz</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>If you have to submit a job to a HPC you need to use the corresponding program, such as <strong>qsub</strong> if you have a Sun Grid Engine or <strong>sbatch</strong> if you have Slurm. Here an example using Slurm:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sbatch .command.run</span>
+</pre></div>
+</div>
+</section>
+<section id="profiles">
+<h2>Profiles<a class="headerlink" href="#profiles" title="Link to this heading"></a></h2>
+<p>For deploying a pipeline in a cluster or Cloud, in the <strong>nextflow.config</strong> file, we need to indicate what kind of the <a class="reference external" href="https://www.nextflow.io/docs/latest/process.html#executor">executor</a> to use.</p>
+<p>In the Nextflow framework architecture, the executor indicates which <strong>batch-queue system</strong> to use to submit jobs to an HPC or to Cloud.</p>
+<p>The executor is completely abstracted, so you can switch from SGE to SLURM just by changing this parameter in the configuration file.</p>
+<p>You can group different classes of configuration or <strong>profiles</strong> within a single <strong>nextflow.config</strong> file.</p>
+<p>Let’s inspect the <strong>nextflow.config</strong> file in <strong>test3</strong> folder. We can see three different profiles:</p>
+<ul class="simple">
+<li><p>standard</p></li>
+<li><p>cluster</p></li>
+<li><p>cloud</p></li>
+</ul>
+<p>The first profile indicates the resources needed for running the pipeline locally. They are quite small since we have little power and CPU on the test node.</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">includeConfig</span><span class="w"> </span><span class="s2">&quot;$baseDir/params.config&quot;</span>
+
+<span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
+<span class="n">singularity</span><span class="o">.</span><span class="na">cacheDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/singularity&quot;</span>
+
+
+<span class="n">profiles</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="n">standard</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">containerOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">containerEngine</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;docker&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;-u $(id -u):$(id -g)&#39;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="o">}</span>
+<span class="w">        </span><span class="n">executor</span><span class="o">=</span><span class="s2">&quot;local&quot;</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">        </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+
+<span class="w">        </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;twocpus&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">            </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">   	  </span><span class="o">}</span>
+<span class="w">   </span><span class="o">}</span>
+</pre></div>
+</div>
+<p>As you can see, we explicitly indicated the <strong>local</strong> executor. By definition, the local executor is a default executor if the pipeline is run without specifying a profile.</p>
+<p>The second profile is for running the pipeline on the <strong>cluster</strong>; here in particular for the cluster supporting the SLURM Workload Manager queuing system:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="w">   </span><span class="n">cluster</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">containerOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">containerEngine</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;docker&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;-u $(id -u):$(id -g)&#39;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="o">}</span>
+<span class="w">        </span><span class="n">executor</span><span class="o">=</span><span class="s2">&quot;slurm&quot;</span>
+
+<span class="w">        </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;1G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">        </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+
+<span class="w">        </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;twocpus&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;long&quot;</span>
+<span class="w">            </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;4G&#39;</span>
+<span class="w">            </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;2&#39;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">      </span><span class="o">}</span>
+<span class="w">   </span><span class="o">}</span>
+</pre></div>
+</div>
+<p>This profile indicates that the system uses <strong>SLURM</strong> as a job scheduler and that we have different queues for small jobs and more intensive ones.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>IMPORTANT: You need to have either Docker or Singularity installed and running in your computing nodes to run the pipeline. In some HPC you might need to “load” the programs using the modules. For this we advice to add this command inside your <strong>.bash_profile</strong> file.</p>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">vi $HOME/.bash_profile</span>
+
+<span class="gp">#</span>ADD<span class="w"> </span>THIS
+
+<span class="go">module load apptainer</span>
+</pre></div>
+</div>
+</section>
+<section id="deployment-in-the-aws-cloud">
+<h2>Deployment in the AWS cloud<a class="headerlink" href="#deployment-in-the-aws-cloud" title="Link to this heading"></a></h2>
+<p>The final profile is for running the pipeline in the <strong>Amazon Cloud</strong>, known as Amazon Web Services or AWS. In particular, we will use <strong>AWS Batch</strong> that allows the execution of containerized workloads in the Amazon cloud infrastructure (where NNNN is the number of your bucket which you can see in the mounted folder <cite>/mnt</cite> by typing the command <strong>df</strong>).</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">includeConfig</span><span class="w"> </span><span class="s2">&quot;$baseDir/params.config&quot;</span>
+
+<span class="n">process</span><span class="o">.</span><span class="na">container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;biocorecrg/c4lwg-2018:latest&#39;</span>
+<span class="n">singularity</span><span class="o">.</span><span class="na">cacheDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/singularity&quot;</span>
+
+
+<span class="n">profiles</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="n">standard</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">containerOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">containerEngine</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;docker&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;-u $(id -u):$(id -g)&#39;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="o">}</span>
+<span class="w">        </span><span class="n">executor</span><span class="o">=</span><span class="s2">&quot;local&quot;</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">        </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+
+<span class="w">        </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;twocpus&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;0.6G&#39;</span>
+<span class="w">            </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">   	  </span><span class="o">}</span>
+<span class="w">   </span><span class="o">}</span>
+<span class="w">   </span><span class="n">cluster</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">containerOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">containerEngine</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;docker&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;-u $(id -u):$(id -g)&#39;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="o">}</span>
+<span class="w">        </span><span class="n">executor</span><span class="o">=</span><span class="s2">&quot;slurm&quot;</span>
+
+<span class="w">        </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span>
+<span class="w">        </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;1G&#39;</span>
+<span class="w">        </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="w">        </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+
+<span class="w">        </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;twocpus&#39;</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;long&quot;</span>
+<span class="w">            </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;4G&#39;</span>
+<span class="w">            </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;2&#39;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">      </span><span class="o">}</span>
+<span class="w">   </span><span class="o">}</span>
+
+<span class="hll"><span class="w">   </span><span class="n">cloud</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="n">workDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;s3://nf-class-bucket-XXX/work&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="n">aws</span><span class="o">.</span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;eu-central-1&#39;</span>
+</span><span class="hll"><span class="w">    </span><span class="n">aws</span><span class="o">.</span><span class="na">batch</span><span class="o">.</span><span class="na">cliPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;/home/ec2-user/miniconda/bin/aws&#39;</span>
+</span><span class="hll"><span class="w">    </span>
+</span><span class="hll"><span class="w">   </span><span class="n">process</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">       </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;awsbatch&#39;</span>
+</span><span class="hll"><span class="w">       </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;spot&#39;</span>
+</span><span class="hll"><span class="w">       </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;1G&#39;</span>
+</span><span class="hll"><span class="w">       </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+</span><span class="hll"><span class="w">       </span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;6h&#39;</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">       </span><span class="nl">withLabel:</span><span class="w"> </span><span class="s1">&#39;twocpus&#39;</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">           </span><span class="n">memory</span><span class="o">=</span><span class="s1">&#39;2G&#39;</span>
+</span><span class="hll"><span class="w">           </span><span class="n">cpus</span><span class="o">=</span><span class="s1">&#39;2&#39;</span>
+</span><span class="hll"><span class="w">       </span><span class="o">}</span>
+</span><span class="hll"><span class="w">    </span><span class="o">}</span>
+</span><span class="hll"><span class="w">  </span><span class="o">}</span>
+</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>We indicate the <strong>AWS specific parameters</strong> (<strong>region</strong> and <strong>cliPath</strong>) and the executor <strong>awsbatch</strong>.
+Then we indicate the working directory, which should be mounted as <a class="reference external" href="https://aws.amazon.com/s3/">S3 volume</a>.
+This is mandatory when running Nextflow on the cloud.</p>
+<p>We can now launch the pipeline indicating <cite>-profile cloud</cite>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test3.nf -bg -with-docker -profile cloud &gt; log</span>
+</pre></div>
+</div>
+<p>Note that there is no longer a <strong>work</strong> folder in the directory where test3.nf is located, because, in the AWS cloud, the output is copied locally in the folder <strong>/mnt/nf-class-bucket-NNN/work</strong> (you can see the mounted folder - and the corresponding number - typing <strong>df</strong>).</p>
+<p>The multiqc report can be seen on the AWS webpage at <a class="reference external" href="https://nf-class-bucket-NNN.s3.eu-central-1.amazonaws.com/results/ouptut_multiQC/multiqc_report.html">https://nf-class-bucket-NNN.s3.eu-central-1.amazonaws.com/results/ouptut_multiQC/multiqc_report.html</a></p>
+<p>But you need before to change permissions for that file (where NNNN is the number of your bucket):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">chmod 775 /mnt/nf-class-bucket-NNNN/results/ouptut_multiQCmultiqc_report.html</span>
+</pre></div>
+</div>
+<p>Sometimes you can find that the Nextflow process itself is very memory intensive and the main node can run out of memory. To avoid this, you can reduce the memory needed by setting an environmental variable:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export NXF_OPTS=&quot;-Xms50m -Xmx500m&quot;</span>
+</pre></div>
+</div>
+<p>Again we can copy the output file to the bucket.</p>
+<p>We can also tell Nextflow to directly copy the output file to the S3 bucket: to do so, change the parameter <strong>outdir</strong> in the params file (use the bucket corresponding to your AWS instance):</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">outdir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;s3://nf-class-bucket-NNNN/results&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="making-a-nextflow-pipeline-for-image-processing">
+<h2>Making a Nextflow pipeline for image processing<a class="headerlink" href="#making-a-nextflow-pipeline-for-image-processing" title="Link to this heading"></a></h2>
+<p>We can build a pipeline incrementally adding more and more processes.
+Nextflow will handle the dependencies between the input/output and the parallelization.</p>
+<p>Let’s see the content of the folder <strong>nextflow/ex_alba</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ls</span>
+<span class="go">etl_peem.py  importUview_v3.py  step1_denoise.py  step2_normalize.py  step3_aggregate_and_save.py</span>
+</pre></div>
+</div>
+<p>We have some Python scripts made by Fernán and Nicolas for making those steps:</p>
+<ul class="simple">
+<li><p><strong>step1_denoise.py</strong>: it will read an image file (“.dat”), turn it into a NumPy array (“_den.npy”), and denoise it.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="nb">command</span><span class="w"> </span>line
+<span class="go">./step1_denoise.py my_image.dat</span>
+<span class="gp"># </span>output<span class="w"> </span>my_image_den.npy
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>step2_normalize.py</strong>: it will read a denoised NumPy array (“_den.npy”), that is output by the previous step and produces a nomalized / denoised NumPy array (“_den_norm.npy”). It needs the original image file in the current directory for working even if not specified in the command line.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ls ./</span>
+<span class="go">step2_normalize.py my_image_den.npy my_image.dat</span>
+<span class="gp"># </span><span class="nb">command</span><span class="w"> </span>line
+<span class="go">./step2_normalize.py my_image_den.npy</span>
+<span class="gp"># </span>output<span class="w"> </span>my_image_den_norm.npy
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>step3_aggregate_and_save.py</strong>: it will read all the normalized/denoised NumPy arrays together and it will produce a NeXus/HDF5 file called <strong>example.nxs</strong></p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>EXERCISE<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>Make the pipeline considering the use of the docker/singularity image <strong>biocorecrg/alba:0.1</strong> hosted at dockerhub. The images are at <strong>../../testdata/test_images/</strong> and the executor must be specified for working with our infrastructure.</p>
+<details>
+<summary><a>Solution</a></summary><div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * This code enables the new dsl of Nextflow. </span>
+<span class="cm"> */</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+
+<span class="cm">/* </span>
+<span class="cm"> * NextFlow test pipe</span>
+<span class="cm"> * @authors</span>
+<span class="cm"> * Luca Cozzuto &lt;lucacozzuto@gmail.com&gt;</span>
+<span class="cm"> * </span>
+<span class="cm"> */</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Input parameters: read pairs</span>
+<span class="cm"> * Params are stored in the params.config file</span>
+<span class="cm"> */</span>
+
+<span class="n">version</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+<span class="c1">// this prevents a warning of undefined parameter</span>
+<span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+
+<span class="c1">// this prints the input parameters</span>
+<span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">BIOCORE@CRG - N F TESTPIPE  ~  version ${version}</span>
+<span class="s2">=============================================</span>
+<span class="s2">images                           : ${params.images}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">// this prints the help in case you use --help parameter in the command line and it stops the pipeline</span>
+<span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">help</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;This is the Biocore\&#39;s NF test pipeline&#39;</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;Enjoy!&#39;</span>
+<span class="w">    </span><span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="w"> </span><span class="s1">&#39;\n&#39;</span>
+<span class="w">    </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Defining the output folders.</span>
+<span class="cm"> */</span>
+<span class="n">output_denoise</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;output_denoise&quot;</span>
+<span class="n">output_aggregate</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;output_aggregate&quot;</span>
+
+
+<span class="cm">/* Reading the file list and creating a &quot;Channel&quot;: a queue that connects different channels.</span>
+<span class="cm"> * The queue is consumed by channels, so you cannot re-use a channel for different processes. </span>
+<span class="cm"> * If you need the same data for different processes you need to make more channels.</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromFilePairs</span><span class="o">(</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="na">images</span><span class="o">,</span><span class="w"> </span><span class="nl">size:</span><span class="mi">1</span><span class="w"> </span><span class="o">,</span><span class="w"> </span><span class="nl">checkIfExists:</span><span class="w"> </span><span class="kc">true</span><span class="o">)</span><span class="w">  											 </span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">images</span><span class="o">}</span><span class="w"> 			                								 </span>
+
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1. De-noise input image</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">denoise</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">output_denoise</span><span class="w">  			</span>
+
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${image}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w">  				</span>
+<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="s1">&#39;big_mem&#39;</span><span class="w"> </span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">tuple</span><span class="w"> </span><span class="n">val</span><span class="o">(</span><span class="n">id</span><span class="o">),</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="n">image</span><span class="o">)</span><span class="w">   						</span>
+
+<span class="w">    </span><span class="nl">output:</span><span class="w">								</span>
+<span class="w">   	</span><span class="n">tuple</span><span class="w"> </span><span class="n">val</span><span class="o">(</span><span class="n">id</span><span class="o">),</span><span class="w"> </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;*_den.npy&quot;</span><span class="o">)</span>
+
+<span class="w">    </span><span class="nl">script:</span><span class="w">								</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">		step1_denoise.py ${image}</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1. Normalise the de-noise image</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">normalize</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${image}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w">  				</span>
+<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="s1">&#39;big_mem&#39;</span><span class="w"> </span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">tuple</span><span class="w"> </span><span class="n">val</span><span class="o">(</span><span class="n">id</span><span class="o">),</span><span class="w"> </span><span class="n">path</span><span class="o">(</span><span class="n">image</span><span class="o">),</span><span class="w"> </span><span class="n">path</span><span class="o">(</span><span class="n">denoised</span><span class="o">)</span><span class="w">    	</span><span class="c1">// WE NEED THE IMAGE TO BE THERE BUT NOT IN THE COMMAND LINE					</span>
+
+<span class="w">    </span><span class="nl">output:</span><span class="w">								</span>
+<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;*_den_norm.npy&quot;</span><span class="o">)</span>
+
+<span class="w">    </span><span class="nl">script:</span><span class="w">								</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">		step2_normalize.py ${denoised}</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2. Run aggregate on normalized files</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">aggregate</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">publishDir</span><span class="w"> </span><span class="n">output_aggregate</span><span class="o">,</span><span class="w"> </span><span class="nl">mode:</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="w"> 	</span><span class="c1">// this time do not link but copy the output file</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="n">inputfiles</span><span class="o">)</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;*&quot;</span><span class="o">)</span><span class="w"> 					</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    step3_aggregate_and_save.py ./</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span><span class="c1">// HERE WE DO DENOISING </span>
+<span class="w">    </span><span class="n">denois_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">denoise</span><span class="o">(</span><span class="n">images</span><span class="o">)</span>
+<span class="w">    </span><span class="c1">// HERE WE JOIN DENOISE OUTPUT WITH ORIGINAL IMAGES JUST FOR PRINTING PURPOSES</span>
+<span class="w">    </span><span class="n">images</span><span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="n">denois_out</span><span class="o">).</span><span class="na">view</span><span class="o">()</span>
+<span class="w">    </span><span class="c1">// HERE WE RUN NORMALIZE </span>
+<span class="w">    </span><span class="n">normalized_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize</span><span class="o">(</span><span class="n">images</span><span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="n">denois_out</span><span class="o">))</span>
+<span class="w">    </span><span class="n">aggregate</span><span class="o">(</span><span class="n">normalized_out</span><span class="o">.</span><span class="na">collect</span><span class="o">())</span>
+<span class="o">}</span>
+
+
+<span class="n">workflow</span><span class="o">.</span><span class="na">onComplete</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>
+<span class="w">	</span><span class="n">println</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="n">workflow</span><span class="o">.</span><span class="na">success</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;\nDone! The results are in --&gt; ${output_aggregate}\n&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Oops .. something went wrong&quot;</span><span class="w"> </span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</details><div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nextflow_2.html" class="btn btn-neutral float-left" title="2 Nextflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nextflow_4.html" class="btn btn-neutral float-right" title="4 Nextflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,851 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1 Nextflow &mdash; Nextflow Course 2025  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://biocorecrg.github.io/nextflow-course-2025-spring/nextflow_1.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2 Nextflow" href="nextflow_2.html" />
+    <link rel="prev" title="About the course" href="about.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Nextflow Course 2025
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the course</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1 Nextflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reproducibility-in-bioinformatics-and-computational-biology">Reproducibility in bioinformatics and computational biology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#introduction-to-nextflow">Introduction to Nextflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-nextflow">What is Nextflow?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-nextflow-for">What is Nextflow for?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-advantages">Main advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#workflow-structure">Workflow structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nextflow-main-concepts">Nextflow main concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#channels-and-operators">Channels and Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#processes">Processes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#workflow">Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nextflow-log">Nextflow log</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_2.html">2 Nextflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_3.html">3 Nextflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_4.html">4 Nextflow</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Nextflow Course 2025</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">1 Nextflow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/nextflow_1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nextflow">
+<span id="nextflow-1-page"></span><h1>1 Nextflow<a class="headerlink" href="#nextflow" title="Link to this heading"></a></h1>
+<section id="reproducibility-in-bioinformatics-and-computational-biology">
+<h2>Reproducibility in bioinformatics and computational biology<a class="headerlink" href="#reproducibility-in-bioinformatics-and-computational-biology" title="Link to this heading"></a></h2>
+<p>In computational biology, the problem of reproducibility refers to the challenge of ensuring that research findings, particularly those based on computational analyses and algorithms, can be reliably reproduced by other researchers. This issue stems from various factors:</p>
+<ul class="simple">
+<li><p><strong>Complexity of analyses</strong>: bioinformatics often involves complex computational workflows, including data preprocessing, analysis, and interpretation. Small variations in parameters or input data can lead to significantly different results.</p></li>
+<li><p><strong>Dependency on software and tools</strong>: bioinformatics analyses rely heavily on software tools and algorithms, which may lack standardization or documentation. Differences in software versions, configurations, or dependencies can affect reproducibility.</p></li>
+<li><p><strong>Data quality and availability</strong>: bioinformatics studies often use large and diverse datasets, which may be incomplete, noisy, or poorly annotated. Inadequate data documentation or accessibility can hinder reproducibility.</p></li>
+<li><p><strong>Lack of standards and best practices</strong>: there is a lack of standardized protocols and best practices for conducting and reporting bioinformatics analyses. This ambiguity makes it challenging for researchers to reproduce each other’s work accurately.</p></li>
+<li><p><strong>Publication bias and incentives</strong>: journals may prioritize novel and statistically significant findings over replication studies, creating incentives for researchers to prioritize novelty over reproducibility. This can lead to selective reporting and publication bias. We have a growing number of methods and very few papers aiming at comparing them.</p></li>
+</ul>
+<p>To ameliorate this some tools are available:</p>
+<ul class="simple">
+<li><p><strong>Workflow managers</strong> nextflow, snakemake, luigi, airflow</p></li>
+<li><dl class="simple">
+<dt><strong>Linux containers:</strong> docker, singularity, podman, apptainer</dt><dd><ul>
+<li><p>biocontainers</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Virtual environments:</strong> venv, conda, mamba</dt><dd><ul>
+<li><p>bioconda</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><strong>Platforms for code sharing:</strong> GitHub, GitLab, Bitbucket</p></li>
+<li><dl class="simple">
+<dt><strong>Public repositories for scientific data:</strong></dt><dd><ul>
+<li><p>Zenodo, Figshare</p></li>
+<li><p>NCBI, ENA, PDB…</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="introduction-to-nextflow">
+<h2>Introduction to Nextflow<a class="headerlink" href="#introduction-to-nextflow" title="Link to this heading"></a></h2>
+<p>DSL for data-driven computational pipelines. <a class="reference external" href="https://www.nextflow.io">www.nextflow.io</a>.</p>
+<a class="reference internal image-reference" href="_images/nextflow_logo.png"><img alt="_images/nextflow_logo.png" src="_images/nextflow_logo.png" style="width: 400px;" />
+</a>
+<section id="what-is-nextflow">
+<h3>What is Nextflow?<a class="headerlink" href="#what-is-nextflow" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/nextf_groovy.png"><img alt="_images/nextf_groovy.png" src="_images/nextf_groovy.png" style="width: 600px;" />
+</a>
+<p><a class="reference external" href="https://www.nextflow.io">Nextflow</a> is a domain-specific language (DSL) for workflow orchestration that stems from <a class="reference external" href="https://groovy-lang.org/">Groovy</a>. It enables scalable and reproducible workflows using software containers.
+It was developed at the <a class="reference external" href="www.crg.eu">CRG</a> in the Lab of Cedric Notredame by <a class="reference external" href="https://github.com/pditommaso">Paolo Di Tommaso</a>.
+The Nextflow documentation is <a class="reference external" href="https://www.nextflow.io/docs/latest/">available here</a> and you can ask help to the community joining their <a class="reference external" href="https://join.slack.com/t/nextflow/shared_invite/zt-11iwlxtw5-R6SNBpVksOJAx5sPOXNrZg">slack channel</a>.</p>
+<p>In 2020, Nextflow has been upgraded from DSL1 version to DSL2. In this course, we will use exclusively DSL2. It is currently developed and maintained by the company <a class="reference external" href="https://seqera.io/">Seqera Labs</a> a spin-off from the CRG. Each year there is a special event about Nextflow called <a class="reference external" href="https://summit.nextflow.io/">Nextflow summit</a>.</p>
+</section>
+<section id="what-is-nextflow-for">
+<h3>What is Nextflow for?<a class="headerlink" href="#what-is-nextflow-for" title="Link to this heading"></a></h3>
+<p>It is for making pipelines without caring about parallelization, dependencies, intermediate file names, data structures, handling exceptions, resuming executions, etc.</p>
+<p>It was published in <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/28398311/">Nature Biotechnology in 2017</a>.</p>
+<a class="reference internal image-reference" href="_images/NF_pub.png"><img alt="_images/NF_pub.png" src="_images/NF_pub.png" style="width: 600px;" />
+</a>
+<p>A search for Nextflow in Google Scholar gives you about 15,000 results. Many research groups from public centers and companies have adopted this framework for writing their pipelines and methods.</p>
+<p>Here you have a curated list of <a class="reference external" href="https://github.com/nextflow-io/awesome-nextflow">Nextflow pipelines</a>. A community of researchers decided to go further and to build on top of Nextflow a framework for standardizing the pipelines. This ended up in a project called <a class="reference external" href="https://nf-co.re/pipelines">NF-core</a> that currently host 128 pipelines.</p>
+</section>
+<section id="main-advantages">
+<h3>Main advantages<a class="headerlink" href="#main-advantages" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Fast prototyping</strong></p></li>
+</ul>
+<p>You can quickly write a small pipeline that can be <strong>expanded incrementally</strong>.
+<strong>Each task is independent</strong> and can be easily added to others. You can reuse scripts without re-writing or adapting them.</p>
+<ul class="simple">
+<li><p><strong>Reproducibility</strong></p></li>
+</ul>
+<p>Nextflow supports many container technologies like Docker, Singularity / Apptainer, and Podman. Their use will make the pipelines reproducible in any Unix environment. Nextflow is integrated with <strong>GitHub code sharing platform</strong>, so you can call directly a specific version of a pipeline from a repository, download and use it on-the-fly.</p>
+<ul class="simple">
+<li><p><strong>Portability</strong></p></li>
+</ul>
+<p>Nextflow can be executed on <strong>multiple platforms</strong> without modifying the code. It supports several schedulers such as <strong>SGE, LSF, SLURM, PBS, and HTCondor</strong> and cloud platforms like <strong>Kubernetes, Amazon AWS, and Google Cloud</strong>.</p>
+<a class="reference internal image-reference" href="_images/executors.png"><img alt="_images/executors.png" src="_images/executors.png" style="width: 600px;" />
+</a>
+<ul class="simple">
+<li><p><strong>Scalability</strong></p></li>
+</ul>
+<p>Nextflow is based on the <strong>dataflow programming model</strong>, which simplifies writing complex pipelines.
+The tool takes care of <strong>parallelizing the processes</strong> without additional written code.
+The resulting applications are inherently parallel and can scale up or scale out transparently; there is no need to adapt them to a specific platform architecture.</p>
+<ul class="simple">
+<li><p><strong>Facilitate sharing and collaborative coding</strong></p></li>
+</ul>
+<p>Nextflow integrates the main code repositories such as BitBucket, GitHub, and GitLab. Since each module / sub-workflow is independent, it is easier to code in parallel, reducing the bottlenecks.</p>
+<ul class="simple">
+<li><p><strong>Resumable, thanks to continuous checkpoints</strong></p></li>
+</ul>
+<p>All the intermediate results produced during the pipeline execution are automatically tracked.
+For each process <strong>a temporary folder is created and is cached (or not) once resuming an execution</strong>.</p>
+</section>
+<section id="workflow-structure">
+<h3>Workflow structure<a class="headerlink" href="#workflow-structure" title="Link to this heading"></a></h3>
+<p>The workflows can be represented as graphs where the nodes are the <strong>processes</strong> and the edges are the <strong>channels</strong>.
+The <strong>processes</strong> are blocks of code that can be executed - such as scripts or programs - while the <strong>channels</strong> are asynchronous queues able to <strong>connect processes among them via input / output</strong>.</p>
+<a class="reference internal image-reference" href="_images/wf_example.png"><img alt="_images/wf_example.png" src="_images/wf_example.png" style="width: 600px;" />
+</a>
+<p>Processes are independent of each other and can be run in parallel, depending on the number of elements in a channel.
+In the previous example, processes <strong>A</strong>, <strong>B</strong>, and <strong>C</strong> can be run in parallel, and only when they <strong>ALL</strong> end the process <strong>D</strong> is triggered. As you can see an operator is used for collecting or reshaping the output channels for generating a new one that is then consumed by the process <strong>D</strong>.</p>
+</section>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Nextflow is already installed on the machines provided for this course.
+You need at least Java version 11 for the Nextflow installation.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can check the version for Java by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">version</span>
+</pre></div>
+</div>
+</div>
+<p>Then we can install Nextflow with:</p>
+<blockquote>
+<div><p>curl -s <a class="reference external" href="https://get.nextflow.io">https://get.nextflow.io</a> | bash</p>
+</div></blockquote>
+<p>This will create the <code class="docutils literal notranslate"><span class="pre">nextflow</span></code> executable that can be moved, for example, to <code class="docutils literal notranslate"><span class="pre">/usr/local/bin</span></code>.</p>
+<p>We can test that the installation was successful with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run hello</span>
+
+<span class="go">      Nextflow 25.02.2-edge is available - Please consider updating your version to it</span>
+
+<span class="go">      N E X T F L O W   ~  version 25.02.1-edge</span>
+
+<span class="go">      NOTE: Your local project version looks outdated - a different revision is available in the remote repository [afff16a9b4]</span>
+<span class="go">      Launching `https://github.com/nextflow-io/hello` [soggy_snyder] DSL2 - revision: 7588c46ffe [master]</span>
+
+<span class="go">      executor &gt;  local (4)</span>
+<span class="go">      [92/1f14a0] sayHello (4) [100%] 4 of 4 ✔</span>
+<span class="go">      Bonjour world!</span>
+
+<span class="go">      Hello world!</span>
+
+<span class="go">      Ciao world!</span>
+
+<span class="go">      Hola world!</span>
+</pre></div>
+</div>
+<p>This command downloads and runs the pipeline <code class="docutils literal notranslate"><span class="pre">hello</span></code> from the Nextflow official GitHub repository.</p>
+</section>
+</section>
+<section id="nextflow-main-concepts">
+<h2>Nextflow main concepts<a class="headerlink" href="#nextflow-main-concepts" title="Link to this heading"></a></h2>
+<section id="channels-and-operators">
+<h3>Channels and Operators<a class="headerlink" href="#channels-and-operators" title="Link to this heading"></a></h3>
+<p>There are two different types of channels:</p>
+<ul class="simple">
+<li><p>A <strong>queue channel</strong> is a non-blocking unidirectional <a class="reference external" href="https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)">FIFO</a> (First In, First Out) queue which <strong>connects two processes or operators</strong>.</p></li>
+<li><p>A <strong>value channel</strong>, a.k.a. singleton channel, is bound to a single value and can be read unlimited times without consuming its content.</p></li>
+</ul>
+<p>An <strong>operator</strong> is a method that reshapes or connects different channels by applying specific rules.</p>
+<p>We can write a very simple Nextflow script: save the following piece of code in a file called <code class="docutils literal notranslate"><span class="pre">ex1.nf</span></code>. All the examples are in the folder
+<strong>/nextflow/examples/</strong> while the scripts are in folders named <strong>/nextflow/test</strong></p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">// This is a comment</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * This is a block of comments</span>
+<span class="cm"> */</span>
+
+<span class="cm">/* </span>
+<span class="cm">* This is a channel creating </span>
+<span class="cm">* from string values</span>
+<span class="cm">*/</span>
+
+<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+
+<span class="cm">/*</span>
+<span class="cm">* The operator view() can be used to view the channel `str`</span>
+<span class="cm">* https://www.nextflow.io/docs/latest/operator.html#view</span>
+<span class="cm">*/</span>
+
+<span class="n">str</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+</pre></div>
+</div>
+<p>Once the file is saved, you can execute it with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run ex1.nf</span>
+
+<span class="go">N E X T F L O W  ~  version 20.07.1</span>
+<span class="go">Launching `ex1.nf` [agitated_avogadro] - revision: 61a595c5bf</span>
+<span class="go">hello</span>
+<span class="go">hola</span>
+<span class="go">bonjour</span>
+</pre></div>
+</div>
+<p>As you can see, the <strong>Channel</strong> is just a list of values, but it can also be a list of other elements such as <strong>file paths</strong>.</p>
+<p>Let’s create some empty files with the <cite>touch</cite> command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">touch aa.txt bb.txt cc.txt</span>
+</pre></div>
+</div>
+<p>and make another script (ex2.nf) with the following code:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">* Let&#39;s create the channel `my_files`</span>
+<span class="cm">* using the method fromPath</span>
+<span class="cm">*/</span>
+
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="w"> </span><span class="s2">&quot;*.txt&quot;</span><span class="w"> </span><span class="o">)</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">my_files</span><span class="o">}</span>
+
+<span class="c1">// We can use the view() operator again to see the content of channel &quot;my_files&quot;</span>
+
+<span class="n">my_files</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+</pre></div>
+</div>
+<p>We can now execute <cite>ex2.nf</cite>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run ex2.nf</span>
+
+<span class="go">N E X T F L O W  ~  version 20.07.1</span>
+<span class="go">Launching `ex2.nf` [condescending_hugle] - revision: f513c0fac3</span>
+<span class="go">/home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/aa.txt</span>
+<span class="go">/home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/bb.txt</span>
+<span class="go">/home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/cc.txt</span>
+</pre></div>
+</div>
+<p>Once executed, we can see that a folder named <strong>work</strong> is generated. Nextflow stores in this folder the intermediate files generated by the processes.</p>
+<p>In genomics, we often have a couple of files that have to be processed at the same time, such as the paired-end reads, etc. For this Nextflow allows using a special method for generating “tuples” from file pairs.</p>
+<p>We can simulate this situation by generating a couple of files:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">touch aaa_1.txt aaa_2.txt</span>
+</pre></div>
+</div>
+<p>Then we use <a class="reference external" href="https://www.nextflow.io/docs/latest/channel.html#fromfilepairs">fromFilePairs</a> for generating a tuple (script <strong>ex3.nf</strong>):</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">* Let&#39;s create the channel `my_files`</span>
+<span class="cm">* using the method fromFilePairs</span>
+<span class="cm">*/</span>
+
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromFilePairs</span><span class="o">(</span><span class="w"> </span><span class="s2">&quot;aaa_{1,2}.txt&quot;</span><span class="w"> </span><span class="o">)</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">my_files</span><span class="o">}</span>
+
+<span class="n">my_files</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+</pre></div>
+</div>
+<p>Executing it will show the emission of a tuple whose key is the common part of the two input files:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run ex3.nf</span>
+<span class="go">N E X T F L O W  ~  version 21.10.6</span>
+<span class="go">Launching `ex3.nf` [reverent_ampere] - revision: 87d78a151f</span>
+<span class="go">[aaa, [/nfs/users/bi/lcozzuto/aaa/CRG_Nextflow_Jun_2022/nextflow/examples/aaa_1.txt, /nfs/users/bi/lcozzuto/aaa/CRG_Nextflow_Jun_2022/nextflow/examples/aaa_2.txt]]</span>
+</pre></div>
+</div>
+<p>We can reshape the channels in several ways and/or cross them using <a class="reference external" href="https://www.nextflow.io/docs/latest/reference/operator.html">operators</a>   so that they can be used for a particular purpose. In brief, each “emission” of a channel can be used by a process for a specific purpose.
+In the following example, we use the operator <a class="reference external" href="https://www.nextflow.io/docs/latest/reference/operator.html#mix">mix</a> for mixing together the elements of two channels:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run ex4.nf</span>
+<span class="go">N E X T F L O W   ~  version 24.10.0</span>
+
+<span class="go">Launching `ex4.nf` [pedantic_shockley] DSL2 - revision: dd437a0bb3</span>
+
+<span class="go">hello</span>
+<span class="go">hola</span>
+<span class="go">bonjour</span>
+<span class="go">/Users/lcozzuto/ooo/aaa_1.txt</span>
+<span class="go">/Users/lcozzuto/ooo/aaa_2.txt</span>
+<span class="go">/Users/lcozzuto/ooo/aa.txt</span>
+<span class="go">/Users/lcozzuto/ooo/bb.txt</span>
+<span class="go">/Users/lcozzuto/ooo/cc.txt</span>
+</pre></div>
+</div>
+</section>
+<section id="exercise">
+<h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h3>
+<p>Using again the previous 3 <cite>.txt</cite> files (“aa.txt”, “bb.txt”, “cc.txt”), reshape the channels to emit:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A single channel with a <strong>single emission</strong> with all the files</p></li>
+<li><p>A channel with each possible file combination ( A vs A, A vs B, A vs C etc..)</p></li>
+</ul>
+</div></blockquote>
+<p>See here the list of <a class="reference external" href="https://www.nextflow.io/docs/latest/operator.html#">Operators</a> available at the official documentation.</p>
+<details>
+<summary><a>Solution</a></summary><div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="s2">&quot;{aa,bb,cc}.txt&quot;</span><span class="o">)</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">my_files</span><span class="o">}</span>
+
+<span class="n">my_files</span>
+<span class="w">    </span><span class="o">.</span><span class="na">collect</span><span class="o">()</span>
+<span class="w">    </span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+
+<span class="c1">// You can also write it as: my_files.collect().view()</span>
+
+<span class="n">my_files</span>
+<span class="w">    </span><span class="o">.</span><span class="na">combine</span><span class="o">(</span><span class="n">my_files</span><span class="o">)</span>
+<span class="w">    </span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+</pre></div>
+</div>
+</details><div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p>A special very powerful operator is <strong>map</strong>, that allows you reshaping the data in several ways.
+It uses the <a class="reference external" href="https://www.nextflow.io/docs/latest/script.html#closures">Grovvy’s closure</a> for modifying the input channel. In brief, a closure is a piece of code between curly brackets <strong>{}</strong> that can be passed as an argument of a function. It uses as input the implicit variable <strong>it</strong>:</p>
+<p>Here you can see an example:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="n">Channel</span>
+<span class="w">    </span><span class="o">.</span><span class="na">fromPath</span><span class="o">(</span><span class="s2">&quot;{aa,bb,cc}.txt&quot;</span><span class="o">)</span>
+<span class="w">    </span><span class="o">.</span><span class="na">set</span><span class="w"> </span><span class="o">{</span><span class="n">my_files</span><span class="o">}</span>
+
+
+<span class="n">my_files</span>
+<span class="w">    </span><span class="o">.</span><span class="na">collect</span><span class="o">()</span>
+<span class="w">    </span><span class="o">.</span><span class="na">map</span><span class="o">{</span>
+<span class="w">                </span><span class="o">[</span><span class="s2">&quot;my id&quot;</span><span class="o">,</span><span class="w"> </span><span class="n">it</span><span class="o">[</span><span class="mi">0</span><span class="o">],</span><span class="w"> </span><span class="n">it</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="w"> </span><span class="o">]</span>
+<span class="o">}.</span><span class="na">view</span><span class="o">()</span>
+</pre></div>
+</div>
+<p>This will produce:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run map.nf</span>
+<span class="go">N E X T F L O W  ~  version 23.03.0-edge</span>
+<span class="go">Launching `map.nf` [irreverent_nightingale] DSL2 - revision: 48519e083e</span>
+<span class="go">[my id, /Users/lcozzuto/aaa/ropes-linux-mop2-2023/nextflow/examples/aa.txt, /Users/lcozzuto/aaa/ropes-linux-mop2-2023/nextflow/examples/bb.txt]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each channel emission is asynchronous, or random, so you should not rely on the order if you don’t assign an order to the channel using a sort operator. For instance, you can use the operator <a class="reference external" href="https://www.nextflow.io/docs/latest/reference/operator.html#tosortedlist">**toSortedList**</a> for ordering a channel.</p>
+</div>
+</section>
+<section id="processes">
+<h3>Processes<a class="headerlink" href="#processes" title="Link to this heading"></a></h3>
+<p>Let’s add a process to the previous script <cite>ex1.nf</cite> and let’s call it <cite>ex1_a.nf</cite></p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Creates a process which receives an input channel containing values</span>
+<span class="cm"> * Each value emitted by the channel triggers the execution</span>
+<span class="cm"> * of the process. The process stdout is captured and sent over</span>
+<span class="cm"> * the another channel.</span>
+<span class="cm"> */</span>
+
+<span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">stdout</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    echo ${str_in} in Italian is ciao</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The process can be seen as a function that is composed of:</p>
+<ul class="simple">
+<li><p>An <strong>input</strong> part where the input channels are defined.</p></li>
+<li><p>An <strong>output</strong> part where we specify what to store as a result, that will be sent to other processes or published as final result.</p></li>
+<li><p>A <strong>script</strong> part where we have the block of code to be executed using data from the input channel, and that will produce the output for the output channel.</p></li>
+</ul>
+<p>Any kind of code/command line can be run there, as it is <strong>language agnostic</strong>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Before the input, you can indicate a <strong>tag</strong> that will be reported in the log. This is quite useful for <strong>logging/debugging</strong>.</p>
+</div>
+</section>
+<section id="workflow">
+<h3>Workflow<a class="headerlink" href="#workflow" title="Link to this heading"></a></h3>
+<p>The code above will produce nothing (actually a warning) because it requires the part that will actually <strong>call the process</strong> and connect it to the input channel.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run ex1_a.nf -dsl2</span>
+<span class="go">N E X T F L O W  ~  version 22.04.3</span>
+<span class="go">Launching `ex1_a.nf` [irreverent_leakey] DSL2 - revision: 224d75e0c7</span>
+<span class="go">=============================================================================</span>
+<span class="go">=                                WARNING                                    =</span>
+<span class="go">= You are running this script using DSL2 syntax, however it does not        =</span>
+<span class="go">= contain any &#39;workflow&#39; definition so there&#39;s nothing for Nextflow to run. =</span>
+<span class="go">=                                                                           =</span>
+<span class="go">= If this script was written using Nextflow DSL1 syntax, please add the     =</span>
+<span class="go">= setting &#39;nextflow.enable.dsl=1&#39; to the nextflow.config file or use the    =</span>
+<span class="go">= command-line option &#39;-dsl1&#39; when running the pipeline.                    =</span>
+<span class="go">=                                                                           =</span>
+<span class="go">= More details at this link: https://www.nextflow.io/docs/latest/dsl2.html  =</span>
+<span class="go">=============================================================================</span>
+</pre></div>
+</div>
+<p>This part is called a <strong>workflow</strong>.</p>
+<p>Let’s add a workflow to our code <cite>ex1_a.nf</cite>. Now we will have our first prototype of a Nextflow pipeline, so we can rename it <cite>test0.nf</cite>. You can find this code in <strong>/nextflow/test0/</strong> folder:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/* </span>
+<span class="cm"> * Creates a channel emitting some string values</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Creates a process which receive an input channel containing values</span>
+<span class="cm"> * Each value emitted by the channel triggers the execution </span>
+<span class="cm"> * of the process. The process stdout is caputured and send over </span>
+<span class="cm"> * the another channel. </span>
+<span class="cm"> */</span>
+
+<span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
+
+<span class="w">    </span><span class="nl">output:</span><span class="w"> </span>
+<span class="w">    </span><span class="n">stdout</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    echo ${str_in} in Italian is ciao </span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * A workflow consist of a number of invocations of processes</span>
+<span class="cm"> * where they are fed with the expected input channels </span>
+<span class="cm"> * as they were cutom functions. You can only invoke once a process per workflow.</span>
+<span class="cm"> */</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">printHello</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
+<span class="w">    </span><span class="n">result</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+<span class="o">}</span>
+<span class="w"> </span>
+</pre></div>
+</div>
+<p>We can run the script sending the execution in the background (with the <cite>-bg</cite> option) and saving the log in the file <cite>log.txt</cite>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test0.nf -bg &gt; log.txt</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="nextflow-log">
+<h2>Nextflow log<a class="headerlink" href="#nextflow-log" title="Link to this heading"></a></h2>
+<p>Let’s inspect the log file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cat log.txt</span>
+
+<span class="go">N E X T F L O W  ~  version 23.08.1-edge</span>
+<span class="go">Launching `test0.nf` [sleepy_perlman] DSL2 - revision: 203a1d860a</span>
+<span class="go">[7b/235410] Submitted process &gt; printHello (1)</span>
+<span class="go">[f6/9fee82] Submitted process &gt; printHello (3)</span>
+<span class="go">[6b/094899] Submitted process &gt; printHello (2)</span>
+<span class="go">hello in Italian is ciao</span>
+<span class="go">bonjour in Italian is ciao</span>
+<span class="go">hola in Italian is ciao</span>
+</pre></div>
+</div>
+<p>We can add a <strong>tag</strong> to our processes: this will allow us to see, for instance, which is the input used by each process execution. You can run test0_a.nf where we introduce this code:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="cm">/* </span>
+<span class="cm"> * This code enables the new dsl of Nextflow. </span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="cm">/* </span>
+<span class="cm"> * Creates a channel emitting some string values</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Creates a process which receive an input channel containing values</span>
+<span class="cm"> * Each value emitted by the channel triggers the execution </span>
+<span class="cm"> * of the process. The process stdout is caputured and send over </span>
+<span class="cm"> * the another channel. </span>
+<span class="cm"> */</span>
+
+<span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
+<span class="hll"><span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${str_in}&quot;</span><span class="w"> </span><span class="o">}</span>
+</span><span class="w">    </span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
+
+<span class="w">    </span><span class="nl">output:</span><span class="w"> </span>
+<span class="w">    </span><span class="n">stdout</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    echo ${str_in} in Italian is ciao </span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * A workflow consist of a number of invocations of processes</span>
+<span class="cm"> * where they are fed with the expected input channels </span>
+<span class="cm"> * as they were cutom functions. You can only invoke once a process per workflow.</span>
+<span class="cm"> */</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">printHello</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
+<span class="w">    </span><span class="n">result</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+<span class="o">}</span>
+<span class="w"> </span>
+</pre></div>
+</div>
+<p>and obtain:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">N E X T F L O W  ~  version 23.08.1-edge</span>
+<span class="go">Launching `test0.nf` [high_fermat] - revision: b129d66e57</span>
+<span class="go">[6a/2dfcaf] Submitted process &gt; printHello (hola)</span>
+<span class="go">[24/a286da] Submitted process &gt; printHello (hello)</span>
+<span class="go">[04/e733db] Submitted process &gt; printHello (bonjour)</span>
+<span class="go">hola in Italian is ciao</span>
+<span class="go">hello in Italian is ciao</span>
+<span class="go">bonjour in Italian is ciao</span>
+</pre></div>
+</div>
+<p>At the start of each row, there is an <strong>alphanumeric code</strong>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">**[6a/2dfcaf]** Submitted process &gt; printHello (hola)</span>
+</pre></div>
+</div>
+<p>This code indicates <strong>the path</strong> in which the process is “isolated” and where the corresponding temporary files are kept in the <strong>work</strong> directory.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>IMPORTANT: Nextflow will randomly generate temporary folders so they will be named differently in your execution!!!</strong></p>
+</div>
+<p>Let’s have a look inside that folder:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Show<span class="w"> </span>the<span class="w"> </span>folder<span class="err">&#39;</span>s<span class="w"> </span>full<span class="w"> </span>name
+
+<span class="go">echo work/6a/2dfcaf*</span>
+<span class="go">  work/6a/2dfcafc01350f475c60b2696047a87</span>
+
+<span class="gp"># </span>List<span class="w"> </span>of<span class="w"> </span>files<span class="w"> </span>inside<span class="w"> </span>the<span class="w"> </span>folder
+
+<span class="go">ls -alht work/6a/2dfcaf*</span>
+<span class="go">total 40</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff     1B Oct  7 13:39 .exitcode</span>
+<span class="go">drwxr-xr-x  9 lcozzuto  staff   288B Oct  7 13:39 .</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff    24B Oct  7 13:39 .command.log</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff    24B Oct  7 13:39 .command.out</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff     0B Oct  7 13:39 .command.err</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff     0B Oct  7 13:39 .command.begin</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff    45B Oct  7 13:39 .command.sh</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff   2.5K Oct  7 13:39 .command.run</span>
+<span class="go">drwxr-xr-x  3 lcozzuto  staff    96B Oct  7 13:39 ..</span>
+</pre></div>
+</div>
+<p>You see a lot of “hidden” files:</p>
+<ul class="simple">
+<li><p><strong>.exitcode</strong>, contains 0 if everything is ok, and another value if there was a problem.</p></li>
+<li><p><strong>.command.log</strong>, contains the log of the command execution. It is often identical to <cite>.command.out</cite></p></li>
+<li><p><strong>.command.out</strong>, contains the standard output of the command execution</p></li>
+<li><p><strong>.command.err</strong>, contains the standard error of the command execution</p></li>
+<li><p><strong>.command.begin</strong>, contains what has to be executed before <cite>.command.sh</cite></p></li>
+<li><p><strong>.command.sh</strong>, contains the block of code indicated in the process</p></li>
+<li><p><strong>.command.run</strong>, contains the code made by Nextflow for the execution of <cite>.command.sh</cite>, and contains environmental variables, eventual invocations of Linux containers, etc.</p></li>
+</ul>
+<p>For example, the content of <cite>.command.sh</cite> is:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cat work/6a/2dfcaf*/.command.sh</span>
+
+<span class="gp">#</span>!/bin/bash<span class="w"> </span>-ue
+<span class="go">echo hola in Italian is ciao</span>
+</pre></div>
+</div>
+<p>And the content of <cite>.command.out</cite> is</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cat work/6a/2dfcaf*/.command.out</span>
+
+<span class="go">hola in Italian is ciao</span>
+</pre></div>
+</div>
+<p>You can also name the sub-workflows to combine them in the main workflow.
+For example, using this code you can execute two different workflows that contain the same process. As you can see the named workflows work similarly to the process: the input is defined by the <strong>take</strong> keyword, while the <strong>script</strong> part is represented by the <strong>main</strong>. We also have an equivalent of <strong>output</strong> that is <strong>emit</strong> that will be described later on. The following script can be found in <cite>test0_b.nf</cite> file</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+
+<span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
+<span class="w">	</span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
+
+<span class="w">  	</span><span class="nl">input:</span>
+<span class="w">   	</span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
+
+<span class="w">   	</span><span class="nl">output:</span>
+<span class="w">   	</span><span class="n">stdout</span>
+
+<span class="w">   	</span><span class="nl">script:</span>
+<span class="w">   	</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">   		echo ${str_in} in Italian is ciao</span>
+<span class="s2">   	&quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * A workflow can be named as a function and receive an input using the take keyword while the processing part is described by the main keyword</span>
+<span class="cm"> */</span>
+
+
+<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">first_pipeline</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">   </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">   </span><span class="nl">main:</span>
+</span><span class="hll"><span class="w">   </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">).</span><span class="na">view</span><span class="o">()</span>
+</span><span class="hll"><span class="o">}</span>
+</span>
+<span class="cm">/*</span>
+<span class="cm"> * You can re-use the previous processes and combine as you prefer</span>
+<span class="cm"> */</span>
+
+
+<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">second_pipeline</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">.</span><span class="na">collect</span><span class="o">()).</span><span class="na">view</span><span class="o">()</span>
+</span><span class="hll"><span class="o">}</span>
+</span>
+<span class="cm">/*</span>
+<span class="cm"> * You can then invoke the different named workflows in this way</span>
+<span class="cm">* passing the same input channel `str` to both</span>
+<span class="cm">*/</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">first_pipeline</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
+<span class="w">    </span><span class="n">second_pipeline</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>We can add the <strong>collect</strong> operator to the second workflow that would collect the output from different executions and return the resulting list <strong>as a sole emission</strong>.</p>
+<p>Let’s run the code:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test0_b.nf -bg &gt; log2</span>
+
+<span class="go">cat log2</span>
+
+<span class="go">N E X T F L O W  ~  version 20.07.1</span>
+<span class="go">Launching `test0_b.nf` [irreverent_davinci] - revision: 25a5511d1d</span>
+<span class="go">[de/105b97] Submitted process &gt; first_pipeline:printHello (hello)</span>
+<span class="go">[ba/051c23] Submitted process &gt; first_pipeline:printHello (bonjour)</span>
+<span class="go">[1f/9b41b2] Submitted process &gt; second_pipeline:printHello (hello)</span>
+<span class="go">[8d/270d93] Submitted process &gt; first_pipeline:printHello (hola)</span>
+<span class="go">[18/7b84c3] Submitted process &gt; second_pipeline:printHello (hola)</span>
+<span class="go">hello in Italian is ciao</span>
+<span class="go">bonjour in Italian is ciao</span>
+<span class="go">[0f/f78baf] Submitted process &gt; second_pipeline:printHello (bonjour)</span>
+<span class="go">hola in Italian is ciao</span>
+<span class="go">[&#39;hello in Italian is ciao\n&#39;, &#39;hola in Italian is ciao\n&#39;, &#39;bonjour in Italian is ciao\n&#39;]</span>
+</pre></div>
+</div>
+<p>We can change the pipeline to produce files instead of <a class="reference external" href="https://www.nextflow.io/docs/latest/dsl2.html#process-outputs">standard output</a>. The script is named <strong>test0_c.nf</strong>.</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="s1">&#39;hello&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;hola&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;bonjour&#39;</span><span class="o">)</span>
+
+<span class="n">process</span><span class="w"> </span><span class="n">printHello</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
+
+<span class="hll"><span class="w">    </span><span class="nl">output:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;${str_in}.txt&quot;</span><span class="o">)</span>
+</span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="hll"><span class="s2">    	echo ${str_in} in Italian is ciao &gt; ${str_in}.txt</span>
+</span><span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+<span class="n">process</span><span class="w"> </span><span class="n">printHello2</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">tag</span><span class="w">  </span><span class="s2">&quot;${str_in}&quot;</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">str_in</span>
+
+<span class="hll"><span class="w">    </span><span class="nl">output:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">path</span><span class="o">(</span><span class="s2">&quot;cheers.txt&quot;</span><span class="o">)</span>
+</span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="hll"><span class="s2">    	echo ${str_in.join(&#39;, &#39;)} in Italian are ciao &gt; cheers.txt</span>
+</span><span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * A workflow can be named as a function and receive an input using the take keyword</span>
+<span class="cm"> */</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="n">first_pipeline</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">     </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
+
+<span class="w">     </span><span class="nl">main:</span>
+<span class="w">     </span><span class="n">printHello</span><span class="o">(</span><span class="n">str_input</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * You can re-use the previous processes an combine as you prefer</span>
+<span class="cm"> */</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="n">second_pipeline</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">str_input</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="w">	</span><span class="n">printHello2</span><span class="o">(</span><span class="n">str_input</span><span class="o">.</span><span class="na">collect</span><span class="o">())</span>
+
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * You can then invoke the different named workflows in this way</span>
+<span class="cm"> * passing the same input channel `str` to both</span>
+<span class="cm"> */</span>
+
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="n">first_pipeline</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
+<span class="w">     </span><span class="n">second_pipeline</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="about.html" class="btn btn-neutral float-left" title="About the course" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nextflow_2.html" class="btn btn-neutral float-right" title="2 Nextflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

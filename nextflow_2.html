@@ -1,0 +1,718 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2 Nextflow &mdash; Nextflow Course 2025  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://biocorecrg.github.io/nextflow-course-2025-spring/nextflow_2.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3 Nextflow" href="nextflow_3.html" />
+    <link rel="prev" title="1 Nextflow" href="nextflow_1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Nextflow Course 2025
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the course</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_1.html">1 Nextflow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2 Nextflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#more-complex-scripts">More complex scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-bin-folder">The “bin” folder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#named-workflows">Named workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resuming-a-pipeline">Resuming a pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#directives">Directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">EXERCISE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_3.html">3 Nextflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_4.html">4 Nextflow</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Nextflow Course 2025</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">2 Nextflow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/nextflow_2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nextflow">
+<span id="nextflow-2-page"></span><h1>2 Nextflow<a class="headerlink" href="#nextflow" title="Link to this heading"></a></h1>
+<section id="more-complex-scripts">
+<h2>More complex scripts<a class="headerlink" href="#more-complex-scripts" title="Link to this heading"></a></h2>
+<p>Now, we will introduce a more complex script, where we the channel produced as output from a process feeds another process in the workflow definition.</p>
+<p>Here we have two simple processes:</p>
+<ul class="simple">
+<li><p>the former splits the input fasta file into <strong>single sequences</strong>.</p></li>
+<li><p>the latter can <strong>reverse the position of the sequences</strong>.</p></li>
+</ul>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * split a fasta file in multiple files</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span><span class="w"> </span><span class="c1">// nextflow creates links to the original files in a temporary folder</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span><span class="w">    </span><span class="c1">// send output files to a new output channel (in this case is a collection)</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// awk command for splitting a fasta files in multiple files</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    awk &#39;/^&gt;/{f=&quot;seq_&quot;++d} {print &gt; f}&#39; &lt; ${sequencesFile}</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="w"> </span>
+<span class="o">}</span>
+
+
+<span class="cm">/*</span>
+<span class="cm"> * Simple reverse the sequences</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span><span class="c1">// during the execution prints the indicated variable for follow-up</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${seq}&quot;</span><span class="w"> </span><span class="o">}</span><span class="w">  					</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">seq</span><span class="w"> </span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;all.rev&quot;</span><span class="w"> </span>
+<span class="w"> </span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    cat ${seq} | awk &#39;{if (\$1~&quot;&gt;&quot;) {print \$0} else system(&quot;echo &quot; \$0 &quot; |rev&quot;)}&#39; &gt; all.rev</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The variables used by AWK need to be escaped, otherwise, they will be considered as proper Nextflow variables and thus produce an error. Every special character, e.g., <strong>$</strong>, needs to be escaped (<strong>$</strong>). This script can be seen at <strong>/test1/test1.nf</strong></p>
+</div>
+<p>The input path is fed as a parameter using the script parameters <strong>${inputfile}</strong></p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span><span class="w">	</span>
+
+<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string  </span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span><span class="w">				</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The file “test.fa” is available in the <a class="reference external" href="https://github.com/biocorecrg/nextflow-course-2023-fall/tree/main/testdata">github repository of the course</a></p>
+</div>
+<p>This value can be overridden when calling the script:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test1.nf --inputfile another_input.fa</span>
+</pre></div>
+</div>
+<p>The workflow part connects the two processes so that the output of the first process becomes an input of the second process.</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="w">	</span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Here you have the output channel as a collection</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Here you have the same channel reshaped to send separately each value </span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="o">.</span><span class="na">flatten</span><span class="o">().</span><span class="na">view</span><span class="o">()</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// DLS2 allows you to reuse the channels! In past you had to create many identical</span>
+<span class="w">    </span><span class="c1">// channels for sending the same kind of data to different processes</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">rev_single_seq</span><span class="w">	</span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>During the execution, Nextflow creates several temporary folders and a soft link to the original input file. It will then store output files locally.</p>
+<p>The output file is then <em>linked</em> to other folders to be used as input from other processes.
+This avoids clashes, and each process is isolated from the other.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test1.nf -bg</span>
+
+<span class="go">N E X T F L O W  ~  version 20.07.1</span>
+<span class="go">Launching `test1.nf` [sad_newton] - revision: 82e66714e4</span>
+<span class="go">[09/53e071] Submitted process &gt; splitSequences</span>
+<span class="go">[/home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_1, /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_2, /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_3]</span>
+<span class="go">/home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_1</span>
+<span class="go">/home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_2</span>
+<span class="go">/home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_3</span>
+<span class="go">[fe/0a8640] Submitted process &gt; reverseSequence ([seq_1, seq_2, seq_3])</span>
+</pre></div>
+</div>
+<p>We can inspect the content of <cite>work/09/53e071*</cite> generated by the process <strong>splitSequences</strong>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ls -l work/09/53e071*</span>
+<span class="go">total 24</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff  29 Oct  8 19:16 seq_1</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff  33 Oct  8 19:16 seq_2</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff  27 Oct  8 19:16 seq_3</span>
+<span class="go">lrwxr-xr-x  1 lcozzuto  staff  69 Oct  8 19:16 test.fa -&gt; /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/testdata/test.fa</span>
+</pre></div>
+</div>
+<p>File <cite>test.fa</cite> is a <em>soft link</em> to the original input.</p>
+<p>If we inspect <cite>work/fe/0a8640*</cite> that is generated by the process <strong>reverseSequence</strong>, we see that the files generated by <strong>splitSequences</strong> are now linked as input.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ls -l work/fe/0a8640*</span>
+
+<span class="go">total 8</span>
+<span class="go">-rw-r--r--  1 lcozzuto  staff  89 Oct  8 19:16 all.rev</span>
+<span class="go">lrwxr-xr-x  1 lcozzuto  staff  97 Oct  8 19:16 seq_1 -&gt; /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_1</span>
+<span class="go">lrwxr-xr-x  1 lcozzuto  staff  97 Oct  8 19:16 seq_2 -&gt; /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_2</span>
+<span class="go">lrwxr-xr-x  1 lcozzuto  staff  97 Oct  8 19:16 seq_3 -&gt; /home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/09/53e071d286ed66f4020869c8977b59/seq_3</span>
+</pre></div>
+</div>
+<section id="the-bin-folder">
+<h3>The “bin” folder<a class="headerlink" href="#the-bin-folder" title="Link to this heading"></a></h3>
+<p>As we see before we need to escape some characters. So it can be very tedious when writing long one-liners; therefore, it is recommended to make a small shell script and call it as if it were an executable. This script has to be placed in a folder named <strong>bin</strong> inside the pipeline folder to be automatically considered from Nextflow as a tool in the path.</p>
+<p>You can see an example of this code by looking at the script <cite>test1_a.nf</cite> where the one-liner is replaced by a shell script:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * split a fasta file in multiple files</span>
+<span class="cm"> */</span>
+<span class="w"> </span>
+<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span><span class="w"> </span><span class="c1">// nextflow creates links to the original files in a temporary folder</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span><span class="w">    </span><span class="c1">// send output files to a new output channel (in this case is a collection)</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// awk command for splitting a fasta files in multiple files</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    splitseq.sh ${sequencesFile}</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="w"> </span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Here instead the shell script in <cite>bin/splitseq.sh</cite></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#</span>
+<span class="c1"># This script will split a fasta files in multiple files</span>
+
+
+awk<span class="w"> </span><span class="s1">&#39;/^&gt;/ {f=&quot;seq_&quot;++d} {print &gt; f}&#39;</span><span class="w"> </span>&lt;<span class="w"> </span><span class="nv">$1</span>
+</pre></div>
+</div>
+</section>
+<section id="named-workflows">
+<h3>Named workflows<a class="headerlink" href="#named-workflows" title="Link to this heading"></a></h3>
+<p>At this point we can make two different workflows to demonstrate how the new DSL allows reusing the code (script name <strong>test1_b.nf</strong>).</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span>
+
+<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
+
+<span class="c1">// check if the file exists</span>
+<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span>
+
+<span class="w">    </span><span class="c1">// simple awk command</span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    awk &#39;/^&gt;/{f=&quot;seq_&quot;++d} {print &gt; f}&#39; &lt; ${sequencesFile}</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2 for reversing the sequences</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${seq}&quot;</span><span class="w"> </span><span class="o">}</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">seq</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;all.rev&quot;</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    	cat ${seq} | awk &#39;{if (\$1~&quot;&gt;&quot;) {print \$0} else system(&quot;echo &quot; \$0 &quot; |rev&quot;)}&#39; &gt; all.rev</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span>
+</span><span class="hll"><span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">emit:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">rev_single_seq</span>
+</span><span class="hll">
+</span><span class="hll"><span class="o">}</span>
+</span><span class="hll">
+</span><span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">flow2</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">).</span><span class="na">flatten</span><span class="o">()</span>
+</span><span class="hll"><span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">emit:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">rev_single_seq</span>
+</span><span class="hll">
+</span><span class="hll"><span class="o">}</span>
+</span>
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span><span class="n">out1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flow1</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="w">   </span><span class="n">out2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flow2</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="w">   </span><span class="n">out2</span><span class="o">.</span><span class="na">view</span><span class="o">()</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The first workflow will just run like the previous script, while the second will “flatten” the output of the first process and will launch the second process on every single sequence.</p>
+<p>The <strong>reverseSequence</strong> process of the second workflow will run in parallel if you have enough processors, or if you are running the script in a cluster environment, with a scheduler supported by Nextflow.</p>
+<p>Our named workflows have an <strong>&lt;&lt;output&gt;&gt;</strong> too this time. It is specified using the <strong>emit</strong> keyword.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test1_b.nf</span>
+<span class="go">N E X T F L O W  ~  version 23.08.1-edge</span>
+<span class="go">Launching `test1_b.nf` [suspicious_faggin] DSL2 - revision: d89b62c1d4</span>
+<span class="go">executor &gt;  local (6)</span>
+<span class="go">[18/37c7cb] process &gt; flow1:splitSequences                      [100%] 1 of 1 ✔</span>
+<span class="go">[cc/458cd1] process &gt; flow1:reverseSequence (seq_1 seq_2 seq_3) [100%] 1 of 1 ✔</span>
+<span class="go">[eb/cf273d] process &gt; flow2:splitSequences                      [100%] 1 of 1 ✔</span>
+<span class="go">[f7/ce4ed9] process &gt; flow2:reverseSequence (seq_1)             [100%] 3 of 3 ✔</span>
+<span class="go">/Users/lcozzuto/aaa/nextflow-course-2023-fall/nextflow/test1/work/6f/e1ed9278d23363b740693e287a4167/all.rev</span>
+<span class="go">/Users/lcozzuto/aaa/nextflow-course-2023-fall/nextflow/test1/work/b2/ad05b00fcfca30fa7a4fbec4dad811/all.rev</span>
+<span class="go">/Users/lcozzuto/aaa/nextflow-course-2023-fall/nextflow/test1/work/f7/ce4ed995da248211f125e5b91ab762/all.rev</span>
+</pre></div>
+</div>
+</section>
+<section id="exercise">
+<h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h3>
+<p>Optimize the previous pipeline to avoid running the process <strong>splitSequences</strong> twice.</p>
+<details>
+<summary><a>Solution</a></summary><div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span>
+
+<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
+
+<span class="c1">// check if the file exists</span>
+<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span>
+
+<span class="w">    </span><span class="c1">// simple awk command</span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    awk &#39;/^&gt;/{f=&quot;seq_&quot;++d} {print &gt; f}&#39; &lt; ${sequencesFile}</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2 for reversing the sequences</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${seq}&quot;</span><span class="w"> </span><span class="o">}</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">seq</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;all.rev&quot;</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    	cat ${seq} | awk &#39;{if (\$1~&quot;&gt;&quot;) {print \$0} else system(&quot;echo &quot; \$0 &quot; |rev&quot;)}&#39; &gt; all.rev</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">splitted_seq</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="n">flow2</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">splitted_seq</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">.</span><span class="na">flatten</span><span class="o">())</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="w">   </span><span class="n">flow1</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="w">   </span><span class="n">flow2</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</details><div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="resuming-a-pipeline">
+<h3>Resuming a pipeline<a class="headerlink" href="#resuming-a-pipeline" title="Link to this heading"></a></h3>
+<p>You can resume the execution after the code modification using the parameter <strong>-resume</strong>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run test1.nf -bg -resume</span>
+
+<span class="go">N E X T F L O W  ~  version 20.07.1</span>
+<span class="go">Launching `test1.nf` [determined_celsius] - revision: eaf5b4d673</span>
+<span class="go">[bd/f4e9a6] Cached process &gt; flow1:splitSequences</span>
+<span class="go">[37/d790ab] Cached process &gt; flow2:splitSequences</span>
+<span class="go">[93/c7b1c6] Cached process &gt; flow2:reverseSequence (seq_3)</span>
+<span class="go">[45/86dd83] Cached process &gt; flow2:reverseSequence (seq_1)</span>
+<span class="go">[87/54bfe8] Cached process &gt; flow2:reverseSequence (seq_2)</span>
+<span class="go">[33/a6fc72] Cached process &gt; flow1:reverseSequence ([seq_1, seq_2, seq_3])</span>
+<span class="go">/home/ec2-user/git/CRG_Nextflow_Jun_2022/nextflow/nextflow/work/33/a6fc72786d042cacf733034d501691/all.rev</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>IMPORTANT: Nextflow parameters are provided using one hyphen</strong> (<cite>-resume</cite>) <strong>while a pipeline parameters, two hyphens</strong> (<cite>--inputfile</cite>).</p>
+</div>
+<p>Sometimes you might want to resume a previous run of your pipeline.</p>
+<p>To do so you need to extract the job id of that run. You can do this by using the command <cite>nextflow log</cite>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow log</span>
+<span class="go">TIMESTAMP               DURATION        RUN NAME                STATUS  REVISION ID     SESSION ID                              COMMAND</span>
+<span class="go">2020-10-06 14:49:09     2s              agitated_avogadro       OK      61a595c5bf      4a7a8a4b-9bdb-4b15-9cc6-1b2cabe9a938    nextflow run test1.nf</span>
+<span class="go">2020-10-08 19:14:38     2.8s            sick_edison             OK      82e66714e4      4fabb863-2038-47b4-bac0-19e71f93f284    nextflow run test1.nf -bg</span>
+<span class="go">2020-10-08 19:16:03     3s              sad_newton              OK      82e66714e4      2d13e9f8-1ba6-422d-9087-5c6c9731a795    nextflow run test1.nf -bg</span>
+<span class="go">2020-10-08 19:30:59     2.3s            disturbed_wozniak       OK      d33befe154      0a19b60d-d5fe-4a26-9e01-7a63d0a1d300    nextflow run test1.nf -bg</span>
+<span class="go">2020-10-08 19:35:52     2.5s            insane_plateau          OK      d33befe154      b359f32c-254f-4271-95bb-6a91b281dc6d    nextflow run test1.nf -bg</span>
+<span class="go">2020-10-08 19:56:30     2.8s            determined_celsius      OK      eaf5b4d673      b359f32c-254f-4271-95bb-6a91b281dc6d    nextflow run test1.nf -bg -resume</span>
+</pre></div>
+</div>
+<p>You can then resume the state of your execution using the <strong>SESSION ID</strong>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nextflow run -resume 0a19b60d-d5fe-4a26-9e01-7a63d0a1d300 test1.nf</span>
+</pre></div>
+</div>
+<p>Nextflow’s cache can be disabled for a specific process by setting the directive <strong>cache</strong> to <strong>false</strong>. You can also choose among the three caching methods:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// (default) Cache keys are created indexing input files meta-data information (name, size and last update timestamp attributes).</span>
+
+<span class="n">cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;deep&#39;</span><span class="w"> </span><span class="c1">// Cache keys are created indexing input files content.</span>
+
+<span class="n">cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;lenient&#39;</span><span class="w"> </span><span class="c1">// (Best in HPC and shared file systems) Cache keys are created indexing input files path and size attributes</span>
+</pre></div>
+</div>
+<p><strong>IMPORTANT: On some shared file systems you might have inconsistent file timestamps. Thus cache lenient prevents you from unwanted restarting of cached processes.</strong></p>
+</section>
+<section id="directives">
+<h3>Directives<a class="headerlink" href="#directives" title="Link to this heading"></a></h3>
+<p>The <a class="reference external" href="https://www.nextflow.io/docs/latest/process.html#directives">directives</a> are declaration blocks that can provide optional settings for a process.</p>
+<p>For example, they can affect the way a process stages in and out the input and output files (<a class="reference external" href="https://www.nextflow.io/docs/latest/process.html#stageinmode">stageInMode</a> and <a class="reference external" href="https://www.nextflow.io/docs/latest/process.html#stageoutmode">stageOutMode</a>),  or specify a particular resource such as the number of <a class="reference external" href="https://www.nextflow.io/docs/latest/process.html#cpus">cpus</a> , the <a class="reference external" href="https://www.nextflow.io/docs/latest/process.html#memory">memory</a>, and the <a class="reference external" href="https://www.nextflow.io/docs/latest/process.html#time">time</a></p>
+<p>Here an example:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="w"> </span><span class="n">my_process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="s1">&#39;1h&#39;</span>
+<span class="w">    </span><span class="n">memory</span><span class="w"> </span><span class="s1">&#39;2 GB&#39;</span>
+<span class="w">    </span><span class="n">cpus</span><span class="w"> </span><span class="mi">8</span>
+
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    Some execution</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>We can also indicate what to do if a process fails.</p>
+<p>The default is to stop the pipeline and to raise an error. But we can also skip the process using the <a class="reference external" href="https://www.nextflow.io/docs/latest/process.html#errorstrategy">errorStrategy</a> directive:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="w"> </span><span class="n">my_process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="s1">&#39;1h&#39;</span>
+<span class="w">    </span><span class="n">memory</span><span class="w"> </span><span class="s1">&#39;2 GB&#39;</span>
+<span class="w">    </span><span class="n">cpus</span><span class="w"> </span><span class="mi">8</span>
+<span class="w">    </span><span class="n">errorStrategy</span><span class="w"> </span><span class="s1">&#39;ignore&#39;</span>
+
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    Some execution</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>or retry a number of times changing the available memory or the maximum execution time, using the foolowing directives:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">process</span><span class="w"> </span><span class="n">my_process</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">memory</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="mi">1</span><span class="o">.</span><span class="na">GB</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">task</span><span class="o">.</span><span class="na">attempt</span><span class="w"> </span><span class="o">}</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="mi">1</span><span class="o">.</span><span class="na">hour</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">task</span><span class="o">.</span><span class="na">attempt</span><span class="w"> </span><span class="o">}</span>
+<span class="w">    </span><span class="n">errorStrategy</span><span class="w"> </span><span class="s1">&#39;retry&#39;</span>
+<span class="w">    </span><span class="n">maxRetries</span><span class="w"> </span><span class="mi">3</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>EXERCISE<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Make the previous pipeline resilient to the process failing and save the results so the process execution would be skipped when the pipeline is launched again.</p>
+<p>First, make the process <cite>reverseSequence</cite> fail by introducing a typo in the command line, then add the directive to the process.</p>
+<details>
+<summary><a>Solution</a></summary><p>The solution is at <strong>sol3.nf</strong>. In particular, the change is here:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span>
+
+<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
+
+<span class="c1">// check if the file exists</span>
+<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span>
+
+<span class="w">    </span><span class="c1">// simple awk command</span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    awk &#39;/^&gt;/{f=&quot;seq_&quot;++d} {print &gt; f}&#39; &lt; ${sequencesFile}</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="hll"><span class="cm">/*</span>
+</span><span class="hll"><span class="cm">* Broken process</span>
+</span><span class="hll"><span class="cm">*/</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${seq}&quot;</span><span class="w"> </span><span class="o">}</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="n">errorStrategy</span><span class="w"> </span><span class="s1">&#39;ignore&#39;</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">input:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">seq</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">output:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;all.rev&quot;</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">script:</span>
+</span><span class="hll"><span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+</span><span class="hll"><span class="s2">    cat ${seq} | AAAAAAA &#39;{if (\$1~&quot;&gt;&quot;) {print \$0} else system(&quot;echo &quot; \$0 &quot; |rev&quot;)}&#39; &gt; all.rev</span>
+</span><span class="hll"><span class="s2">    &quot;&quot;&quot;</span>
+</span><span class="hll"><span class="o">}</span>
+</span><span class="hll">
+</span><span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span>
+<span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="n">flow2</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">).</span><span class="na">flatten</span><span class="o">()</span>
+<span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span><span class="n">flow1</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="w">   </span><span class="n">flow2</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</details><div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p>Write the first workflow using pipes. Nextflow DLS2 allows you to use pipes for connecting channels via input/output.</p>
+<p>See the <a class="reference external" href="https://www.nextflow.io/docs/latest/dsl2.html#pipes">documentation on pipes</a>.</p>
+<details>
+<summary><a>Solution</a></summary><p>The solution is at <strong>sol4.nf</strong>. Here is the change:</p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="cp">#!/usr/bin/env nextflow</span>
+
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="c1">// this can be overridden by using --inputfile OTHERFILENAME</span>
+<span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;$baseDir/../../testdata/test.fa&quot;</span>
+
+<span class="c1">// the &quot;file method&quot; returns a file system object given a file path string</span>
+<span class="n">sequences_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">inputfile</span><span class="o">)</span>
+
+<span class="c1">// check if the file exists</span>
+<span class="k">if</span><span class="o">(</span><span class="w"> </span><span class="o">!</span><span class="n">sequences_file</span><span class="o">.</span><span class="na">exists</span><span class="o">()</span><span class="w"> </span><span class="o">)</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">1</span><span class="o">,</span><span class="w"> </span><span class="s2">&quot;Missing genome file: ${sequences_file}&quot;</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 1 for splitting a fasta file in multiple files</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">splitSequences</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">sequencesFile</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">(</span><span class="s1">&#39;seq_*&#39;</span><span class="o">)</span>
+
+<span class="w">    </span><span class="c1">// simple awk command</span>
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    awk &#39;/^&gt;/{f=&quot;seq_&quot;++d} {print &gt; f}&#39; &lt; ${sequencesFile}</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Process 2 for reversing the sequences</span>
+<span class="cm"> */</span>
+<span class="n">process</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">tag</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s2">&quot;${seq}&quot;</span><span class="w"> </span><span class="o">}</span>
+
+<span class="w">    </span><span class="nl">input:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="n">seq</span>
+
+<span class="w">    </span><span class="nl">output:</span>
+<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="s2">&quot;all.rev&quot;</span>
+
+<span class="w">    </span><span class="nl">script:</span>
+<span class="w">    </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    	cat ${seq} | awk &#39;{if (\$1~&quot;&gt;&quot;) {print \$0} else system(&quot;echo &quot; \$0 &quot; |rev&quot;)}&#39; &gt; all.rev</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="o">}</span>
+
+<span class="hll"><span class="n">workflow</span><span class="w"> </span><span class="n">flow1</span><span class="w"> </span><span class="o">{</span>
+</span><span class="hll"><span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+</span><span class="hll">
+</span><span class="hll"><span class="w">    </span><span class="nl">main:</span>
+</span><span class="hll"><span class="w">    </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">reverseSequence</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">view</span><span class="o">()</span>
+</span><span class="hll"><span class="o">}</span>
+</span>
+<span class="n">workflow</span><span class="w"> </span><span class="n">flow2</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nl">take:</span><span class="w"> </span><span class="n">sequences</span>
+
+<span class="w">    </span><span class="nl">main:</span>
+<span class="w">    </span><span class="n">splitted_seq</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">splitSequences</span><span class="o">(</span><span class="n">sequences</span><span class="o">).</span><span class="na">flatten</span><span class="o">()</span>
+<span class="w">    </span><span class="n">rev_single_seq</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">reverseSequence</span><span class="o">(</span><span class="n">splitted_seq</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">workflow</span><span class="w"> </span><span class="o">{</span>
+<span class="w">   </span><span class="n">flow1</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="w">   </span><span class="n">flow2</span><span class="o">(</span><span class="n">sequences_file</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</details><div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When a shell script fails you might still have a 0 exit code and if an output file is generated Nextflow won’t recognize an error. This is because in a bash pipeline exit code is the one from the last command. To change this behavior you should add at the beginning of your bash script the code:</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span><span class="w"> </span>-euxo<span class="w"> </span>pipefail
+BASH<span class="w"> </span>CODE<span class="w"> </span>HERE
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nextflow_1.html" class="btn btn-neutral float-left" title="1 Nextflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nextflow_3.html" class="btn btn-neutral float-right" title="3 Nextflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
