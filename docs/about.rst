@@ -53,33 +53,6 @@ Dates, time, location
 
 * Location: CRG training room
 
-Program
-------------------------
-  
-*Day 1: Understand and run a basic Nexflow pipeline*
-
-* 10:00-11:00 Introduction to Nextflow
-* 11:00-11:30 Break
-* 11:30-13:00 Making simple scripts: channels operators and workflows
-
-*Day 1: Write, modify, and run a complex pipeline*
-
-* 14:30-15:30 More complex scripts
-* 15:30-16:00 Break
-* 16:00-17:30 Directive and resuming 
-
-*Day 2: Run a Nextflow pipeline in different environments*
-
-* 14:00-15:00  Singularity and more processes
-* 15:00-15.30  Break
-* 15:30-17.00 Profiles and cloud
-
-*Day 3: Nextflow modules and Tower*
-
-* 14:00-15:00 Modules
-* 15:00-15.30 Break
-* 15:30-17.00 Tower
-
 
 .. _home-page-outline:
 
