@@ -5,7 +5,7 @@ Reproducible research and data analysis using Containers & Nextflow 2025
 *******************
 
 
-`GitHub repository <https://github.com/biocorecrg/nextflow-course-2024-alba>`_
+`GitHub repository <https://github.com/biocorecrg/nextflow-course-2025-spring>`_
 
 Contents:
 
