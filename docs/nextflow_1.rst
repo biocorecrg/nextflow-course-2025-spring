@@ -123,7 +123,7 @@ Installation
 
 .. note::
   Nextflow is already installed on the machines provided for this course.
-  You need at least Java version 11 for the Nextflow installation.
+  You need at least Java version 17 for the Nextflow installation (see Nextflow [requirements](https://www.nextflow.io/docs/latest/install.html#requirements)).
 
 .. tip::
   You can check the version for Java by typing::
