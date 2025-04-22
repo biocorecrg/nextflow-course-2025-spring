@@ -322,7 +322,7 @@ This will produce:
 	Each channel emission is asynchronous, or random, so you should not rely on the order if you don't assign an order to the channel using a sort operator. For instance, you can use the operator `**toSortedList** <https://www.nextflow.io/docs/latest/reference/operator.html#tosortedlist>`_ for ordering a channel.
 
 	.. literalinclude:: ../nextflow/examples/ex5.nf
-   		:language: groovy
+   	   :language: groovy
 
 
 Processes
