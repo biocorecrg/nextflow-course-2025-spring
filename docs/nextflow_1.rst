@@ -323,6 +323,8 @@ This will produce:
 
 	.. literalinclude:: ../nextflow/examples/ex5.nf
    	   :language: groovy
+	   :lines: 20-28 
+
 
 
 Processes
