@@ -226,7 +226,7 @@ Directives
 The `directives <https://www.nextflow.io/docs/latest/process.html#directives>`__ are declaration blocks that can provide optional settings for a process.
 
 
-For example, they can affect the way a process stages in and out the input and output files (`stageInMode <https://www.nextflow.io/docs/latest/process.html#stageinmode>`__ and `stageOutMode <https://www.nextflow.io/docs/latest/process.html#stageoutmode>`__),  or specify a particular resource such as the number of `cpus <https://www.nextflow.io/docs/latest/process.html#cpus>`__ , the `memory <https://www.nextflow.io/docs/latest/process.html#memory>`__, and the `time  <https://www.nextflow.io/docs/latest/process.html#time>`__ 
+For example, they can affect the way a process stages in and out the input and output files (`stageInMode <https://www.nextflow.io/docs/latest/reference/process.html#stageinmode>`__ and `stageOutMode <https://www.nextflow.io/docs/latest/reference/process.html#stageoutmode>`__),  or specify a particular resource such as the number of `cpus <https://www.nextflow.io/docs/latest/reference/process.html#process-cpus>`__ , the `memory <https://www.nextflow.io/docs/latest/reference/process.html#memory>`__, and the `time  <https://www.nextflow.io/docs/latest/reference/process.html#time>`__ 
 
 Here an example:
 
