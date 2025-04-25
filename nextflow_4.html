@@ -189,7 +189,7 @@ Let’s inspect the <strong>multiQC</strong> module:</p>
 </pre></div>
 </div>
 <p>In the multiqc module, we don’t specify the container. We indicate it via <cite>nextflow.config</cite> file using the <strong>withName</strong> selector.</p>
-<p>Here you see that we are not using our own image, but rather we use the image provided by <strong>biocontainers</strong> in <a class="reference external" href="https://quay.io/">quay</a>.</p>
+<p>Here you see that we are not using our own image, but rather we use the image provided by <strong>biocontainers</strong> in <a class="reference external" href="://quay.io/">quay</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>IMPORTANT: You have to specify a default image to run nextflow -with-docker or -with-singularity and you have to have a container(s) defined inside modules.</p>
@@ -209,7 +209,7 @@ Let’s inspect the <strong>multiQC</strong> module:</p>
 <li><p>Commercial one for workflow management, monitoring, and resource optimization.</p></li>
 </ul>
 <p>We will show the open-source one.</p>
-<p>First, you need to access the <a class="reference external" href="https://https://cloud.seqera.io/">Seqera platform</a> website and login.</p>
+<p>First, you need to access the <a class="reference external" href="://cloud.seqera.io/">Seqera platform</a> website and login.</p>
 <a class="reference internal image-reference" href="_images/tower.png"><img alt="_images/tower.png" src="_images/tower.png" style="width: 800px;" />
 </a>
 <p>We recommend using either Google or GitHub for login.</p>
@@ -218,7 +218,7 @@ Let’s inspect the <strong>multiQC</strong> module:</p>
 <p>Once you are signed in you will see a page like this:</p>
 <a class="reference internal image-reference" href="_images/tower2.png"><img alt="_images/tower2.png" src="_images/tower2.png" style="width: 800px;" />
 </a>
-<p>You can generate your token at <a class="reference external" href="https://cloud.seqera.io/tokens">https://cloud.seqera.io/tokens</a> and copy-paste it into your pipeline using this snippet in the configuration file:</p>
+<p>You can generate your token at <a class="reference external" href="://cloud.seqera.io/tokens">://cloud.seqera.io/tokens</a> and copy-paste it into your pipeline using this snippet in the configuration file:</p>
 <div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">tower</span><span class="w"> </span><span class="o">{</span>
 <span class="w">  </span><span class="n">accessToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&lt;YOUR TOKEN&gt;&#39;</span>
 <span class="w">  </span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>

@@ -43,7 +43,7 @@ In the multiqc module, we don't specify the container. We indicate it via `nextf
    :emphasize-lines: 19-21,40-43,63-66
 
 
-Here you see that we are not using our own image, but rather we use the image provided by **biocontainers** in `quay <https://quay.io/>`__.
+Here you see that we are not using our own image, but rather we use the image provided by **biocontainers** in `quay <://quay.io/>`__.
 
 .. note::
 
@@ -71,7 +71,7 @@ Nextflow has an embedded function for reporting information about the resources 
 
 We will show the open-source one.
 
-First, you need to access the `Seqera platform <https://https://cloud.seqera.io/>`__ website and login.
+First, you need to access the `Seqera platform <://cloud.seqera.io/>`__ website and login.
 
 
 .. image:: images/tower.png
@@ -88,7 +88,7 @@ Once you are signed in you will see a page like this:
   :width: 800
 
 
-You can generate your token at `https://cloud.seqera.io/tokens <https://cloud.seqera.io/tokens>`__ and copy-paste it into your pipeline using this snippet in the configuration file:
+You can generate your token at `://cloud.seqera.io/tokens <://cloud.seqera.io/tokens>`__ and copy-paste it into your pipeline using this snippet in the configuration file:
 
 .. code-block:: groovy
 
